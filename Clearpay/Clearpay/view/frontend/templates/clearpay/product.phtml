@@ -1,0 +1,38 @@
+<?php
+/**
+ * Magento 2 extensions for Clearpay Payment
+ *
+ * @author Clearpay
+ * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
+ */
+?>
+<?php 
+//Check for supported currency
+$canUseCurrency = $block->canUseCurrency();
+
+//If currency is supported, check if Clearpay is enabled.
+if($canUseCurrency) {
+	if (!$block->canShow()) {
+		$hide = "display:none;";
+		$showClearpay = false;
+	} else {
+		$hide = "";
+		$showClearpay = true;
+	}
+}
+
+if($canUseCurrency) : ?>
+	<div showClearpay="<?php echo $showClearpay; ?>" maxLimit="<?php echo $block->getMaxOrderLimit(); ?>" minLimit="<?php echo $block->getMinOrderLimit(); ?>" style="position: relative; font-style: italic; line-height: 1.4; <?php echo $hide; ?>" class="clearpay-installments clearpay-installments-amount">
+	<?php $assets_product_page = $block->getInstalmentText(); 
+	echo $assets_product_page['snippet1'];
+	?>
+	<span class="clearpay_instalment_price"><?php echo $block->getInstallmentsAmount(); ?></span>
+		<br/>
+	<?php
+	$assets_product_snippet2  = $assets_product_page['snippet2'];
+	$assets_product_snippet2 = str_replace(array('[modal-href]'), 
+	                    array('javascript:void(0)'), $assets_product_snippet2);
+	echo $assets_product_snippet2;
+	?>
+	</div>
+<?php endif; ?>

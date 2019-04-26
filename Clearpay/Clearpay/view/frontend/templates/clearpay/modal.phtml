@@ -1,0 +1,41 @@
+<?php
+/**
+ * Magento 2 extensions for Clearpay Payment
+ *
+ * @author Clearpay
+ * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
+ */
+?>
+<div id="clearpay-modal-popup" style="display:none">
+    <a href="https://www.clearpay.co.uk/terms/" target="_blank">
+        <img class="clearpay-modal-image" src="https://static.afterpay.com/clearpay-lightbox-desktop.png" alt="Clearpay"/>
+        <img class="clearpay-modal-image-mobile" src="https://static.afterpay.com/clearpay-lightbox-mobile.png" alt="Clearpay"/>
+    </a>
+</div>
+<script>
+    require(
+        [
+            'jquery',
+            'Magento_Ui/js/modal/modal'
+        ],
+        function(
+            $,
+            modal
+        ) {
+            var options = {
+                responsive: false,
+                innerScroll: false,
+                modalClass: 'clearpay-learn-more'
+            };
+            // register poup
+            var popup = modal(options, $('#clearpay-modal-popup'));
+
+            // register the click to be popup
+            $( ".clearpay-modal-popup-trigger" ).on( "click", function() {
+                $('#clearpay-modal-popup').show();
+                $('#clearpay-modal-popup').modal('openModal');
+            });
+        }
+    );
+</script>
+

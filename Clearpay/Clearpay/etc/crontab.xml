@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento 2 extensions for Clearpay Payment
+ *
+ * @author Clearpay
+ * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="clearpay_order_limit_update" instance="Clearpay\Clearpay\Model\Cron\Limit" method="execute">
+            <schedule>0 6 * * *</schedule>
+        </job>
+    </group>
+</config>
