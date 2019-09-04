@@ -3,7 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Model;
 
@@ -181,7 +181,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
      * @return bool
      * @throws LocalizedException
      */
-    protected function _getAfterPayOrderToken($clearpayOrderToken, $payment, $targetObject)
+    protected function _getClearPayOrderToken($clearpayOrderToken, $payment, $targetObject)
     {
         $result = $clearpayOrderToken->generate($targetObject, $this->clearpayPaymentTypeCode);
         $result_ori = $result;

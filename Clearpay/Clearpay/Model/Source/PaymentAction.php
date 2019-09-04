@@ -3,9 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
- * Updated on 27th March 2018
- * Removed API V0 functionality
+ * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Model\Source;
 

@@ -3,7 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Model\Adapter\Clearpay;
 
@@ -86,7 +86,10 @@ class Call
         //Additional debugging on the merchant ID and Key being sent on Update Payment Limits
         if ($url == $this->clearpayConfig->getApiUrl('v1/configuration') ||
             $url == $this->clearpayConfig->getApiUrl('merchants/valid-payment-types') ) {
-            $this->helper->debug('Merchant Origin: ' . $_SERVER['REQUEST_URI']);
+            //Solves the problem of magento 2 cron not working for some merchants  
+            if(array_key_exists('REQUEST_URI',$_SERVER)){
+               $this->helper->debug('Merchant Origin: ' . $_SERVER['REQUEST_URI']);
+            }
             $this->helper->debug('Target URL: ' . $url);
             $this->helper->debug('Merchant ID:' . $this->clearpayConfig->getMerchantId($override));
 

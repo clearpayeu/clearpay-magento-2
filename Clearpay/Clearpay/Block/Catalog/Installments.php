@@ -3,7 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Block\Catalog;
 
@@ -86,18 +86,29 @@ class Installments extends Template
         if (!$this->_getPaymentIsActive()) {
             return false;
         }
-        
-        // get current product
-        $product = $this->registry->registry('product');
-
-        // check if price is above max or min limit
-        if ($product->getFinalPrice() > $this->clearpayConfig->getMaxOrderLimit() // greater than max order limit
-                || $product->getFinalPrice() < $this->clearpayConfig->getMinOrderLimit()) { // lower than min order limit
-            return false;
-        }
-
-        return true;
+		else{
+			if($this->clearpayConfig->getCurrencyCode()){
+				return $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode());
+			} else {
+				return false;
+			}
+		}
     }
+	/**
+     * @return bool
+     */
+	public function isProductEligible(){
+		
+		$display_product = "display:block";
+		
+		$product = $this->registry->registry('product');
+		if ($product->getFinalPrice() > $this->clearpayConfig->getMaxOrderLimit() // greater than max order limit
+                || $product->getFinalPrice() < $this->clearpayConfig->getMinOrderLimit()) { // lower than min order limit
+            $display_product = "display:none";
+        }
+		
+		return $display_product;
+	}
 
     /**
      * @return boolean
@@ -128,6 +139,9 @@ class Installments extends Template
                 if(isset($assets[$currencyCode]['product_page1']))
                 {
                     $assets_product_page['snippet1'] = $assets[$currencyCode]['product_page1'];
+					if($this->getTypeOfProduct()=="bundle"){
+						$assets_product_page['snippet1'] = $assets[$currencyCode]['product_page_from'];
+					}  
                     $assets_product_page['snippet2'] = $assets[$currencyCode]['product_page2'];
                 } else {
                     $assets_product_page['snippet1'] = '';
@@ -153,4 +167,12 @@ class Installments extends Template
     {
         return $this->clearpayConfig->getMinOrderLimit();
     }
+	/**
+     * @return string
+     */
+    public function getTypeOfProduct()
+	{
+		$product = $this->registry->registry('product');
+		return $product->getTypeId();
+	}
 }

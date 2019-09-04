@@ -4,7 +4,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
@@ -19,5 +19,6 @@
         <referenceContainer name="content">
             <block class="Magento\Framework\View\Element\Template" name="clearpay.modal.popup" after="-" template="Clearpay_Clearpay::clearpay/modal.phtml" />
         </referenceContainer>
+		<move element="customize.button" destination="product.info.main" after="clearpay.price.installments" />
     </body>
 </page>

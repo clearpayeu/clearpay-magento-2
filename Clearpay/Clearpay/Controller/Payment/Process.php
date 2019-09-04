@@ -3,9 +3,7 @@
  * Magento 2 extensions for Clearpay
  *
  * @author Clearpay
- * @copyright 2016-2018 Clearpay https://www.clearpay.co.uk
- * Updated on 27th March 2018
- * Removed API V0 functionality
+ * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Controller\Payment;
 
@@ -111,18 +109,44 @@ class Process extends \Magento\Framework\App\Action\Action
 
             //check if shipping address is missing - e.g. Gift Cards
             if ((empty($shippingAddress) || empty($shippingAddress->getStreetLine(1))) && (empty($billingAddress) || empty($billingAddress->getStreetLine(1)))) {
-                $result = $this->_jsonResultFactory->create()->setData(
-                    ['success' => false, 'message' => 'Please select an Address']
-                );
+				
+              //Handle the virtual products
+              if($quote->isVirtual()){
+	            try{
+		           $billingID =  $customerSession->getCustomer()->getDefaultBilling();
+		           $this->_helper->debug("No billing address for the virtual product. Adding the Customer's default billing address.");
+		           $address = $objectManager->create('Magento\Customer\Model\Address')->load($billingID);
+		           $billingAddress->addData($address->getData());
+		
+	            }catch(\Exception $e){
+		            $this->_helper->debug($e->getMessage());
+		            $result = $this->_jsonResultFactory->create()->setData(
+		              ['success' => false, 'message' => 'Please select an Address']
+		            );
 
-                return $result;
+		          return $result;
+	            }
+              }else{
+	              $result = $this->_jsonResultFactory->create()->setData(
+		            ['success' => false, 'message' => 'Please select an Address']
+	              );
+
+	              return $result;
+                }
+                
             } // else if( empty($shippingAddress) || empty($shippingAddress->getStreetLine(1))  || empty($shippingAddress->getFirstname()) ) {
             //     $shippingAddress = $quote->getBillingAddress();
             //     $quote->setShippingAddress($quote->getBillingAddress());
             // }
             elseif (empty($billingAddress) || empty($billingAddress->getStreetLine(1)) || empty($billingAddress->getFirstname())) {
+                
                 $billingAddress = $quote->getShippingAddress();
                 $quote->setBillingAddress($quote->getShippingAddress());
+                $this->_helper->debug("No billing address found. Adding the shipping address as billing address");
+				
+                // Above code copies the shipping address to billing address with the 'address_type' ='shipping', which results in problem with order creating.  
+				
+                $billingAddress->addData(array('address_type'=>'billing'));
             }
         } else {
             $post = $this->getRequest()->getPostValue();
@@ -153,7 +177,7 @@ class Process extends \Magento\Framework\App\Action\Action
 
 
         try {
-            $payment = $this->_getAfterPayOrderToken($this->_clearpayOrderTokenV1, $payment, $quote);
+            $payment = $this->_getClearPayOrderToken($this->_clearpayOrderTokenV1, $payment, $quote);
         } catch (\Exception $e) {
             $result = $this->_jsonResultFactory->create()->setData(
                 ['error' => 1, 'message' => $e->getMessage()]
@@ -181,7 +205,7 @@ class Process extends \Magento\Framework\App\Action\Action
      * @return bool
      * @throws LocalizedException
      */
-    private function _getAfterPayOrderToken($clearpayOrderToken, $payment, $targetObject)
+    private function _getClearPayOrderToken($clearpayOrderToken, $payment, $targetObject)
     {
         if ($targetObject && $targetObject->getReservedOrderId()) {
             $result = $clearpayOrderToken->generate($targetObject, \Clearpay\Clearpay\Model\Payovertime::CLEARPAY_PAYMENT_TYPE_CODE_V1, ['merchantOrderId' => $targetObject->getReservedOrderId() ]);
