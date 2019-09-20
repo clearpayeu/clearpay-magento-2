@@ -138,7 +138,7 @@ define(
                             email = document.getElementById("customer-email").value;
                         }
 
-                        data = data + '&email=' + email;
+                        data = data + '&email=' + encodeURIComponent(email);
 
 
                         $.ajax({
