@@ -15,7 +15,7 @@ use Magento\Checkout\Model\ConfigProviderInterface;
  */
 class ConfigProvider implements ConfigProviderInterface
 {
-    const TERMS_CONDITION_LINK = "https://www.clearpay.co.uk/terms/";
+    const TERMS_CONDITION_LINK = "https://www.clearpay.co.uk/terms";
     /**
      * @var Config\Payovertime
      */

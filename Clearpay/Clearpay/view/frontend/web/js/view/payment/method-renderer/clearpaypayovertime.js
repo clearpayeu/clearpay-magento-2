@@ -98,7 +98,7 @@ define(
 			getTermsLink: function () {
 
                 var clearpay = window.checkoutConfig.payment.clearpay;
-                var clearpayCheckoutTermsLink = "https://www.clearpay.co.uk/terms/";
+                var clearpayCheckoutTermsLink = "https://www.clearpay.co.uk/terms";
                 
                 return clearpayCheckoutTermsLink;
             },

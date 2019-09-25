@@ -5,37 +5,47 @@
  * @author Clearpay
  * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
  */
+$store_base_currency = $this->helper('Clearpay\Clearpay\Helper\Data')->getConfig('currency/options/default');
 ?>
 <div id="clearpay-modal-popup" style="display:none">
-    <a href="https://www.clearpay.co.uk/terms/" target="_blank">
-        <img class="clearpay-modal-image" src="https://static.afterpay.com/clearpay-lightbox-desktop.png" alt="Clearpay"/>
-        <img class="clearpay-modal-image-mobile" src="https://static.afterpay.com/clearpay-lightbox-mobile.png" alt="Clearpay"/>
+    <a href="https://www.clearpay.co.uk/terms" target="_blank">
+        <img class="clearpay-modal-image" alt="Clearpay"/>
     </a>
 </div>
 <script>
-    require(
+	require(
         [
             'jquery',
-            'Magento_Ui/js/modal/modal'
-        ],
+			'Magento_Ui/js/modal/modal'
+		],
         function(
             $,
-            modal
-        ) {
-            var options = {
+			modal
+        ){
+			var storeCurrency="<?php echo $store_base_currency;?>";
+			var width=$(window).width();
+			
+			var options = {
                 responsive: false,
                 innerScroll: false,
                 modalClass: 'clearpay-learn-more'
             };
             // register poup
             var popup = modal(options, $('#clearpay-modal-popup'));
+			
+			if(width > 640){
+				$("#clearpay-modal-popup .clearpay-modal-image").attr({src:"https://static.afterpay.com/clearpay-lightbox-desktop.png",srcset:"https://static.afterpay.com/clearpay-lightbox-desktop.png 1x,https://static.afterpay.com/clearpay-lightbox-desktop@2x.png 2x"});
+			}
+			else{
+				$("#clearpay-modal-popup .clearpay-modal-image").attr({src:"https://static.afterpay.com/clearpay-lightbox-mobile.png",srcset:"https://static.afterpay.com/clearpay-lightbox-mobile.png 1x,https://static.afterpay.com/clearpay-lightbox-mobile@2x.png 2x"});
+			}
 
             // register the click to be popup
             $( ".clearpay-modal-popup-trigger" ).on( "click", function() {
                 $('#clearpay-modal-popup').show();
                 $('#clearpay-modal-popup').modal('openModal');
             });
-        }
-    );
+		}
+	);
 </script>
 

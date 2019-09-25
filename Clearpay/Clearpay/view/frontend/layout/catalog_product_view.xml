@@ -19,6 +19,5 @@
         <referenceContainer name="content">
             <block class="Magento\Framework\View\Element\Template" name="clearpay.modal.popup" after="-" template="Clearpay_Clearpay::clearpay/modal.phtml" />
         </referenceContainer>
-		<move element="customize.button" destination="product.info.main" after="clearpay.price.installments" />
     </body>
 </page>

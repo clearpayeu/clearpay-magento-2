@@ -1,5 +1,25 @@
 # Clearpay Magento 2 Extension Changelog
 
+## Version 3.0.6
+
+_Wed 25 Sep 2019 (GMT)_
+ 
+### Supported Editions & Versions
+
+- Magento Community Edition (CE) version 2.0.2 and later
+- Magento Enterprise Edition (EE) version 2.0.2 and later
+
+### Highlights
+
+- Added a new feature to allow Clearpay to be disabled for a specified set of product categories.
+- Improved compatibility between Afterpay and Clearpay modules in multi-regional Magento installations.
+- Improved support for Credit Memos used in conjunction with Clearpay orders in Magento Enterprise installations.
+- Improved support for Product Detail Pages (PDP) where the main price element is missing the "data-price-type" attribute.
+- Upgraded assets for modal popups.
+- Removed potentially sensitive information from log files.
+
+---
+
 ## Version 3.0.5
 
 _04 Sep 2019 (GMT)_
