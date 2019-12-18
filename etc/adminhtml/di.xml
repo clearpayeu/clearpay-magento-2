@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento 2 extensions for Clearpay Payment
+ *
+ * @author Clearpay
+ * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Config\Model\Config">
+        <plugin name="updateOrderTotalLimitClearpay" type="Clearpay\Clearpay\Model\Config\Save\Plugin" />
+    </type>
+	<preference for="Magento\Sales\Block\Adminhtml\Order\Creditmemo\Create\Items" type="Clearpay\Clearpay\Block\Adminhtml\Order\Creditmemo\Create\Items" />
+	<preference for="Magento\CustomerBalance\Block\Adminhtml\Sales\Order\Creditmemo\Controls" type="Clearpay\Clearpay\Block\Adminhtml\Order\Creditmemo\Controls" />
+</config>

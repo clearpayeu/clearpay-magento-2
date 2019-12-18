@@ -6,7 +6,8 @@
 <ol>
 	<li> Download the Magento-Clearpay plugin - Available as a .zip or tar.gz file from the Clearpay GitHub directory. </li>
 	<li> Unzip the file </li>
-	<li> Copy the <em>'Clearpay'</em> folder to: <br/> <em>[MAGENTO]/app/code/</em> </li>
+	<li> Create directory Clearpay/Clearpay in: <br/> <em>[MAGENTO]/app/code/</em></li>
+	<li> Copy the files to <em>'Clearpay/Clearpay'</em> folder </li>
 	<li> Open Command Line Interface </li>
 	<li> In CLI, run the below command to enable Clearpay module: <br/> <em>php bin/magento module:enable Clearpay_Clearpay</em> </li>
 	<li> In CLI, run the Magento setup upgrade: <br/> <em>php bin/magento setup:upgrade</em> </li>
@@ -35,10 +36,10 @@
 <p> Note: [MAGENTO] refers to the root folder where Magento is installed. </p>
 
 <ol>
-	<li> Remove "Clearpay" folder in: <em>[MAGENTO} /app/code/</em></li>
+	<li> Remove Files in: <em>[MAGENTO]/app/code/Clearpay/Clearpay</em></li>
 	<li> Download the Magento-Clearpay plugin - Available as a .zip or tar.gz file from the Clearpay GitHub directory. </li>
 	<li> Unzip the file </li>
-	<li> Copy the <em>'Clearpay'</em> folder to: <br/> <em>[MAGENTO]/app/code/</em> </li>
+	<li> Copy the files in folder to: <br/> <em>[MAGENTO]/app/code/Clearpay/Clearpay</em> </li>
 	<li> Open Command Line Interface </li>
 	<li> In CLI, run the below command to enable Clearpay module: <br/> <em>php bin/magento module:enable Clearpay_Clearpay</em> </li>
 	<li> In CLI, run the Magento setup upgrade: <br/> <em>php bin/magento setup:upgrade</em> </li>
