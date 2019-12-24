@@ -12,5 +12,4 @@
         <plugin name="updateOrderTotalLimitClearpay" type="Clearpay\Clearpay\Model\Config\Save\Plugin" />
     </type>
 	<preference for="Magento\Sales\Block\Adminhtml\Order\Creditmemo\Create\Items" type="Clearpay\Clearpay\Block\Adminhtml\Order\Creditmemo\Create\Items" />
-	<preference for="Magento\CustomerBalance\Block\Adminhtml\Sales\Order\Creditmemo\Controls" type="Clearpay\Clearpay\Block\Adminhtml\Order\Creditmemo\Controls" />
 </config>
