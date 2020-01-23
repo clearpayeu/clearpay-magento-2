@@ -1,4 +1,19 @@
-<h2> 1.1 New Clearpay Installation </h2>
+<h2> 1.1    New Clearpay Installation with Composer (Recommended) </h2>
+<p> This section outlines the steps to install Clearpay plugin using Composer. </p>
+
+<ol>
+	<li> Open Command Line Interface and navigate to the Magento directory on your server</li>
+	<li> In CLI, run the below command to install Clearpay module: <br/> <em>composer require clearpay/module-clearpay</em> </li>
+	<li> At the Composer request, enter your Magento marketplace credentials (public key - username, private key - password)</li>
+	<li> Make sure that Composer finished the installation without errors </li>
+	<li> In CLI, run the Magento setup upgrade: <br/> <em>php bin/magento setup:upgrade</em> </li>
+	<li> In CLI, run the Magento Dependencies Injection Compile: <br/> <em>php bin/magento setup:di:compile</em> </li>
+	<li> In CLI, run the Magento Static Content deployment: <br/> <em>php bin/magento setup:static-content:deploy</em> </li>
+	<li> Login to Magento Admin and navigate to System/Cache Management </li>
+	<li> Flush the cache storage by selecting Flush Cache Storage </li>
+</ol>
+
+<h2> 1.2   New Clearpay Installation </h2>
 <p>This section outlines the steps to install the Clearpay plugin for the first time.</p>
 
 <p> Note: [MAGENTO] refers to the root folder where Magento is installed. </p>
@@ -17,7 +32,7 @@
 	<li> Flush the cache storage by selecting Flush Cache Storage </li>
 </ol>
 
-<h2> 1.2	Clearpay Merchant Setup </h2>
+<h2> 1.3	Clearpay Merchant Setup </h2>
 <p> Complete the below steps to configure the merchant’s Clearpay Merchant Credentials in Magento Admin. </p>
 <p> Note: Prerequisite for this section is to obtain a Clearpay Merchant ID and Secret Key from Clearpay. </p>
 
@@ -30,7 +45,7 @@
 	<li> Click the <em>Update Limits</em> button to retrieve the Minimum and Maximum Clearpay Order values.</li>
 </ol>
 
-<h2> 1.3	Upgrade Of Clearpay Installation </h2>
+<h2> 1.4	Upgrade Of Clearpay Installation </h2>
 <p> This section outlines the steps to upgrade the currently installed Clearpay plugin version. </p>
 <p> The process of upgrading the Clearpay plugin version involves the complete removal of Clearpay plugin files. </p>
 <p> Note: [MAGENTO] refers to the root folder where Magento is installed. </p>

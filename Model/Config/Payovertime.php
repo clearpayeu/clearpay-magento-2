@@ -3,7 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Model\Config;
 
@@ -312,9 +312,9 @@ class Payovertime
     /**
      * @return bool
      */
-    public function isActive()
+    public function isActive($override = [])
     {
-        return (bool)(int)$this->_getConfigData(self::ACTIVE);
+        return (bool)(int)$this->_getConfigData(self::ACTIVE,$override);
     }
 
     /**

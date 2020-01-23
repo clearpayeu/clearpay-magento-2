@@ -3,7 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Model\Adapter\Clearpay;
 
@@ -141,7 +141,8 @@ class Call
                 'httpStatusCode' => $response->getStatus(),
                 'body' => $this->obfuscateCustomerData($this->jsonHelper->jsonDecode($response->getBody()))
             ];
-            $this->helper->debug($this->jsonHelper->jsonEncode($responseLog));
+			$this->helper->debug($this->jsonHelper->jsonEncode($responseLog));
+			
         } catch (\Exception $e) {
             $this->helper->debug($e->getMessage());
 

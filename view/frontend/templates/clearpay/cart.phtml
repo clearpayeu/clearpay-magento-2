@@ -3,7 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
  */
 ?>
 <?php if ($block->canShow()) : ?>
@@ -13,6 +13,6 @@
 
 	    <!--    Button buy now-->
 	    <button type="button" data-role="proceed-to-checkout" onclick="window.location.href='<?php echo $block->getUrl('checkout', ['_secure' => true]);?>'" title="<?php echo __('Buy now, pay later') ?>" class="action primary btn-clearpay-checkout">
-	        <img src="<?php echo $block->getViewFileUrl('Clearpay_Clearpay::images/clearpay_logo_white.png'); ?>" alt="<?php echo __('Buy now, pay later'); ?>" />
+	        <img src="https://static.afterpay.com/integration/logo-clearpay-white-162x31.png" alt="<?php echo __('Buy now, pay later'); ?>" srcset="https://static.afterpay.com/integration/logo-clearpay-white-162x31.png 1x,https://static.afterpay.com/integration/logo-clearpay-white-162x31@2x.png 2x,https://static.afterpay.com/integration/logo-clearpay-white-162x31@3px.png 3x" height="31"/>
 	    </button>
 <?php endif; ?>

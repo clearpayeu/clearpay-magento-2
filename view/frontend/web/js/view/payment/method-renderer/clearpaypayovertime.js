@@ -2,7 +2,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
  */
 /*browser:true*/
 /*global define*/
@@ -28,11 +28,6 @@ define(
             defaults: {
                 template: 'Clearpay_Clearpay/payment/clearpaypayovertime',
                 billingAgreement: ''
-            },
-
-            /** Returns payment acceptance mark image path */
-            getClearpayPayovertimeLogoSrc: function () {
-                return require.toUrl('Clearpay_Clearpay/images/clearpay_logo_199x46.png');
             },
 
             /**
@@ -130,6 +125,7 @@ define(
                     var url = mageUrl.build("clearpay/payment/process");
                     var data = $("#co-shipping-form").serialize();
                     var email = window.checkoutConfig.customerData.email;
+                    var ajaxRedirected = false;
                     //CountryCode Object to pass in initialize function.
                     var countryCode = {countryCode: "GB"};
 
@@ -163,10 +159,20 @@ define(
 
                                 //Waiting for all AJAX calls to resolve to avoid error messages upon redirection
                                 $("body").ajaxStop(function () {
+									ajaxRedirected = true;
                                     AfterPay.redirect({
                                         token: data.token
                                     });
                                 });
+								setTimeout(
+									function(){
+										if(!ajaxRedirected){
+											 AfterPay.redirect({
+												token: data.token
+											});
+										}
+									}
+								,5000);
                             } else if (typeof data.error !== 'undefined' && typeof data.message !== 'undefined' &&
                                 data.error && data.message.length) {
                                 globalMessageList.addErrorMessage({

@@ -3,7 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2019 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Controller\Payment;
 
@@ -38,6 +38,7 @@ class Response extends \Magento\Framework\App\Action\Action
 	protected $_notifierPool;
 	protected $_paymentCapture;
 	protected $_quoteValidator;
+	protected $_timezone;
 	
     /**
      * Response constructor.
@@ -78,7 +79,8 @@ class Response extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Model\Order\Payment\Transaction\Repository $transactionRepository,
 		\Magento\Framework\Notification\NotifierInterface $notifierPool,
 		\Clearpay\Clearpay\Model\Adapter\V2\ClearpayOrderPaymentCapture $paymentCapture,
-		\Magento\Quote\Model\QuoteValidator $quoteValidator
+		\Magento\Quote\Model\QuoteValidator $quoteValidator,
+		\Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone
     ) {
         $this->_resultForwardFactory = $resultForwardFactory; 
 		$this->response = $response;
@@ -98,6 +100,7 @@ class Response extends \Magento\Framework\App\Action\Action
         $this->_notifierPool = $notifierPool;
 		$this->_paymentCapture = $paymentCapture;
 		$this->_quoteValidator = $quoteValidator;
+		$this->_timezone = $timezone;
 		
         parent::__construct($context);
     }
@@ -189,6 +192,16 @@ class Response extends \Magento\Framework\App\Action\Action
 							$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID, $response['id']);
                             
 							$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS,$response['paymentState']);
+							
+							if($response['paymentState']==\Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_AUTH_APPROVED && array_key_exists('events',$response)){
+								try{
+									$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::AUTH_EXPIRY,$this->_timezone->date($response['events'][0]['expires'])->format('Y-m-d H:i T'));
+								}
+								catch(\Exception $e){
+									$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::AUTH_EXPIRY,$this->_timezone->date($response['events'][0]['expires'],null,false)->format('Y-m-d H:i T'));
+									$this->_helper->debug($e->getMessage());
+								}
+							}
 							
 							$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT, array_key_exists('openToCaptureAmount',$response) && !empty($response['openToCaptureAmount']) ? $response['openToCaptureAmount']['amount'] : "0.00");
 
@@ -315,8 +328,8 @@ class Response extends \Magento\Framework\App\Action\Action
 			
 			$order->setBaseCustomerBalanceInvoiced(null);
 			$order->setCustomerBalanceInvoiced(null);
-            
-			$this->_orderRepository->save($order);
+            $this->_orderRepository->save($order);
+			
             $transaction = $this->_transactionRepository->save($transaction);
  
             return  $transaction->getTransactionId();
