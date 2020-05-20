@@ -1,5 +1,27 @@
 # Clearpay Magento 2 Extension Changelog
 
+## Version 3.1.3
+
+_Wed 20 May 2020_
+
+### Supported Editions & Versions
+
+Tested and verified in clean installations of Magento 2:
+
+- Magento Community Edition (CE) version 2.3.5-p1
+- Magento Enterprise Edition (EE) version 2.3.5-p1
+
+### Highlights
+
+- Added instalment calculations within cart page assets.
+- Added an automatic void/refund of a Clearpay Order where Magento throws an unrecoverable exception during submitQuote.
+- Improved cart page logic relating to Clearpay availability, where the total exactly matches the merchant minimum.
+- Improved handling of unexpected/corrupted network data.
+- Improved compatibility with offline refunds.
+- Adjusted the implementation of the Clearpay checkout JavaScript.
+
+---
+
 ## Version 3.1.2
 
 _Fri 24 Jan 2020 (AEDT)_

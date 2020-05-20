@@ -108,7 +108,7 @@ class Button extends Template
 				$grandTotal =$quote->getGrandTotal();
 				$excluded_categories=$this->clearpayConfig->getExcludedCategories();
 				
-				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode()) && $this->clearpayConfig->getMaxOrderLimit() > $grandTotal && $this->clearpayConfig->getMinOrderLimit() < $grandTotal){
+				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode()) && $this->clearpayConfig->getMaxOrderLimit() >= $grandTotal && $this->clearpayConfig->getMinOrderLimit() <= $grandTotal){
 					
 					if($excluded_categories !=""){
 						$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -162,17 +162,22 @@ class Button extends Template
     {
         $currencyCode = $this->clearpayConfig->getCurrencyCode();
         $assetsPath = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, 'Clearpay_Clearpay');
-        $assets_cart_page = '';
+        $assets_cart_page = [];
 
         if(file_exists($assetsPath.'/assets.ini'))
         {
             $assets = parse_ini_file($assetsPath.'/assets.ini',true);
-            if(isset($assets[$currencyCode]['cart_page']))
+            if(isset($assets[$currencyCode]['cart_page1']))
             {
-                $assets_cart_page = $assets[$currencyCode]['cart_page'];
-                $assets_cart_page = str_replace(array('[modal-href]'), 
-                    array('javascript:void(0)'), $assets_cart_page);
-            } 
+                $assets_cart_page['snippet1'] = $assets[$currencyCode]['cart_page1'];
+                $assets_cart_page['snippet2'] = $assets[$currencyCode]['cart_page2'];
+                $assets_cart_page['snippet2'] = str_replace(array('[modal-href]'), 
+                    array('javascript:void(0)'), $assets_cart_page['snippet2']);
+            }
+			else{
+				$assets_cart_page['snippet1'] = '';
+				$assets_cart_page['snippet2'] = '';
+			}			
         } 
         return $assets_cart_page;
     }

@@ -17,9 +17,10 @@ define(
         'Magento_Checkout/js/model/payment/additional-validators',
         'Magento_Ui/js/model/messageList',
         'Magento_Customer/js/customer-data',
-        'Magento_Customer/js/section-config'
+        'Magento_Customer/js/section-config',
+        'Clearpay_Clearpay/js/view/payment/method-renderer/clearpayredirect'
     ],
-    function ($, Component, quote, resourceUrlManager, storage, mageUrl, additionalValidators, globalMessageList, customerData, sectionConfig) {
+    function ($, Component, quote, resourceUrlManager, storage, mageUrl, additionalValidators, globalMessageList, customerData, sectionConfig, clearpayRedirect) {
         'use strict';
 
         return Component.extend({
@@ -46,7 +47,8 @@ define(
 
                 var total = quote.getCalculatedTotal();
                 var format = window.checkoutConfig.priceFormat.pattern
-
+				var clearpay = window.checkoutConfig.payment.clearpay;
+				
                 storage.get(resourceUrlManager.getUrlForCartTotals(quote), false)
                 .done(
                     function (response) {
@@ -55,11 +57,10 @@ define(
                         var installmentFee = response.base_grand_total / 4;
                         var installmentFeeLast = amount - installmentFee.toFixed(window.checkoutConfig.priceFormat.precision) * 3;
 
-                        $(".clearpay_total_amount").text(format.replace(/%s/g, amount.toFixed(window.checkoutConfig.priceFormat.precision)));
                         $(".clearpay_instalments_amount").text(format.replace(/%s/g, installmentFee.toFixed(window.checkoutConfig.priceFormat.precision)));
                         $(".clearpay_instalments_amount_last").text(format.replace(/%s/g, installmentFeeLast.toFixed(window.checkoutConfig.priceFormat.precision)));
-
-                        return format.replace(/%s/g, amount);
+						$(".clearpay_total_amount").text(format.replace(/%s/g, amount.toFixed(window.checkoutConfig.priceFormat.precision)));
+						return format.replace(/%s/g, amount);
                     }
                 )
                 .fail(
@@ -81,6 +82,15 @@ define(
                 var clearpayCheckoutText = 'Four interest-free payments totalling';
                 
                 return clearpayCheckoutText;
+            },
+			getTermsText: function () {
+
+                var clearpay = window.checkoutConfig.payment.clearpay;
+                var clearpayTermsText = '';
+                
+				clearpayTermsText = 'You will be redirected to the Clearpay website when you proceed to checkout.';
+                
+                return clearpayTermsText;
             },
 
             getOptionalTermsText: function () {
@@ -160,16 +170,12 @@ define(
                                 //Waiting for all AJAX calls to resolve to avoid error messages upon redirection
                                 $("body").ajaxStop(function () {
 									ajaxRedirected = true;
-                                    AfterPay.redirect({
-                                        token: data.token
-                                    });
+                                    clearpayRedirect.redirectToClearpay(data);
                                 });
 								setTimeout(
 									function(){
 										if(!ajaxRedirected){
-											 AfterPay.redirect({
-												token: data.token
-											});
+											clearpayRedirect.redirectToClearpay(data);
 										}
 									}
 								,5000);
@@ -223,9 +229,7 @@ define(
                             });
                         }
 
-                        AfterPay.redirect({
-                            token: data.token
-                        });
+                        clearpayRedirect.redirectToClearpay(data);
                     }
                 });
             }

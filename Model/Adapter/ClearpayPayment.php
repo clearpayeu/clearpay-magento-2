@@ -144,17 +144,11 @@ class ClearpayPayment
         // create url to request refunds
         $url = $this->clearpayConfig->getApiUrl('v2/payments/' . $orderId . '/void', [], $override);
 
-        // generate body to be sent to refunds
-        $body = [
-            'orderId'  => $orderId
-        ];
-
-
         // refunding now
         try {
             $response = $this->clearpayApiCall->send(
                 $url,
-                $body,
+                [],
                 \Magento\Framework\HTTP\ZendClient::POST,
                 $override
             );
