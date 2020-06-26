@@ -1,23 +1,20 @@
 {
-    "name": "clearpay/module-clearpay",
-    "license": "OSL-3.0",
-    "type": "magento2-module",
-    "description": "Magento 2 Clearpay Payment Module",
-    "version": "3.1.3",
-    "require": {
-    },
-    "authors":[
-        {
-            "name":"Clearpay",
-            "homepage":"https://www.clearpay.co.uk"
-        }
-    ],
-    "autoload": {
-        "files": [
-            "registration.php"
-        ],
-        "psr-4": {
-            "Clearpay\\Clearpay\\": ""
-        }
-    }
+	"name" : "clearpay/module-clearpay",
+	"license" : "OSL-3.0",
+	"type" : "magento2-module",
+	"description" : "Magento 2 Clearpay Payment Module",
+	"version" : "3.1.4",
+	"authors" : [{
+			"name" : "Clearpay",
+			"homepage" : "https://www.clearpay.co.uk"
+		}
+	],
+	"autoload" : {
+		"files" : [
+			"registration.php"
+		],
+		"psr-4" : {
+			"Clearpay\\Clearpay\\" : ""
+		}
+	}
 }

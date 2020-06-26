@@ -18,9 +18,10 @@ define(
         'Magento_Ui/js/model/messageList',
         'Magento_Customer/js/customer-data',
         'Magento_Customer/js/section-config',
+		'Magento_Checkout/js/action/set-billing-address',
         'Clearpay_Clearpay/js/view/payment/method-renderer/clearpayredirect'
     ],
-    function ($, Component, quote, resourceUrlManager, storage, mageUrl, additionalValidators, globalMessageList, customerData, sectionConfig, clearpayRedirect) {
+    function ($, Component, quote, resourceUrlManager, storage, mageUrl, additionalValidators, globalMessageList, customerData, sectionConfig, setBillingAddressAction, clearpayRedirect) {
         'use strict';
 
         return Component.extend({
@@ -83,11 +84,19 @@ define(
                 
                 return clearpayCheckoutText;
             },
+			getFirstInstalmentText: function () {
+
+                var clearpay = window.checkoutConfig.payment.clearpay;
+                var clearpayFirstInstalmentText = '';
+               	clearpayFirstInstalmentText = 'First instalment';
+               
+                return clearpayFirstInstalmentText;
+            },
 			getTermsText: function () {
 
                 var clearpay = window.checkoutConfig.payment.clearpay;
                 var clearpayTermsText = '';
-                
+            
 				clearpayTermsText = 'You will be redirected to the Clearpay website when you proceed to checkout.';
                 
                 return clearpayTermsText;
@@ -137,7 +146,11 @@ define(
                     var email = window.checkoutConfig.customerData.email;
                     var ajaxRedirected = false;
                     //CountryCode Object to pass in initialize function.
+
                     var countryCode = {countryCode: "GB"};
+					
+					//Update billing address of the quote
+					setBillingAddressAction(globalMessageList);
 
                         //handle guest and registering customer emails
                         if (!window.checkoutConfig.quoteData.customer_id) {
@@ -209,7 +222,11 @@ define(
                 var clearpay = window.checkoutConfig.payment.clearpay;
 
                 // Making sure it using current flow
+
                 var url = mageUrl.build("clearpay/payment/process");
+				
+				//Update billing address of the quote
+				setBillingAddressAction(globalMessageList);
                 
                 $.ajax({
                     url: url,
