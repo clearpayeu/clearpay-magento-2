@@ -102,13 +102,6 @@ define(
                 return clearpayTermsText;
             },
 
-            getOptionalTermsText: function () {
-
-                var clearpay = window.checkoutConfig.payment.clearpay;
-                
-                return 1;
-            },
-
 			getTermsLink: function () {
 
                 var clearpay = window.checkoutConfig.payment.clearpay;
