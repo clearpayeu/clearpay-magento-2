@@ -54,7 +54,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
     /**
      * For dependency injection
      */
-    protected $supportedCurrencyCodes = ['GBP'];
+    protected $supportedContryCurrencyCodes = array('GB'=>'GBP');
     protected $clearpayPaymentTypeCode = self::CLEARPAY_PAYMENT_TYPE_CODE;
 
     protected $logger;
@@ -320,10 +320,26 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
      */
     public function canUseForCurrency($currencyCode)
     {
-        if (!in_array($currencyCode, $this->supportedCurrencyCodes)) {
-            return false;
+        $canUseForCurrency= false;
+        
+        if (in_array($currencyCode, $this->supportedContryCurrencyCodes) ) {
+            
+            $canUseForCurrency=parent::canUseForCurrency($currencyCode);
+            //Currency Check for Cross Border trade
+            if(!empty($this->getConfigData('enable_cbt'))){
+                $specifiedCountires=explode(",",$this->getConfigData('cbt_country'));
+                $canUseForCurrency=false;
+                foreach($specifiedCountires AS $country){
+                    if(isset($this->supportedContryCurrencyCodes[$country]) && ($currencyCode==$this->supportedContryCurrencyCodes[$country])){
+                        $canUseForCurrency=parent::canUseForCurrency($currencyCode);
+                        break;
+                    }
+                }
+                
+            }
+           
         }
-        return parent::canUseForCurrency($currencyCode);
+        return $canUseForCurrency;
     }
 
     /**

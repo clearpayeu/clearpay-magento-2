@@ -50,8 +50,9 @@ class ClearpayTotalLimit
      */
     public function getLimit($override = [])
     {
-        /** @var \Clearpay\Clearpay\Model\Config\Payovertime $url */
-        $url = $this->clearpayConfig->getApiUrl('v2/configuration'); //V2
+         $queryString=array("include"=>"cbt");
+		 /** @var \Clearpay\Clearpay\Model\Config\Payovertime $url */
+         $url = $this->clearpayConfig->getApiUrl('v2/configuration',$queryString); //V2
 
         // calling API
         try {

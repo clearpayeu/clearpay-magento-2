@@ -16,8 +16,5 @@
         <referenceContainer name="product.info.main">
             <block class="Clearpay\Clearpay\Block\Catalog\Installments" name="clearpay.price.installments" after="product.info.price" template="Clearpay_Clearpay::clearpay/product.phtml" />
         </referenceContainer>
-        <referenceContainer name="content">
-            <block class="Magento\Framework\View\Element\Template" name="clearpay.modal.popup" after="-" template="Clearpay_Clearpay::clearpay/modal.phtml" />
-        </referenceContainer>
     </body>
 </page>

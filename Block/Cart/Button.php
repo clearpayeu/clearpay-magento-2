@@ -7,15 +7,14 @@
  */
 namespace Clearpay\Clearpay\Block\Cart;
 
-use Magento\Framework\View\Element\Template;
 use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Directory\Model\Currency as Currency;
 use Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
 use Clearpay\Clearpay\Model\Payovertime as ClearpayPayovertime;
 use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Framework\Component\ComponentRegistrar as ComponentRegistrar;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\Locale\Resolver as Resolver;
 
-class Button extends Template
+class Button extends \Clearpay\Clearpay\Block\JsConfig
 {
     /**
      * @var ClearpayConfig
@@ -23,35 +22,31 @@ class Button extends Template
     protected $clearpayConfig;
     protected $clearpayPayovertime;
     protected $checkoutSession;
-    protected $currency;
     protected $customerSession;
-    protected $componentRegistrar;
 
     /**
      * Button constructor.
-     * @param Template\Context $context
+     * @param Context $context
      * @param ClearpayConfig $clearpayConfig
      * @param CheckoutSession $checkoutSession
      * @param Currency $currency
      * @param array $data
+     * @param Resolver $localeResolver
      */
     public function __construct(
-        Template\Context $context,
+        Context $context,
         ClearpayConfig $clearpayConfig,
         ClearpayPayovertime $clearpayPayovertime,
         CheckoutSession $checkoutSession,
-        Currency $currency,
         CustomerSession $customerSession,
-        ComponentRegistrar $componentRegistrar,
-        array $data
+        array $data=[],
+        Resolver $localeResolver
     ) {
         $this->clearpayConfig = $clearpayConfig;
         $this->clearpayPayovertime = $clearpayPayovertime;
         $this->checkoutSession = $checkoutSession;
-        $this->currency = $currency;
         $this->customerSession = $customerSession;
-        $this->componentRegistrar = $componentRegistrar;
-        parent::__construct($context, $data);
+        parent::__construct($clearpayConfig,$context, $localeResolver,$data);
     }
 
     /**
@@ -61,35 +56,7 @@ class Button extends Template
     {
         return $this->clearpayConfig->isActive();
     }
-
-    /**
-     * @return float
-     */
-    public function getInstallmentsTotal()
-    {
-        $quote = $this->checkoutSession->getQuote();
-
-        if ($grandTotal = $quote->getGrandTotal()) {
-            return $grandTotal / 4;
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getInstallmentsTotalHtml()
-    {
-        return $this->getCurrency()->getCurrencySymbol() . number_format($this->getInstallmentsTotal(), 2);
-    }
-
-    /**
-     * @return Currency
-     */
-    protected function getCurrency()
-    {
-        return $this->currency;
-    }
-
+    
     /**
      * @return bool
      */
@@ -139,46 +106,31 @@ class Button extends Template
 			}
 		}
     }
-
+    
     /**
-     * @return boolean
+     * @return string
      */
+    public function getFinalAmount()
+    {
+           
+        $grandTotal = $this->checkoutSession->getQuote()->getGrandTotal();
+       
+        return !empty($grandTotal)?number_format($grandTotal, 2,".",""):"0.00";
+        
+    }
+    /* 
+     * @return boolean
+    */
     public function canUseCurrency()
     {
+        $canUse=false;
         //Check for Supported currency
         if($this->clearpayConfig->getCurrencyCode())
         {
-            return $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode());
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Calculate region specific Instalment Text for Cart page
-     * @return string
-     */
-    public function getCartPageText()
-    {
-        $currencyCode = $this->clearpayConfig->getCurrencyCode();
-        $assetsPath = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, 'Clearpay_Clearpay');
-        $assets_cart_page = [];
-
-        if(file_exists($assetsPath.'/assets.ini'))
-        {
-            $assets = parse_ini_file($assetsPath.'/assets.ini',true);
-            if(isset($assets[$currencyCode]['cart_page1']))
-            {
-                $assets_cart_page['snippet1'] = $assets[$currencyCode]['cart_page1'];
-                $assets_cart_page['snippet2'] = $assets[$currencyCode]['cart_page2'];
-                $assets_cart_page['snippet2'] = str_replace(array('[modal-href]'), 
-                    array('javascript:void(0)'), $assets_cart_page['snippet2']);
-            }
-			else{
-				$assets_cart_page['snippet1'] = '';
-				$assets_cart_page['snippet2'] = '';
-			}			
+            $canUse= $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode());
         } 
-        return $assets_cart_page;
+        
+        return $canUse;
+        
     }
 }

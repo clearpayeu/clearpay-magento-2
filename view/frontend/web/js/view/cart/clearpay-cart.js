@@ -14,10 +14,8 @@ require(
 		
 		$(".cart-totals").bind("DOMSubtreeModified", function() {
 			var totals = quote.getTotals()();
-			var instalment_price = parseFloat(Math.round(totals['base_grand_total'] / 4 * 100) / 100);
-			var format = {decimalSymbol: '.',pattern:'£%s'};
-			var formatted_instalment_price = priceUtils.formatPrice(instalment_price,format);
-			$('.payment-method-note.clearpay-checkout-note .clearpay_instalment_price').text(formatted_instalment_price);
+			$('afterpay-placement').attr('data-amount',totals['base_grand_total']);
+			
 		});
 	}
 );

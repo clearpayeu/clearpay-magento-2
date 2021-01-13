@@ -74,7 +74,12 @@ class Call
 
         // set body and the url
         if ($body || ($method == \Magento\Framework\HTTP\ZendClient::POST || $method == \Magento\Framework\HTTP\ZendClient::PUT)) {
-			$client->setRawData($this->jsonHelper->jsonEncode($body), 'application/json');
+            $newbody='';
+            if(!empty($body)){
+                $newbody=$this->jsonHelper->jsonEncode($body);
+            }
+            
+            $client->setRawData($newbody, 'application/json');			
         }
 
         // add auth for API requirements
@@ -84,7 +89,8 @@ class Call
         );
 
         //Additional debugging on the merchant ID and Key being sent on Update Payment Limits
-        if ($url == $this->clearpayConfig->getApiUrl('v2/configuration') ||
+        $queryString=array("include"=>"cbt");
+        if ($url == $this->clearpayConfig->getApiUrl('v2/configuration',$queryString) ||
             $url == $this->clearpayConfig->getApiUrl('merchants/valid-payment-types') ) {
             //Solves the problem of magento 2 cron not working for some merchants  
             if(array_key_exists('REQUEST_URI',$_SERVER)){

@@ -148,7 +148,7 @@ class ClearpayPayment
         try {
             $response = $this->clearpayApiCall->send(
                 $url,
-                [],
+                "",
                 \Magento\Framework\HTTP\ZendClient::POST,
                 $override
             );
