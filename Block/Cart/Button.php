@@ -8,11 +8,13 @@
 namespace Clearpay\Clearpay\Block\Cart;
 
 use Magento\Checkout\Model\Session as CheckoutSession;
+
 use Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
 use Clearpay\Clearpay\Model\Payovertime as ClearpayPayovertime;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Locale\Resolver as Resolver;
+
 
 class Button extends \Clearpay\Clearpay\Block\JsConfig
 {
@@ -28,8 +30,9 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
      * Button constructor.
      * @param Context $context
      * @param ClearpayConfig $clearpayConfig
+     * @param ClearpayPayovertime $clearpayPayovertime
      * @param CheckoutSession $checkoutSession
-     * @param Currency $currency
+     * @param CustomerSession $customerSession
      * @param array $data
      * @param Resolver $localeResolver
      */
@@ -75,7 +78,7 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
 				$grandTotal =$quote->getGrandTotal();
 				$excluded_categories=$this->clearpayConfig->getExcludedCategories();
 				
-				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode()) && $this->clearpayConfig->getMaxOrderLimit() >= $grandTotal && $this->clearpayConfig->getMinOrderLimit() <= $grandTotal){
+				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode()) ){ 
 					
 					if($excluded_categories !=""){
 						$objectManager = \Magento\Framework\App\ObjectManager::getInstance();

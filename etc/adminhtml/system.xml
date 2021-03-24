@@ -131,10 +131,16 @@
                     <!-- Enabled for cart page  -->
                     <field id="enable_for_cart_page" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Enabled for Cart Page</label>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <source_model>Clearpay\Clearpay\Model\Config\Source\CartMode</source_model>
                         <config_path>payment/clearpaypayovertime/enable_for_cart_page</config_path>
                     </field>
-					
+                    
+                       <!-- merchant key -->
+                    <field id="express_checkout_key" translate="label" type="text" sortOrder="50" showInDefault="50" showInWebsite="1" showInStore="0">
+                        <label>Express Checkout Public Key</label>                        
+                        <config_path>payment/clearpaypayovertime/express_checkout_key</config_path>
+                    </field>
+
 					 <!-- Payment Flow -->
                     <field id="payment_flow" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="0">
                         <label>Payment Flow</label>

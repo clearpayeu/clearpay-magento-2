@@ -1,5 +1,24 @@
 # Clearpay Magento 2 Extension Changelog
 
+## Version 3.4.0
+
+_Wed 24 Mar 2021_
+
+### Supported Editions & Versions
+
+Tested and verified in clean installations of Magento 2:
+
+- Magento Enterprise Edition (EE) version 2.4.2
+
+### Highlights
+
+- Introduced an implementation of Express Checkout.
+- Improved instalment calculations by adding coverage for additional scenarios.
+- Improved the asset placement on PDP and cart pages.
+- Improved invoice payment context to remove unnecessary details from consumer order notifications.
+
+---
+
 ## Version 3.3.0
 
 _Wed 13 Jan 2021_
@@ -15,7 +34,7 @@ Tested and verified in clean installations of Magento 2:
 
 - Implemented the JS Library for asset placement on PDP and Cart page.
 - Added new admin options to enable/disable display of Clearpay assets on PDP and Cart page.
-- Moved the Clearpay PDP assets for “Bundle” products.
+- Moved the Clearpay PDP assets for "Bundle" products.
 - Improved compatibility with PHP 7.4.
 - Improved compatibility with third-party "Fraud Prevention" modules while saving admin configuration.
 - Improved visual quality of UI assets.
@@ -59,7 +78,7 @@ Tested and verified in clean installations of Magento 2:
 - Improved reliability of logo display on cart page for high resolution mobile screens.
 - Improved billing and shipping address validation at checkout.
 - Improved Restricted Categories feature to better support multiple store views.
-- Further improved compatibility with offline refunds.
+- Further improved compatibility with offline refunds.
 - Added a fix for incorrect currency symbol appearing on cart page.
 - Added a fix to prevent duplicate order emails.
 
@@ -82,7 +101,7 @@ Tested and verified in clean installations of Magento 2:
 - Added an automatic void/refund of a Clearpay Order where Magento throws an unrecoverable exception during submitQuote.
 - Improved cart page logic relating to Clearpay availability, where the total exactly matches the merchant minimum.
 - Improved handling of unexpected/corrupted network data.
-- Improved compatibility with offline refunds.
+- Improved compatibility with offline refunds.
 - Adjusted the implementation of the Clearpay checkout JavaScript.
 
 ---

@@ -44,6 +44,7 @@ class ClearpayOrderTokenV2
     protected $_countryFactory;
     protected $_scopeConfig;
     protected $listStateRequired;
+    private $expressCheckout;
 
     /**
      * ClearpayOrderToken constructor.
@@ -78,6 +79,8 @@ class ClearpayOrderTokenV2
         $this->_countryFactory = $countryFactory;
         $this->_scopeConfig = $scopeConfig;
         $this->listStateRequired = $this->_getStateRequired();
+        $this->expressCheckout=\Clearpay\Clearpay\Model\Config\Source\CartMode::EXPRESS_CHECKOUT;
+        
     }
 
     /**
@@ -89,10 +92,20 @@ class ClearpayOrderTokenV2
      */
     public function generate($object,$override = [])
     {
-        $requestData = $this->_buildOrderTokenRequest($object, $override);
-        $targetUrl = $this->_clearpayConfig->getApiUrl('v2/checkouts/', null, $override);
-        $requestData = $this->constructPayload($requestData, $this->listStateRequired);
-        $this->handleValidation($requestData);
+
+        if(isset($override["mode"]) && ($override["mode"]==$this->expressCheckout)){
+            $requestData = $this->_buildExpressOrderTokenRequest($object, $override);
+        }else{
+            $requestData = $this->_buildOrderTokenRequest($object, $override);
+        }
+        $targetUrl = $this->_clearpayConfig->getApiUrl('v2/checkouts/', null, $override);    
+        if(isset($override["mode"]) && ($override["mode"]==$this->expressCheckout)){
+            $this->handleExpressValidation($requestData);
+        }else{
+            $requestData = $this->constructPayload($requestData, $this->listStateRequired);
+            $this->handleValidation($requestData);
+        }
+       
         $response = $this->performTransaction($requestData, $targetUrl);
         return $response;
     }
@@ -183,6 +196,26 @@ class ClearpayOrderTokenV2
         }
     }
 
+    public function handleExpressValidation($requestData)
+    {
+        $errors = [];
+        
+        if (empty($requestData['amount'])) {
+            $errors[] = 'Amount is required';
+        }
+        if (empty($requestData['mode'])) {
+            $errors[] = 'Mode is required';
+        }
+        if(empty($requestData['merchant']['popupOriginUrl'])){
+            $errors[] = "Merchant's origin url is required";
+        }
+        
+        if (count($errors)) {
+            throw new \Magento\Framework\Exception\LocalizedException(__(implode(' ; ', $errors)));
+        } else {
+            return true;
+        }
+    }
 
     /**
      * Build object for order token
@@ -236,7 +269,7 @@ class ClearpayOrderTokenV2
                     'imageUrl' =>  $imageHelper->init($product, 'product_page_image_small')->setImageFile($product->getFile())->getUrl(),
                     'quantity' => (int)$item->getQty(),
                     'price'    => [
-                        'amount'   => round((float)$item->getPriceInclTax(), $precision),
+                        'amount'   => round((float)$item->getBasePriceInclTax(), $precision),
                         'currency' => (string)$data['store_currency_code']
                     ],
 					'categories' => [$categories]
@@ -245,18 +278,18 @@ class ClearpayOrderTokenV2
         }
         if ($object->getShippingInclTax()) {
             $params['shippingAmount'] = [
-                'amount'   => round((float)$object->getShippingInclTax(), $precision), // with tax
+                'amount'   => round((float)$object->getBaseShippingInclTax(), $precision), // with tax
                 'currency' => (string)$data['store_currency_code']
             ];
         }
         if (isset($data['discount_amount'])) {
             $params['discounts']['displayName'] = 'Discount';
             $params['orderDetail']['amount']     = [
-                'amount'   => round((float)$data['discount_amount'], $precision),
+                'amount'   => round((float)$data['base_discount_amount'], $precision),
                 'currency' => (string)$data['store_currency_code']
             ];
         }
-        $taxAmount = array_key_exists('tax_amount', $data) ? $data['tax_amount'] : $shippingAddress->getTaxAmount();
+        $taxAmount = array_key_exists('base_tax_amount', $data) ? $data['base_tax_amount'] : $shippingAddress->getBaseTaxAmount();
         $params['taxAmount'] = [
             'amount'   => isset($taxAmount) ? round((float)$taxAmount, $precision) : 0,
             'currency' => (string)$data['store_currency_code']
@@ -290,10 +323,117 @@ class ClearpayOrderTokenV2
             'phoneNumber'   => (string)$billingAddress->getTelephone(),
         ];
         $params['amount'] = [
-            'amount'   => round((float)$object->getGrandTotal(), $precision),
+            'amount'   => round((float)$object->getBaseGrandTotal(), $precision),
             'currency' => (string)$data['store_currency_code'],
         ];
 
+        return $params;
+    }
+    
+    /**
+     * Build object for Express order token
+     *
+     * @param \Magento\Sales\Model\Order $object Order to get token for
+     * @param $code
+     * @param array $override
+     * @return array
+     */
+    protected function _buildExpressOrderTokenRequest($object, $override = [])
+    {
+        $precision = self::DECIMAL_PRECISION;
+        $data = $object->getData();
+        $billingAddress  = $object->getBillingAddress();
+        $shippingAddress = $object->getShippingAddress();
+        
+        $email = $object->getCustomerEmail();
+        
+        $params['mode'] ="express";
+        
+        $params['merchantReference'] = array_key_exists('merchantOrderId', $override) ? $override['merchantOrderId'] : $object->getIncrementId();
+        
+        $params['merchant'] = [
+            'popupOriginUrl'    => $this->_storeManagerInterface->getStore($object->getStore()->getId())->getBaseUrl() . 'checkout/cart'
+        ];
+        
+        foreach ($object->getAllVisibleItems() as $item) {
+            if (!$item->getParentItem()) {
+                
+                $product = $this->_productRepositoryInterface->getById($item->getProductId());
+                $category_ids = $product->getCategoryIds();
+                $imageHelper =  $this->_objectManagerInterface->get('\Magento\Catalog\Helper\Image');
+                
+                $categories=[];
+                if(count($category_ids) > 0){
+                    foreach($category_ids as $category){
+                        $cat = $this->_objectManagerInterface->create('Magento\Catalog\Model\Category')->load($category);
+                        array_push($categories,$cat->getName());
+                    }
+                }
+                $params['items'][] = [
+                    'name'     => (string)$item->getName(),
+                    'sku'      => (string)$item->getSku(),
+                    'pageUrl'  =>  $product->getProductUrl(),
+                    'imageUrl' =>  $imageHelper->init($product, 'product_page_image_small')->setImageFile($product->getFile())->getUrl(),
+                    'quantity' => (int)$item->getQty(),
+                    'price'    => [
+                        'amount'   => round((float)$item->getBasePriceInclTax(), $precision),
+                        'currency' => (string)$data['store_currency_code']
+                    ],
+                    'categories' => [$categories]
+                ];
+            }
+        }
+        if ($object->getShippingInclTax()) {
+            $params['shippingAmount'] = [
+                'amount'   => round((float)$object->getBaseShippingInclTax(), $precision), // with tax
+                'currency' => (string)$data['store_currency_code']
+            ];
+        }
+        if (isset($data['discount_amount'])) {
+            $params['discounts']['displayName'] = 'Discount';
+            $params['orderDetail']['amount']     = [
+                'amount'   => round((float)$data['base_discount_amount'], $precision),
+                'currency' => (string)$data['store_currency_code']
+            ];
+        }
+        $taxAmount = array_key_exists('base_tax_amount', $data) ? $data['base_tax_amount'] : $shippingAddress->getBaseTaxAmount();
+        $params['taxAmount'] = [
+            'amount'   => isset($taxAmount) ? round((float)$taxAmount, $precision) : 0,
+            'currency' => (string)$data['store_currency_code']
+        ];
+        
+        if(!empty($shippingAddress) && !empty($shippingAddress->getStreetLine(1)))
+        {
+            $params['shipping'] = [
+                'name'          => (string)$shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname(),
+                'line1'         => (string)$shippingAddress->getStreetLine(1),
+                'line2'         => (string)$shippingAddress->getStreetLine(2),
+                'area1'         => (string)$shippingAddress->getCity(),
+                'area2'         => "",
+                'postcode'      => (string)$shippingAddress->getPostcode(),
+                'region'         => (string)$shippingAddress->getRegion(),
+                'countryCode'   => (string)$shippingAddress->getCountryId(),
+                'phoneNumber'   => (string)$shippingAddress->getTelephone(),
+            ];
+        }
+        if(!empty($billingAddress) && !empty($billingAddress->getStreetLine(1))){
+            $params['billing'] = [
+                'name'          => (string)$billingAddress->getFirstname() . ' ' . $billingAddress->getLastname(),
+                'line1'         => (string)$billingAddress->getStreetLine(1),
+                'line2'         => (string)$billingAddress->getStreetLine(2),
+                'area1'         => (string)$billingAddress->getCity(),
+                'area2'         => "",
+                'postcode'      => (string)$billingAddress->getPostcode(),
+                'region'         => (string)$billingAddress->getRegion(),
+                'countryCode'   => (string)$billingAddress->getCountryId(),
+                'phoneNumber'   => (string)$billingAddress->getTelephone(),
+            ];
+        }
+        $params['amount'] = [
+            'amount'   => round((float)$object->getBaseGrandTotal(), $precision),
+            'currency' => (string)$data['store_currency_code'],
+        ];
+        
         return $params;
     }
 }

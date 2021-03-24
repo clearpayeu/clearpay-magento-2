@@ -5,9 +5,10 @@
  * @author Clearpay
  * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
  */
+/** @var \Clearpay\Clearpay\Block\Catalog\Installments $block */
 $product_type = $block->getTypeOfProduct();
-if(($block->isPaymentMethodActive()  && $block->isDisplayOnProductPage() && $product_type != "grouped" && $block->canUseCurrency())){
-
+$data_amount = $block->getFinalAmount();
+if($block->isPaymentMethodActive() && $block->isDisplayOnProductPage() && $product_type != "grouped" && $block->canUseCurrency() && $data_amount>0){
     $clearpay_eligible = "true";
     if (($block->canShow() === false)) {
         $clearpay_eligible = "false";
@@ -25,7 +26,6 @@ if(($block->isPaymentMethodActive()  && $block->isDisplayOnProductPage() && $pro
     <?php
     $store_currency = $block->getCurrentCurrency();
     $data_locale = $block->getCurrentLocale();
-    $data_amount = $block->getFinalAmount();
     $enable_cbt = $this->helper('Clearpay\Clearpay\Helper\Data')->getConfig('payment/clearpaypayovertime/enable_cbt');
     $data_enable_cbt = ! empty($enable_cbt) ? "true" : "false";
     ?>

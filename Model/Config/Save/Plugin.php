@@ -143,7 +143,9 @@ class Plugin
 						}
 					}
 				}
+
                }
+
 			}
             catch (\Exception $e) {
                 $this->messageManager->addErrorMessage($e->getMessage());

@@ -7,29 +7,41 @@
  */
 namespace Clearpay\Clearpay\Block\Catalog;
 
-use Magento\Framework\Registry as Registry;
+use Clearpay\Clearpay\Block\JsConfig;
 use Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
 use Clearpay\Clearpay\Model\Payovertime as ClearpayPayovertime;
-use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Locale\Resolver as Resolver;
+use Magento\Framework\Registry as Registry;
+use Magento\Framework\View\Element\Template\Context;
 
-class Installments extends \Clearpay\Clearpay\Block\JsConfig
+class Installments extends JsConfig
 {
     /**
-     * @var Product
+     * @var Registry
      */
-    protected $registry;
-    protected $clearpayConfig;
-    protected $clearpayPayovertime;
+    private $registry;
+
+    /**
+     * @var ClearpayConfig
+     */
+    private $clearpayConfig;
+    /**
+     * @var ClearpayPayovertime
+     */
+    private $clearpayPayovertime;
+    
+    /**
+     * @var Resolver
+     */
     private $localeResolver;
 
     /**
-     * Installments constructor.
      * @param Context $context
+     * @param Registry $registry
      * @param ClearpayConfig $clearpayConfig
      * @param ClearpayPayovertime $clearpayPayovertime
-     * @param Registry $registry
      * @param array $data
+     * @param Resolver $localeResolver
      */
     public function __construct(
         Context $context,
@@ -49,49 +61,32 @@ class Installments extends \Clearpay\Clearpay\Block\JsConfig
     /**
      * @return bool
      */
-    protected function _getPaymentIsActive()
+    public function canShow(): bool
     {
-        return $this->clearpayConfig->isActive();
+        // check if payment is active
+        if ($this->_getPaymentIsActive() &&
+            $this->clearpayConfig->getCurrencyCode() &&
+            $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode())
+        ) {
+            $excluded_categories = $this->clearpayConfig->getExcludedCategories();
+            if ($excluded_categories != "") {
+                $excluded_categories_array = explode(",", $excluded_categories);
+                $product = $this->registry->registry('product');
+                $categoryids = $product->getCategoryIds();
+                foreach ($categoryids as $k) {
+                    if (in_array($k, $excluded_categories_array)) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * @return bool
-     */
-    public function canShow()
-    {	
-        // check if payment is active
-        if (!$this->_getPaymentIsActive()) {
-		    return false;
-        }
-		else{
-			if($this->clearpayConfig->getCurrencyCode()){
-				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode())){
-					$excluded_categories=$this->clearpayConfig->getExcludedCategories();
-					if($excluded_categories!=""){
-						$excluded_categories_array =  explode(",",$excluded_categories);
-						$product = $this->registry->registry('product');
-						$categoryids = $product->getCategoryIds();
-						foreach($categoryids as $k)
-						{
-							if(in_array($k,$excluded_categories_array)){
-								return false;
-							}
-						}
-					}
-					return true;				
-				}
-				else{
-					return false;
-				}
-			} 
-			else {
-				return false;
-			}
-		}
-    }	   
-      
-
-	/**
      * @return string
      */
     public function getTypeOfProduct()
@@ -109,11 +104,11 @@ class Installments extends \Clearpay\Clearpay\Block\JsConfig
         $product = $this->registry->registry('product');
         
         // set if final price is exist
-        $price = $product->getFinalPrice();
-       
-        return !empty($price)?number_format($price, 2,".",""):"0.00";
-       
-    }  
+        $price = $product->getPriceInfo()->getPrice('final_price')->getValue();
+
+        return !empty($price) ? number_format($price, 2, ".", "") : "0.00";
+    }
+
     /**
      * @return boolean
      */
