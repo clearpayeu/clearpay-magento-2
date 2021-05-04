@@ -3,7 +3,7 @@
 
 <ol>
 	<li> Open Command Line Interface and navigate to the Magento directory on your server</li>
-	<li> In CLI, run the below command to install Clearpay module: <br/> <em>composer require clearpay/module-clearpay:3.3.0-eu1</em> </li>
+	<li> In CLI, run the below command to install Clearpay module: <br/> <em>composer require clearpay/module-clearpay:dev-europe</em> </li>
 	<li> At the Composer request, enter your Magento marketplace credentials (public key - username, private key - password)</li>
 	<li> Make sure that Composer finished the installation without errors </li>
 	<li> In CLI, run the Magento setup upgrade: <br/> <em>php bin/magento setup:upgrade</em> </li>
