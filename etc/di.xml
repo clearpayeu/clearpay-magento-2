@@ -4,11 +4,11 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Clearpay\Clearpay\Model\Adapter\ApiMode">
+    <type name="Clearpay\ClearpayEurope\Model\Adapter\ApiMode">
         <arguments>
             <argument name="environments" xsi:type="array">
                 <item name="sandbox" xsi:type="array">
@@ -27,21 +27,21 @@
         </arguments>
     </type>
     <type name="Magento\Checkout\Model\PaymentInformationManagement">
-        <plugin name="addClearpayTokenToResponse" type="Clearpay\Clearpay\Model\PaymentInformationManagement\Plugin" />
+        <plugin name="addClearpayeuTokenToResponse" type="Clearpay\ClearpayEurope\Model\PaymentInformationManagement\Plugin" />
     </type>
     <type name="Magento\Checkout\Model\GuestPaymentInformationManagement">
-        <plugin name="addClearpayTokenToResponse" type="Clearpay\Clearpay\Model\GuestPaymentInformationManagement\Plugin" />
+        <plugin name="addClearpayTokenToResponse" type="Clearpay\ClearpayEurope\Model\GuestPaymentInformationManagement\Plugin" />
     </type>
-    <type name="Clearpay\Clearpay\Model\Logger\Handler">
+    <type name="Clearpay\ClearpayEurope\Model\Logger\Handler">
         <arguments>
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
-    <type name="Clearpay\Clearpay\Model\Logger\Logger">
+    <type name="Clearpay\ClearpayEurope\Model\Logger\Logger">
         <arguments>
-            <argument name="name" xsi:type="string">clearpay</argument>
+            <argument name="name" xsi:type="string">clearpayeurope</argument>
             <argument name="handlers"  xsi:type="array">
-                <item name="debug" xsi:type="object">Clearpay\Clearpay\Model\Logger\Handler</item>
+                <item name="debug" xsi:type="object">Clearpay\ClearpayEurope\Model\Logger\Handler</item>
             </argument>
         </arguments>
     </type>

@@ -3,18 +3,18 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Adapter;
+namespace Clearpay\ClearpayEurope\Model\Adapter;
 
-use \Clearpay\Clearpay\Model\Adapter\Clearpay\Call;
-use \Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
+use \Clearpay\ClearpayEurope\Model\Adapter\Clearpay\Call;
+use \Clearpay\ClearpayEurope\Model\Config\Payovertime as ClearpayConfig;
 use \Magento\Framework\ObjectManagerInterface as ObjectManagerInterface;
 use \Magento\Framework\Json\Helper\Data as JsonHelper;
 
 /**
  * Class ClearpayTotalLimit
- * @package Clearpay\Clearpay\Model\Adapter
+ * @package Clearpay\ClearpayEurope\Model\Adapter
  */
 class ClearpayTotalLimit
 {
@@ -50,9 +50,9 @@ class ClearpayTotalLimit
      */
     public function getLimit($override = [])
     {
-         $queryString=array("include"=>"cbt");
-		 /** @var \Clearpay\Clearpay\Model\Config\Payovertime $url */
-         $url = $this->clearpayConfig->getApiUrl('v2/configuration',$queryString); //V2
+         $queryString=array("include"=>"activeCountries");
+		 /** @var \Clearpay\ClearpayEurope\Model\Config\Payovertime $url */
+         $url = $this->clearpayConfig->getApiUrl('v1/configuration',$queryString); //V1
 
         // calling API
         try {
@@ -65,7 +65,7 @@ class ClearpayTotalLimit
                 throw new \Exception($e->getMessage());
             }
             else {
-                $response = $this->objectManagerInterface->create('Clearpay\Clearpay\Model\Payovertime');
+                $response = $this->objectManagerInterface->create('Clearpay\ClearpayEurope\Model\Payovertime');
                 $response->setBody($this->jsonHelper->jsonEncode([
                     'error' => 1,
                     'message' => $e->getMessage()

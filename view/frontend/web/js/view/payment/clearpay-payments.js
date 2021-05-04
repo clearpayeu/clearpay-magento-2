@@ -16,8 +16,8 @@ define(
         'use strict';
         rendererList.push(
             {
-                type: 'clearpaypayovertime',
-                component: 'Clearpay_Clearpay/js/view/payment/method-renderer/clearpaypayovertime'
+                type: 'clearpayeupayovertime',
+                component: 'Clearpay_ClearpayEurope/js/view/payment/method-renderer/clearpayeupayovertime'
             }
         );
         /** Add view logic here if needed */

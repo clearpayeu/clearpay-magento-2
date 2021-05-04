@@ -3,45 +3,33 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Block\Catalog;
+namespace Clearpay\ClearpayEurope\Block\Catalog;
 
-use Clearpay\Clearpay\Block\JsConfig;
-use Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
-use Clearpay\Clearpay\Model\Payovertime as ClearpayPayovertime;
-use Magento\Framework\Locale\Resolver as Resolver;
 use Magento\Framework\Registry as Registry;
+use Clearpay\ClearpayEurope\Model\Config\Payovertime as ClearpayConfig;
+use Clearpay\ClearpayEurope\Model\Payovertime as ClearpayPayovertime;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\Locale\Resolver as Resolver;
 
-class Installments extends JsConfig
+class Installments extends \Clearpay\ClearpayEurope\Block\JsConfig
 {
     /**
-     * @var Registry
+     * @var Product
      */
-    private $registry;
-
-    /**
-     * @var ClearpayConfig
-     */
-    private $clearpayConfig;
-    /**
-     * @var ClearpayPayovertime
-     */
-    private $clearpayPayovertime;
-    
-    /**
-     * @var Resolver
-     */
+    protected $registry;
+    protected $clearpayConfig;
+    protected $clearpayPayovertime;
     private $localeResolver;
 
     /**
+     * Installments constructor.
      * @param Context $context
-     * @param Registry $registry
      * @param ClearpayConfig $clearpayConfig
      * @param ClearpayPayovertime $clearpayPayovertime
+     * @param Registry $registry
      * @param array $data
-     * @param Resolver $localeResolver
      */
     public function __construct(
         Context $context,
@@ -61,32 +49,49 @@ class Installments extends JsConfig
     /**
      * @return bool
      */
-    public function canShow(): bool
+    protected function _getPaymentIsActive()
     {
-        // check if payment is active
-        if ($this->_getPaymentIsActive() &&
-            $this->clearpayConfig->getCurrencyCode() &&
-            $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode())
-        ) {
-            $excluded_categories = $this->clearpayConfig->getExcludedCategories();
-            if ($excluded_categories != "") {
-                $excluded_categories_array = explode(",", $excluded_categories);
-                $product = $this->registry->registry('product');
-                $categoryids = $product->getCategoryIds();
-                foreach ($categoryids as $k) {
-                    if (in_array($k, $excluded_categories_array)) {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        return false;
+        return $this->clearpayConfig->isActive();
     }
 
     /**
+     * @return bool
+     */
+    public function canShow()
+    {	
+        // check if payment is active
+        if (!$this->_getPaymentIsActive()) {
+		    return false;
+        }
+		else{
+			if($this->clearpayConfig->getCurrencyCode()){
+				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode())){
+					$excluded_categories=$this->clearpayConfig->getExcludedCategories();
+					if($excluded_categories!=""){
+						$excluded_categories_array =  explode(",",$excluded_categories);
+						$product = $this->registry->registry('product');
+						$categoryids = $product->getCategoryIds();
+						foreach($categoryids as $k)
+						{
+							if(in_array($k,$excluded_categories_array)){
+								return false;
+							}
+						}
+					}
+					return true;				
+				}
+				else{
+					return false;
+				}
+			} 
+			else {
+				return false;
+			}
+		}
+    }	   
+      
+
+	/**
      * @return string
      */
     public function getTypeOfProduct()
@@ -104,11 +109,11 @@ class Installments extends JsConfig
         $product = $this->registry->registry('product');
         
         // set if final price is exist
-        $price = $product->getPriceInfo()->getPrice('final_price')->getValue();
-
-        return !empty($price) ? number_format($price, 2, ".", "") : "0.00";
-    }
-
+        $price = $product->getFinalPrice();
+       
+        return !empty($price)?number_format($price, 2,".",""):"0.00";
+       
+    }  
     /**
      * @return boolean
      */

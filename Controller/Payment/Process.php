@@ -3,18 +3,18 @@
  * Magento 2 extensions for Clearpay
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Controller\Payment;
+namespace Clearpay\ClearpayEurope\Controller\Payment;
 
 use \Magento\Checkout\Model\Session as CheckoutSession;
 use \Magento\Sales\Model\OrderFactory as OrderFactory;
 use \Magento\Quote\Model\QuoteFactory as QuoteFactory;
-use \Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
+use \Clearpay\ClearpayEurope\Model\Config\Payovertime as ClearpayConfig;
 use \Magento\Payment\Model\Method\AbstractMethod;
-use \Clearpay\Clearpay\Model\Adapter\V2\ClearpayOrderTokenV2 as ClearpayOrderTokenV2;
+use \Clearpay\ClearpayEurope\Model\Adapter\V2\ClearpayOrderTokenV2 as ClearpayOrderTokenV2;
 use \Magento\Framework\Json\Helper\Data as JsonHelper;
-use \Clearpay\Clearpay\Helper\Data as Helper;
+use \Clearpay\ClearpayEurope\Helper\Data as Helper;
 use \Magento\Checkout\Model\Cart as Cart;
 use \Magento\Store\Model\StoreResolver as StoreResolver;
 use \Magento\Quote\Model\ResourceModel\Quote as QuoteRepository;
@@ -23,7 +23,7 @@ use \Magento\Quote\Model\QuoteValidator as QuoteValidator;
 
 /**
  * Class Response
- * @package Clearpay\Clearpay\Controller\Payment
+ * @package Clearpay\ClearpayEurope\Controller\Payment
  */
 class Process extends \Magento\Framework\App\Action\Action
 {
@@ -211,7 +211,7 @@ class Process extends \Magento\Framework\App\Action\Action
 		
         $payment = $quote->getPayment();
 
-        $payment->setMethod(\Clearpay\Clearpay\Model\Payovertime::METHOD_CODE);
+        $payment->setMethod(\Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE);
 
         $quote->reserveOrderId();
 
@@ -240,7 +240,7 @@ class Process extends \Magento\Framework\App\Action\Action
 		$this->_quoteRepository->save($quote);
         $this->_checkoutSession->replaceQuote($quote);
 
-        $token = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN);
+        $token = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN);
 
         $result = $this->_jsonResultFactory->create()->setData(
             ['success' => true, 'token' => $token]
@@ -266,7 +266,7 @@ class Process extends \Magento\Framework\App\Action\Action
         $orderToken = array_key_exists('token', $result) ? $result['token'] : false;
 
         if ($orderToken) {
-            $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN, $orderToken);
+            $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN, $orderToken);
         } else {
             $this->_helper->debug('No Token response from API');
             throw new \Magento\Framework\Exception\LocalizedException(__('There is an issue processing your order.'));

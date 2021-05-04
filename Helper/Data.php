@@ -3,9 +3,9 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Helper;
+namespace Clearpay\ClearpayEurope\Helper;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -15,8 +15,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Clearpay\Clearpay\Model\Logger\Logger $logger,
-        \Clearpay\Clearpay\Model\Config\Payovertime $clearpayConfig,
+        \Clearpay\ClearpayEurope\Model\Logger\Logger $logger,
+        \Clearpay\ClearpayEurope\Model\Config\Payovertime $clearpayConfig,
         \Magento\Framework\Module\ModuleListInterface $moduleList
     ) {
         parent::__construct($context);
@@ -34,7 +34,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getModuleVersion()
     {
-        $moduleInfo = $this->_moduleList->getOne('Clearpay_Clearpay');
+        $moduleInfo = $this->_moduleList->getOne('Clearpay_ClearpayEurope');
         return $moduleInfo['setup_version'];
     }
 	

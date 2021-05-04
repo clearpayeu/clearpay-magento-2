@@ -4,14 +4,14 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
 	<event name="sales_order_shipment_save_before">
-        <observer name="clearpay_before_shipment" instance="Clearpay\Clearpay\Observer\BeforeShipment" />
+        <observer name="clearpay_before_shipment" instance="Clearpay\ClearpayEurope\Observer\BeforeShipment" />
     </event>
 	<event name="view_block_abstract_to_html_before">
-        <observer name="clearpay_view_block_abstract_to_html_before" instance="Clearpay\Clearpay\Observer\BeforeCreditmemoLoad" />
+        <observer name="clearpay_view_block_abstract_to_html_before" instance="Clearpay\ClearpayEurope\Observer\BeforeCreditmemoLoad" />
     </event>
 </config>

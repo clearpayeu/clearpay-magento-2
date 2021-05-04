@@ -3,20 +3,18 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Block\Cart;
+namespace Clearpay\ClearpayEurope\Block\Cart;
 
 use Magento\Checkout\Model\Session as CheckoutSession;
-
-use Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
-use Clearpay\Clearpay\Model\Payovertime as ClearpayPayovertime;
+use Clearpay\ClearpayEurope\Model\Config\Payovertime as ClearpayConfig;
+use Clearpay\ClearpayEurope\Model\Payovertime as ClearpayPayovertime;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Locale\Resolver as Resolver;
 
-
-class Button extends \Clearpay\Clearpay\Block\JsConfig
+class Button extends \Clearpay\ClearpayEurope\Block\JsConfig
 {
     /**
      * @var ClearpayConfig
@@ -30,9 +28,8 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
      * Button constructor.
      * @param Context $context
      * @param ClearpayConfig $clearpayConfig
-     * @param ClearpayPayovertime $clearpayPayovertime
      * @param CheckoutSession $checkoutSession
-     * @param CustomerSession $customerSession
+     * @param Currency $currency
      * @param array $data
      * @param Resolver $localeResolver
      */
@@ -78,8 +75,7 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
 				$grandTotal =$quote->getGrandTotal();
 				$excluded_categories=$this->clearpayConfig->getExcludedCategories();
 				
-				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode()) ){ 
-					
+				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode())){
 					if($excluded_categories !=""){
 						$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 						$productRepository = $objectManager->get('\Magento\Catalog\Model\ProductRepository');

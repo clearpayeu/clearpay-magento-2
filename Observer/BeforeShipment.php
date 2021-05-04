@@ -3,16 +3,16 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Observer;
+namespace Clearpay\ClearpayEurope\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
-use \Clearpay\Clearpay\Helper\Data as Helper;
+use \Clearpay\ClearpayEurope\Helper\Data as Helper;
 
 /**
  * Class BeforeShipment
- * @package Clearpay\Clearpay\Observer
+ * @package Clearpay\ClearpayEurope\Observer
  */
 class BeforeShipment implements ObserverInterface
 { 
@@ -25,8 +25,8 @@ class BeforeShipment implements ObserverInterface
   public function __construct(
 	Helper $helper,
 	\Magento\Sales\Model\OrderRepository $orderRepository,
-	\Clearpay\Clearpay\Model\Adapter\V2\ClearpayOrderPaymentCapture $paymentCapture,
-	\Clearpay\Clearpay\Model\Response $clearpayResponse,
+	\Clearpay\ClearpayEurope\Model\Adapter\V2\ClearpayOrderPaymentCapture $paymentCapture,
+	\Clearpay\ClearpayEurope\Model\Response $clearpayResponse,
 	\Magento\Framework\Json\Helper\Data $jsonHelper
   )
   {
@@ -43,17 +43,17 @@ class BeforeShipment implements ObserverInterface
 	$order    = $shipment->getOrder();
 	$payment  = $order->getPayment();  
 	
-	if($payment->getMethod() == \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE ){
+	if($payment->getMethod() == \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE ){
 		
-		$clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS);
-		if($clearpayPaymentStatus == \Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_AUTH_APPROVED || $clearpayPaymentStatus == \Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_PARTIALLY_CAPTURED){
+		$clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS);
+		if($clearpayPaymentStatus == \Clearpay\ClearpayEurope\Model\Response::PAYMENT_STATUS_AUTH_APPROVED || $clearpayPaymentStatus == \Clearpay\ClearpayEurope\Model\Response::PAYMENT_STATUS_PARTIALLY_CAPTURED){
 			
 			$totalCaptureAmount  = 0.00;
 			$totalItemsToShip    = 0;
-			$openToCaptureAmount = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT); 
-			$totalDiscountAmount = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT); 
-			$rolloverAmount      = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT); 
-			$rolloverRefund      = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND); 
+			$openToCaptureAmount = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT); 
+			$totalDiscountAmount = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT); 
+			$rolloverAmount      = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_AMOUNT); 
+			$rolloverRefund      = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND); 
 			
 			if($order->getShippingInclTax() > 0 && $order->getShipmentsCollection()->count()==0){
 				$shippingAmount = $order->getShippingInclTax();
@@ -67,7 +67,7 @@ class BeforeShipment implements ObserverInterface
 
 			if($rolloverAmount > 0){
 				$totalCaptureAmount = $totalCaptureAmount + $rolloverAmount; 
-				$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT,"0.00");
+				$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_AMOUNT,"0.00");
 			}			
 		
 			foreach($order->getItemsCollection() as $item){
@@ -94,12 +94,12 @@ class BeforeShipment implements ObserverInterface
 					$totalDiscountAmount = $totalDiscountAmount  - $totalCaptureAmount;
 					$totalCaptureAmount = 0.00;
 				}
-				$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT, number_format($totalDiscountAmount, 2, '.', ''));
+				$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT, number_format($totalDiscountAmount, 2, '.', ''));
 			}
 		
 			
 			if($totalCaptureAmount > 1){
-				$clearpay_order_id = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
+				$clearpay_order_id = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
 				$merchant_order_id = $order->getIncrementId();
 				$currencyCode      = $order->getOrderCurrencyCode();
 				$override = ["website_id" => $payment->getOrder()->getStore()->getWebsiteId()];
@@ -114,9 +114,9 @@ class BeforeShipment implements ObserverInterface
 				$response = $this->_jsonHelper->jsonDecode($response->getBody());
 				
 				if(!array_key_exists("errorCode",$response)) {
-					$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS,$response['paymentState']);
+					$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS,$response['paymentState']);
 					if(array_key_exists('openToCaptureAmount',$response) && !empty($response['openToCaptureAmount'])){
-						$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT,number_format($response['openToCaptureAmount']['amount'], 2, '.', ''));
+						$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT,number_format($response['openToCaptureAmount']['amount'], 2, '.', ''));
 					}
 				}
 				else{
@@ -126,13 +126,13 @@ class BeforeShipment implements ObserverInterface
 			}
 			else{
 				if($totalCaptureAmount > 0){
-					$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT,$totalCaptureAmount);
+					$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_AMOUNT,$totalCaptureAmount);
 					$this->_helper->debug("Total clearpay capture amount is less then $1 for this shipment. We are adding it to the 'rollover amount' field");
 				}
 			}
 			//last shipment
 			if($totalItemsToShip == 0 && $rolloverRefund > 0){
-				$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND,"0.00");
+				$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND,"0.00");
 				$result = $this->_clearpayResponse->lastShipmentProcessRefund($payment,$rolloverRefund);
 				if(!$result['success']){
 					throw new \Magento\Framework\Exception\LocalizedException(__('There was a problem with your shipment. Please check the logs.'));

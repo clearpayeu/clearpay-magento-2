@@ -3,10 +3,10 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 -->
-<div class="payment-method" id="clearpaypayovertime-method" data-bind="css: {'_active': (getCode() == isChecked())}">
+<div class="payment-method" id="clearpayeupayovertime-method" data-bind="css: {'_active': (getCode() == isChecked())}">
     <div class="payment-method-title field choice">
         <input type="radio"
                name="payment[method]"
@@ -18,7 +18,7 @@
             <!-- Clearpay Logo -->
         </label>
     </div>
-    <div class="payment-method-content" id="clearpaypayovertime">
+    <div class="payment-method-content" id="clearpayeupayovertime">
         <!-- ko foreach: getRegion('messages') -->
         <!-- ko template: getTemplate() --><!-- /ko -->
         <!--/ko-->
@@ -64,14 +64,14 @@
         </div>
         <div class="payment-method-content clearpay-checkout-redirect">
             <div class="instalment-footer">
-                <!-- ko i18n: 'You will be redirected to the Clearpay website when you proceed to checkout. ' --><!-- /ko -->
-                    <a data-bind="attr:{href: getTermsLink()}" target="_blank" style="display:inline;"><!-- ko i18n: 'Terms & Conditions' --><!-- /ko --></a>
+				<span data-bind="text: getTermsText()"><!-- ko i18n: 'You will be redirected to the Clearpay website when you proceed to checkout. ' --><!-- /ko --></span>
+                <a data-bind="attr:{href: getTermsLink()}" target="_blank" style="display:inline;"><!-- ko i18n: 'Terms & Conditions' --><!-- /ko --></a>
             </div>
             <div class="actions-toolbar">
                 <div class="primary">
                     <button class="action primary checkout"
                             type="submit"
-                            data-bind="click: continueClearpayPayment, enable: (getCode() == isChecked())"
+                            data-bind="click: continueClearpayeuPayment, enable: (getCode() == isChecked())"
                             disabled>
                         <span data-bind="i18n: 'Continue to Clearpay'"></span>
                     </button>

@@ -2,45 +2,45 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 
 /** clearpay.css */
-.checkout-payment-method .payment-method #clearpaypayovertime.payment-method-content {
+.checkout-payment-method .payment-method #clearpayeupayovertime.payment-method-content {
     padding-right: 22px;
 }
 
-.checkout-payment-method .payment-method._active #clearpaypayovertime.payment-method-content {
+.checkout-payment-method .payment-method._active #clearpayeupayovertime.payment-method-content {
     overflow:hidden
 }
 
-#clearpaypayovertime-method .payment-method-note {
+#clearpayeupayovertime-method .payment-method-note {
     font-size: 1.2rem;
     color: #a0a0a0;
     text-align: center;
 }
 
-#clearpaypayovertime-method .payment-method-note h3 {
+#clearpayeupayovertime-method .payment-method-note h3 {
     color: #00a4e4;
     text-align: left;
 }
 
-#clearpaypayovertime-method .payment-method-note ul {
+#clearpayeupayovertime-method .payment-method-note ul {
     padding-left: 1rem;
     padding-right: 1rem;
 }
 
-#clearpaypayovertime-method .payment-method-note ul li {
+#clearpayeupayovertime-method .payment-method-note ul li {
     width: 24%;
     display: inline-block;
 }
 
-#clearpaypayovertime-method .payment-method-note ul.cost li {
+#clearpayeupayovertime-method .payment-method-note ul.cost li {
     font-size: 1.8rem;
     color: #153F72;
 }
 
-#clearpaypayovertime-method .clearpay-checkout-redirect {
+#clearpayeupayovertime-method .clearpay-checkout-redirect {
     margin-top: 1rem;
     text-align: left;
     background-color: #f6f7f9;
@@ -48,24 +48,24 @@
     padding: 15px;
 }
 
-#clearpaypayovertime-method .clearpay-checkout-redirect .instalment-footer {
+#clearpayeupayovertime-method .clearpay-checkout-redirect .instalment-footer {
     width: 100%;
     float: left;
 }
 
 @media only screen and (min-width : 992px) {
-    #clearpaypayovertime-method .clearpay-checkout-redirect .instalment-footer {
+    #clearpayeupayovertime-method .clearpay-checkout-redirect .instalment-footer {
         width: 57%;
     }
 }
 
 @media only screen and (min-width : 1200px) {
-    #clearpaypayovertime-method .clearpay-checkout-redirect .instalment-footer {
+    #clearpayeupayovertime-method .clearpay-checkout-redirect .instalment-footer {
         width: 65%;
     }
 }
 
-#clearpaypayovertime-method .actions-toolbar {
+#clearpayeupayovertime-method .actions-toolbar {
     float: right;
     margin-top: 1.5rem;
     line-height: 1.1;
@@ -74,14 +74,14 @@
 }
 
 @media only screen and (min-width : 992px) {
-    #clearpaypayovertime-method .actions-toolbar {
+    #clearpayeupayovertime-method .actions-toolbar {
         width: auto;
         margin-top: 0px;
     }
 }
 
 @media only screen and (min-width : 768px) {
-    #clearpaypayovertime-method .actions-toolbar .primary {
+    #clearpayeupayovertime-method .actions-toolbar .primary {
         width: 100%;
     }
 }
@@ -133,7 +133,7 @@
     padding: 13px 15px 10px 10px;
     width: 100%;
 }
-.checkout-payment-method #clearpaypayovertime-method .payment-icon{
+.checkout-payment-method #clearpayeupayovertime-method .payment-icon{
 	height:40px;
 	width:auto;
 }
@@ -161,12 +161,4 @@ fieldset[disabled] .clearpay.primary {
   opacity: 0.5;
   cursor: default;
   pointer-events: none;
-}
-
-.checkout-methods-items button.express-button {
-    float:none;
-    width: 267px;
-    max-width: 100%;
-    margin-top: 10px;
-    cursor: pointer;
 }

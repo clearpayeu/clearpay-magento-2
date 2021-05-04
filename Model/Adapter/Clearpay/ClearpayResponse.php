@@ -3,13 +3,13 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Adapter\Clearpay;
+namespace Clearpay\ClearpayEurope\Model\Adapter\Clearpay;
 
 /**
  * Class ClearpayResponse
- * @package Clearpay\Clearpay\Model\Adapter\Clearpay
+ * @package Clearpay\ClearpayEurope\Model\Adapter\Clearpay
  * @see \Zend\Http\Response
  */
 class ClearpayResponse

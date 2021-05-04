@@ -1,9 +1,9 @@
 <?php
 
-namespace Clearpay\Clearpay\Block;
+namespace Clearpay\ClearpayEurope\Block;
 
 use Magento\Framework\View\Element\Template;
-use Clearpay\Clearpay\Model\Config\Payovertime;
+use Clearpay\ClearpayEurope\Model\Config\Payovertime;
 use Magento\Framework\Json\Helper\Data;
 
 class Config extends Template
@@ -46,21 +46,21 @@ class Config extends Template
     }
 
     /**
-     * Get URL to afterpay.js
+     * Get URL to clearpay.js
      *
      * @return bool|string
      */
     public function getClearpayJsUrl()
     {
-        return $this->_payOverTime->getWebUrl('afterpay.js');
+        return $this->_payOverTime->getWebUrl('clearpay.js');
     }
 	/**
      * @return bool
      */
 	public function checkCurrency()
     {
-		$supportedCurrency=['GBP'];
-		if(in_array($this->_payOverTime->getCurrencyCode(),$supportedCurrency)){
+		$supportedCurrency=['EUR'];
+		if(in_array($this->_payOverTime->getCurrencyCode(),$supportedCurrency) && $this->_payOverTime->isActive()){
 			return true;
 		}
 		else{

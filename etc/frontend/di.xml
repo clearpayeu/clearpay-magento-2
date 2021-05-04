@@ -4,14 +4,14 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="clearpay" xsi:type="object">Clearpay\Clearpay\Model\ConfigProvider</item>
+                <item name="clearpayeurope" xsi:type="object">Clearpay\ClearpayEurope\Model\ConfigProvider</item>
             </argument>
         </arguments>
     </type>

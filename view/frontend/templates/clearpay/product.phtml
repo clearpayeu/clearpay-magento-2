@@ -3,12 +3,12 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-/** @var \Clearpay\Clearpay\Block\Catalog\Installments $block */
 $product_type = $block->getTypeOfProduct();
 $data_amount = $block->getFinalAmount();
-if($block->isPaymentMethodActive() && $block->isDisplayOnProductPage() && $product_type != "grouped" && $block->canUseCurrency() && $data_amount>0){
+if($block->isPaymentMethodActive()  && $block->isDisplayOnProductPage() && $product_type != "grouped" && $block->canUseCurrency() && $data_amount > 0){
+
     $clearpay_eligible = "true";
     if (($block->canShow() === false)) {
         $clearpay_eligible = "false";
@@ -26,16 +26,14 @@ if($block->isPaymentMethodActive() && $block->isDisplayOnProductPage() && $produ
     <?php
     $store_currency = $block->getCurrentCurrency();
     $data_locale = $block->getCurrentLocale();
-    $enable_cbt = $this->helper('Clearpay\Clearpay\Helper\Data')->getConfig('payment/clearpaypayovertime/enable_cbt');
-    $data_enable_cbt = ! empty($enable_cbt) ? "true" : "false";
+    
     ?>
     <afterpay-placement
     	data-locale="<?= /* @noEscape */  $data_locale;?>"
     	data-currency="<?= /* @noEscape */ $store_currency;?>"
-    	data-amount="<?= /* @noEscape */ $data_amount; ?>"
-    	data-is-eligible="<?= /* @noEscape */ $clearpay_eligible;?>"
-    	data-cbt-enabled="<?= /* @noEscape */ $data_enable_cbt;?>"
-    	data-show-lower-limit="<?= /* @noEscape */  $show_lower_limit;?>"></afterpay-placement>
+		data-is-eligible="<?= /* @noEscape */ $clearpay_eligible;?>"
+    	data-amount="<?= /* @noEscape */ $data_amount; ?>">
+    </afterpay-placement>
 <?php
 }
 ?>

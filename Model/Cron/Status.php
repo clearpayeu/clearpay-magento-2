@@ -3,18 +3,18 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Cron;
+namespace Clearpay\ClearpayEurope\Model\Cron;
 
 use \Magento\Store\Model\StoreManagerInterface as StoreManagerInterface;
-use \Clearpay\Clearpay\Helper\Data as ClearpayHelper;
+use \Clearpay\ClearpayEurope\Helper\Data as ClearpayHelper;
 use \Magento\Framework\Json\Helper\Data as JsonHelper;
 use \Magento\Framework\ObjectManagerInterface as ObjectManagerInterface;
-use \Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
+use \Clearpay\ClearpayEurope\Model\Config\Payovertime as ClearpayConfig;
 use \Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use \Magento\Framework\Stdlib\DateTime\TimezoneInterface as Timezone;
-use \Clearpay\Clearpay\Model\Payovertime as Payovertime;
+use \Clearpay\ClearpayEurope\Model\Payovertime as Payovertime;
 use \Magento\Sales\Model\Order\Email\Sender\CreditmemoSender as CreditmemoSender;
 use \Magento\Sales\Controller\Adminhtml\Order\CreditmemoLoader as CreditmemoLoader;
 use \Magento\Framework\Registry as Registry;
@@ -116,9 +116,9 @@ class Status
 				'main_table.entity_id = sop.parent_id',
 				array('method','additional_information')
 			)
-			->where('sop.method = ?',\Clearpay\Clearpay\Model\Payovertime::METHOD_CODE);
+			->where('sop.method = ?',\Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE);
 			
-			$collection->addAttributeToFilter('additional_information',array('like'=>'%'.\Clearpay\Clearpay\Model\Payovertime::AUTH_EXPIRY.'%'));
+			$collection->addAttributeToFilter('additional_information',array('like'=>'%'.\Clearpay\ClearpayEurope\Model\Payovertime::AUTH_EXPIRY.'%'));
 			$collection->setOrder(
 				'created_at',
 				'desc'
@@ -203,26 +203,26 @@ class Status
 									}
 									
 									//change payment additional information
-									if($payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND) > 0){
-										$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND, "0.00");
+									if($payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND) > 0){
+										$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND, "0.00");
 									}
 									
-									if($payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT) > 0){
-										$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT, "0.00");
+									if($payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT) > 0){
+										$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT, "0.00");
 									}
 									
-									if($payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT) > 0){
-										$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT, "0.00");
+									if($payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_AMOUNT) > 0){
+										$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_AMOUNT, "0.00");
 									}
 									
-									$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT, "0.00");
-									$clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS);
+									$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT, "0.00");
+									$clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS);
 									
-									if($clearpayPaymentStatus == \Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_AUTH_APPROVED){
-										$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS, \Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_VOIDED);
+									if($clearpayPaymentStatus == \Clearpay\ClearpayEurope\Model\Response::PAYMENT_STATUS_AUTH_APPROVED){
+										$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS, \Clearpay\ClearpayEurope\Model\Response::PAYMENT_STATUS_VOIDED);
 									}
-									elseif($clearpayPaymentStatus == \Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_PARTIALLY_CAPTURED){
-										$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS, \Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_CAPTURED);
+									elseif($clearpayPaymentStatus == \Clearpay\ClearpayEurope\Model\Response::PAYMENT_STATUS_PARTIALLY_CAPTURED){
+										$payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS, \Clearpay\ClearpayEurope\Model\Response::PAYMENT_STATUS_CAPTURED);
 									}
 									
 									//save payment

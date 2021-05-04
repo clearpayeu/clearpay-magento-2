@@ -1,5 +1,5 @@
 <?php 
-namespace Clearpay\Clearpay\Model\Config\Source;
+namespace Clearpay\ClearpayEurope\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
   
@@ -12,7 +12,7 @@ class Categorylist implements ArrayInterface
     protected $_storeManager;
 
     public function __construct(
-        \Clearpay\Clearpay\Helper\Category $catalogCategory,
+        \Clearpay\ClearpayEurope\Helper\Category $catalogCategory,
         \Magento\Catalog\Model\CategoryRepository $categoryRepository,
 		\Magento\Framework\App\Request\Http $request,
 		\Magento\Store\Model\StoreManagerInterface $storeManager

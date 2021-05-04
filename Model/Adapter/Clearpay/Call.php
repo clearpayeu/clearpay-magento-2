@@ -3,18 +3,18 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Adapter\Clearpay;
+namespace Clearpay\ClearpayEurope\Model\Adapter\Clearpay;
 
 use \Magento\Framework\HTTP\ZendClientFactory;
-use \Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
+use \Clearpay\ClearpayEurope\Model\Config\Payovertime as ClearpayConfig;
 use \Magento\Framework\Json\Helper\Data as JsonHelper;
-use \Clearpay\Clearpay\Helper\Data as ClearpayHelper;
+use \Clearpay\ClearpayEurope\Helper\Data as ClearpayHelper;
 
 /**
  * Class Call
- * @package Clearpay\Clearpay\Model\Adapter\Clearpay
+ * @package Clearpay\ClearpayEurope\Model\Adapter\Clearpay
  */
 class Call
 {
@@ -55,7 +55,7 @@ class Call
      * @param string $method
      * @param array $override
      * @return \Zend_Http_Response
-     * @return \Clearpay\Clearpay\Model\Adapter\Clearpay\ClearpayResponse
+     * @return \Clearpay\ClearpayEurope\Model\Adapter\Clearpay\ClearpayResponse
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function send($url, $body = false, $method = \Magento\Framework\HTTP\ZendClient::GET, $override = [])
@@ -64,7 +64,7 @@ class Call
 
         // set the client http
         if ($this->clearpayConfig->isHTTPHeaderSupportEnabled()) {
-            $client = $objectManager->get('Clearpay\Clearpay\Model\Adapter\Clearpay\ClearpayClient');
+            $client = $objectManager->get('Clearpay\ClearpayEurope\Model\Adapter\Clearpay\ClearpayClient');
         }
         else {
             $client = $this->httpClientFactory->create();
@@ -89,9 +89,9 @@ class Call
         );
 
         //Additional debugging on the merchant ID and Key being sent on Update Payment Limits
-        $queryString=array("include"=>"cbt");
-        if ($url == $this->clearpayConfig->getApiUrl('v2/configuration',$queryString) ||
-            $url == $this->clearpayConfig->getApiUrl('merchants/valid-payment-types') ) {
+        $queryString=array("include"=>"activeCountries");
+        if ($url == $this->clearpayConfig->getApiUrl('v1/configuration',$queryString)) {
+            //|| $url == $this->clearpayConfig->getApiUrl('merchants/valid-payment-types') ) {
             //Solves the problem of magento 2 cron not working for some merchants  
             if(array_key_exists('REQUEST_URI',$_SERVER)){
                $this->helper->debug('Merchant Origin: ' . $_SERVER['REQUEST_URI']);
@@ -112,9 +112,9 @@ class Call
 
 
         if (!empty($override['website_id'])) {
-            $storeUrl = $this->getWebsiteUrl($override['website_id']);
+            $url = $this->getWebsiteUrl($override['website_id']);
         } else {
-            $storeUrl  = $this->getWebsiteUrl();
+            $url = $this->getWebsiteUrl();
         }
 
         // set configurations
@@ -122,7 +122,7 @@ class Call
             [
                 'timeout'           => 80,
                 'maxredirects'      => 0,
-                'useragent'         => 'ClearpayMagento2Plugin ' . $this->helper->getModuleVersion() . ' (' . $description . ' ' . $version . ')' . ' PHPVersion: PHP/' . phpversion() . ' MerchantID: ' . trim($this->clearpayConfig->getMerchantId($override) . ' URL: ' . $storeUrl)
+                'useragent'         => 'ClearpayEUMagento2Plugin ' . $this->helper->getModuleVersion() . ' (' . $description . ' ' . $version . ')' . ' PHPVersion: PHP/' . phpversion() . ' MerchantID: ' . trim($this->clearpayConfig->getMerchantId($override) . ' URL: ' . $url)
             ]
         );
 
@@ -133,8 +133,7 @@ class Call
             'url' => $url,
             'body' => $this->obfuscateCustomerData($body)
         ];
-      
-        $this->helper->debug('Request', $requestLog);
+        $this->helper->debug($this->jsonHelper->jsonEncode($requestLog));
 
         // do the request with catch
         try {
@@ -159,7 +158,7 @@ class Call
                 'httpStatusCode' => $response->getStatus(),
                 'body' => $this->obfuscateCustomerData($responseBody)
             ];
-            $this->helper->debug('Response', $responseLog);
+			$this->helper->debug($this->jsonHelper->jsonEncode($responseLog));
 			
         } catch (\Exception $e) {
             $this->helper->debug($e->getMessage());

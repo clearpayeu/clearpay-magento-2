@@ -3,9 +3,9 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Adapter;
+namespace Clearpay\ClearpayEurope\Model\Adapter;
 
 class ApiMode
 {
@@ -44,8 +44,8 @@ class ApiMode
     public function getCurrentMode($override = [])
     {
         if (!empty($override["website_id"])) {
-            return $this->environments[$this->scopeConfig->getValue('payment/clearpaypayovertime/api_mode', \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES, $override["website_id"])];
+            return $this->environments[$this->scopeConfig->getValue('payment/clearpayeupayovertime/api_mode', \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES, $override["website_id"])];
         }
-        return $this->environments[$this->scopeConfig->getValue('payment/clearpaypayovertime/api_mode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)];
+        return $this->environments[$this->scopeConfig->getValue('payment/clearpayeupayovertime/api_mode', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)];
     }
 }

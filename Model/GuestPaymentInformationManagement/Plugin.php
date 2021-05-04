@@ -3,23 +3,23 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\GuestPaymentInformationManagement;
+namespace Clearpay\ClearpayEurope\Model\GuestPaymentInformationManagement;
 
 class Plugin
 {
     /**
-     * @var \Clearpay\Clearpay\Model\Token
+     * @var \Clearpay\ClearpayEurope\Model\Token
      */
     protected $token;
 
     /**
      * Plugin constructor.
-     * @param \Clearpay\Clearpay\Model\Token $token
+     * @param \Clearpay\ClearpayEurope\Model\Token $token
      */
     public function __construct(
-        \Clearpay\Clearpay\Model\Token $token
+        \Clearpay\ClearpayEurope\Model\Token $token
     ) {
         $this->token = $token;
     }

@@ -3,12 +3,12 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Block\Adminhtml\System\Config\Form\Field;
+namespace Clearpay\ClearpayEurope\Block\Adminhtml\System\Config\Form\Field;
 
 use Magento\Framework\Data\Form\Element\AbstractElement;
-use \Clearpay\Clearpay\Helper\Data as ClearpayHelper;
+use \Clearpay\ClearpayEurope\Helper\Data as ClearpayHelper;
 
 class Label extends \Magento\Config\Block\System\Config\Form\Field
 {

@@ -4,12 +4,12 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Config\Model\Config">
-        <plugin name="updateOrderTotalLimitClearpay" type="Clearpay\Clearpay\Model\Config\Save\Plugin" />
+        <plugin name="updateOrderTotalLimitClearpayEu" type="Clearpay\ClearpayEurope\Model\Config\Save\Plugin" />
     </type>
-	<preference for="Magento\Catalog\Helper\Category" type="Clearpay\Clearpay\Helper\Category" />
+	<preference for="Magento\Catalog\Helper\Category" type="Clearpay\ClearpayEurope\Helper\Category" />
 </config>

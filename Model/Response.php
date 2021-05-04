@@ -3,13 +3,13 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model;
+namespace Clearpay\ClearpayEurope\Model;
 
 /**
  * Class Response
- * @package Clearpay\Clearpay\Model
+ * @package Clearpay\ClearpayEurope\Model
  */
 class Response
 {
@@ -60,8 +60,8 @@ class Response
      * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
      * @param \Magento\Framework\DB\TransactionFactory $transactionFactory
      * @param Adapter\ClearpayPayment $clearpayApiPayment
-     * @param \Clearpay\Clearpay\Model\Adapter\ClearpayPayment $clearpayApiPayment
-     * @param \Clearpay\Clearpay\Helper\Data $helper
+     * @param \Clearpay\ClearpayEurope\Model\Adapter\ClearpayPayment $clearpayApiPayment
+     * @param \Clearpay\ClearpayEurope\Helper\Data $helper
      * @param \Magento\Framework\Json\Helper\Data $jsonHelper
      * @param \Magento\Sales\Model\Order\Config $salesOrderConfig
      * @param \Magento\Sales\Model\OrderRepository $orderRepository
@@ -75,14 +75,14 @@ class Response
         \Magento\Sales\Model\Service\OrderService $orderService,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
         \Magento\Framework\DB\TransactionFactory $transactionFactory,
-        \Clearpay\Clearpay\Model\Adapter\ClearpayPayment $clearpayApiPayment,
-        \Clearpay\Clearpay\Helper\Data $helper,
+        \Clearpay\ClearpayEurope\Model\Adapter\ClearpayPayment $clearpayApiPayment,
+        \Clearpay\ClearpayEurope\Helper\Data $helper,
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Magento\Sales\Model\Order\Config $salesOrderConfig,
         \Magento\Sales\Model\OrderRepository $orderRepository,
         \Magento\Sales\Model\Order\Payment\Repository $paymentRepository,
         \Magento\Quote\Model\ResourceModel\Quote $quoteRepository,
-		\Clearpay\Clearpay\Model\Adapter\V2\ClearpayOrderPaymentCapture $paymentCapture
+		\Clearpay\ClearpayEurope\Model\Adapter\V2\ClearpayOrderPaymentCapture $paymentCapture
     ) {
         $this->objectManager = $objectManager;
         $this->checkoutSession = $checkoutSession;
@@ -115,7 +115,7 @@ class Response
 
         // check if request not same as session i.e detetcted fraud
         $additionalInfo = $order->getPayment()->getAdditionalInformation();
-        if ($this->request->getParam('orderToken') ===  $additionalInfo[\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN]) {
+        if ($this->request->getParam('orderToken') ===  $additionalInfo[\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN]) {
             return true;
         }
         return false;
@@ -193,11 +193,11 @@ class Response
 
             // only approved can create invoice
             switch ($this->status) {
-                case \Clearpay\Clearpay\Model\Status::STATUS_APPROVED:
+                case \Clearpay\ClearpayEurope\Model\Status::STATUS_APPROVED:
                     // create invoice and update order
                     $this->createInvoiceAndUpdateOrder($order, $orderId);
                     break;
-                case \Clearpay\Clearpay\Model\Status::STATUS_PENDING:
+                case \Clearpay\ClearpayEurope\Model\Status::STATUS_PENDING:
                     $order->addStatusHistoryComment(__('Payment under review by Clearpay'));
                     $order->setState(\Magento\Sales\Model\Order::STATE_PAYMENT_REVIEW);
                     $order->setStatus('payment_review');
@@ -237,7 +237,7 @@ class Response
         // adding Clearpay order id to the payment
         $payment = $order->getPayment();
         $payment->setTransactionId($orderId);
-        $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID, $orderId);
+        $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID, $orderId);
         // have save here to link clearpay order id right after checking the API
         $this->_paymentRepository->save($payment);
         
@@ -291,7 +291,7 @@ class Response
         }
 
         // only process clearpay method
-        if ($order->getPayment()->getMethod() !== \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE) {
+        if ($order->getPayment()->getMethod() !== \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE) {
             return false;
         }
 
@@ -301,8 +301,8 @@ class Response
 
         $this->status = $response['status'];
 
-        if ($response['token'] == $order->getPayment()->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN) &&
-            ($response['status'] == \Clearpay\Clearpay\Model\Status::STATUS_APPROVED || $response['status'] == \Clearpay\Clearpay\Model\Status::STATUS_PENDING)
+        if ($response['token'] == $order->getPayment()->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN) &&
+            ($response['status'] == \Clearpay\ClearpayEurope\Model\Status::STATUS_APPROVED || $response['status'] == \Clearpay\ClearpayEurope\Model\Status::STATUS_PENDING)
         ) {
             return true;
         }
@@ -320,19 +320,18 @@ class Response
         $clearpayVoid     = false;
         $result           = [];
         $override         = [];
-        $orderId          = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
-        
+        $orderId          = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
+
         if($orderId) {
-            
             $order           = $payment->getOrder();
             $creditmemo      = $payment->getCreditmemo();
             $amountToCapture = 0.00;
             $storeCredit     = $creditmemo->getCustomerBalanceAmount();
             $override        = ["website_id" => $order->getStore()->getWebsiteId()];
             
-            $clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS);
+            $clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS);
             
-            if($clearpayPaymentStatus == self::PAYMENT_STATUS_CAPTURED){
+            if($clearpayPaymentStatus == self::RESPONSE_STATUS_APPROVED){
                 $clearpayRefund = true;
             }
             elseif($clearpayPaymentStatus == self::PAYMENT_STATUS_PARTIALLY_CAPTURED || $clearpayPaymentStatus == self::PAYMENT_STATUS_AUTH_APPROVED){  
@@ -344,14 +343,14 @@ class Response
                 $amountCaptured            = 0.00;
                 $amountNotCaptured         = 0.00;
                 $amountToRefund            = 0.00;
-                $openToCaptureAmount       = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT);
-                $rolloverAmount            = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT);
-                $rolloverRefund            = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND);
+                $openToCaptureAmount       = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT);
+                $rolloverAmount            = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_AMOUNT);
+                $rolloverRefund            = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND);
                 $refundAmountAvailable     = $orderTotal - $openToCaptureAmount;
                 $appliedDiscount           = 0.00;
                 $refundedDiscount          = 0.00;
                 $orderDiscount             = $order->getCustomerBalanceAmount() + $order->getGiftCardsAmount();
-                $rolloverDiscount          = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT);
+                $rolloverDiscount          = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT);
                 $capturedDiscount          = $orderDiscount - $rolloverDiscount;
                 $orderShippingAmount       = $order->getShippingInclTax();
                 $actualOpenToCaptureAmount = $openToCaptureAmount - ($rolloverRefund + $rolloverAmount);
@@ -444,10 +443,10 @@ class Response
                         $reducedRolloverDiscount  = max((($appliedDiscount - $amountCaptured) - $amountToCapture),0.00);
                         
                         if($rolloverDiscount > 0){
-                            $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT, max(($rolloverDiscount - $reducedRolloverDiscount),"0.00"));
+                            $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT, max(($rolloverDiscount - $reducedRolloverDiscount),"0.00"));
                         }
                         else{
-                            $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT, "0.00");
+                            $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT, "0.00");
                         }
                     }
                     
@@ -470,7 +469,7 @@ class Response
                             }
                             else{
                                 $rolloverRefund = $rolloverRefund + $amountToRefund;
-                                $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
+                                $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
                                 $result['success'] = true;
                             }
                         }
@@ -486,13 +485,13 @@ class Response
                                 }
                                 else{
                                     $rolloverRefund = $rolloverRefund + $amountToRefund;
-                                    $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
+                                    $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
                                     $result['success'] = true;
                                 }
                             }
                             else{
                                 $rolloverRefund = $rolloverRefund + $amountToRefund;
-                                $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
+                                $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
                                 $result['success'] = true;
                             }
                         }
@@ -533,22 +532,22 @@ class Response
         $override         = [];
         $result           = [];
         $amountToCapture  = 0.00;
-        $orderId          = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
+        $orderId          = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
         
         if($orderId) {
             $order = $payment->getOrder();
             if($amount > 0){
                 $override = ["website_id" => $order->getStore()->getWebsiteId()];
                 
-                $clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS);
+                $clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS);
                 if($clearpayPaymentStatus == self::PAYMENT_STATUS_CAPTURED){
                     $clearpayRefund = true;
                 }
                 elseif($clearpayPaymentStatus == self::PAYMENT_STATUS_PARTIALLY_CAPTURED || $clearpayPaymentStatus == self::PAYMENT_STATUS_AUTH_APPROVED){  
                     
                     $orderTotal               = $order->getGrandTotal();
-                    $openToCaptureAmount      = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT);
-                    $rolloverRefund           = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND);
+                    $openToCaptureAmount      = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT);
+                    $rolloverRefund           = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND);
                     $refundAmountAvailable    = $orderTotal - $openToCaptureAmount; 
                     
                     if(number_format($amount - $orderTotal, 2, '.', '') == 0.00){
@@ -566,7 +565,7 @@ class Response
                         elseif($amount < $openToCaptureAmount){
                             
                             $rolloverRefund = $rolloverRefund + $amount;
-                            $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
+                            $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
                             $result['success'] = true;
                         }
                         elseif($amount > $openToCaptureAmount){
@@ -603,9 +602,9 @@ class Response
             $captureResponse = $this->jsonHelper->jsonDecode($captureResponse->getBody());
 
             if(!array_key_exists("errorCode",$captureResponse)) {
-                $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS,$captureResponse['paymentState']);
+                $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS,$captureResponse['paymentState']);
                 if(array_key_exists('openToCaptureAmount',$captureResponse) && !empty($captureResponse['openToCaptureAmount'])){
-                    $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT,number_format($captureResponse['openToCaptureAmount']['amount'], 2, '.', ''));
+                    $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT,number_format($captureResponse['openToCaptureAmount']['amount'], 2, '.', ''));
                 }
                 $success = true;
             }
@@ -621,7 +620,7 @@ class Response
 
             $refundResponse = $this->jsonHelper->jsonDecode($refundResponse->getBody());
 
-            if (!empty($refundResponse['refundId'])) {
+            if (!empty($refundResponse['id'])) {
                 $success = true;
                 
             } else {
@@ -636,20 +635,20 @@ class Response
             $voidResponse = $this->jsonHelper->jsonDecode($voidResponse->getBody());
                 
             if(!array_key_exists("errorCode",$voidResponse)) {
-                $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS, $voidResponse['paymentState']);
+                $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS, $voidResponse['paymentState']);
                 
                 if(array_key_exists('openToCaptureAmount',$voidResponse) && !empty($voidResponse['openToCaptureAmount'])){
-                    $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT,$voidResponse['openToCaptureAmount']['amount']);
+                    $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT,$voidResponse['openToCaptureAmount']['amount']);
                 }
                 
-                if($payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND) > 0){
-                    $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND, "0.00");
+                if($payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND) > 0){
+                    $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_REFUND, "0.00");
                 }
-                if($payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT) > 0){
-                    $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT, "0.00");
+                if($payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT) > 0){
+                    $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_DISCOUNT, "0.00");
                 }
-                if($payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT) > 0){
-                    $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT, "0.00");
+                if($payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_AMOUNT) > 0){
+                    $payment->setAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ROLLOVER_AMOUNT, "0.00");
                 }
                 $success = true;
             }

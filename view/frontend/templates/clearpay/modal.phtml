@@ -3,11 +3,11 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-$store_base_currency = $this->helper('Clearpay\Clearpay\Helper\Data')->getConfig('currency/options/default');
+$store_base_currency = $this->helper('Clearpay\ClearpayEurope\Helper\Data')->getConfig('currency/options/default');
 ?>
-<div id="clearpay-modal-popup" style="display:none">
+<div id="clearpayeu-modal-popup" style="display:none">
     <a href="https://www.clearpay.co.uk/terms" target="_blank">
         <img class="clearpay-modal-image" alt="Clearpay"/>
     </a>
@@ -28,16 +28,16 @@ $store_base_currency = $this->helper('Clearpay\Clearpay\Helper\Data')->getConfig
 			var options = {
                 responsive: false,
                 innerScroll: false,
-                modalClass: 'clearpay-learn-more'
+                modalClass: 'clearpayeu-learn-more'
             };
             // register poup
-            var popup = modal(options, $('#clearpay-modal-popup'));
+            var popup = modal(options, $('#clearpayeu-modal-popup'));
 			
 			if(width > 640){
-				$("#clearpay-modal-popup .clearpay-modal-image").attr({src:"https://static.afterpay.com/clearpay-lightbox-desktop.png",srcset:"https://static.afterpay.com/clearpay-lightbox-desktop.png 1x,https://static.afterpay.com/clearpay-lightbox-desktop@2x.png 2x"});
+				$("#clearpayeu-modal-popup .clearpay-modal-image").attr({src:"https://static.afterpay.com/clearpay-lightbox-desktop.png",srcset:"https://static.afterpay.com/clearpay-lightbox-desktop.png 1x,https://static.afterpay.com/clearpay-lightbox-desktop@2x.png 2x"});
 			}
 			else{
-				$("#clearpay-modal-popup .clearpay-modal-image").attr({src:"https://static.afterpay.com/clearpay-lightbox-mobile.png",srcset:"https://static.afterpay.com/clearpay-lightbox-mobile.png 1x,https://static.afterpay.com/clearpay-lightbox-mobile@2x.png 2x"});
+				$("#clearpayeu-modal-popup .clearpay-modal-image").attr({src:"https://static.afterpay.com/clearpay-lightbox-mobile.png",srcset:"https://static.afterpay.com/clearpay-lightbox-mobile.png 1x,https://static.afterpay.com/clearpay-lightbox-mobile@2x.png 2x"});
 			}
 
             // register the click to be popup

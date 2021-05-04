@@ -3,13 +3,13 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Block;
+namespace Clearpay\ClearpayEurope\Block;
 
 /**
  * Class Info
- * @package Clearpay\Clearpay\Block
+ * @package Clearpay\ClearpayEurope\Block
  */
 class Info extends \Magento\Payment\Block\Info
 {
@@ -25,7 +25,7 @@ class Info extends \Magento\Payment\Block\Info
         $info = $this->getInfo();
 
         // load the data available on additional informations
-        if ($this->getArea() === \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE
+        if ($this->_appState->getAreaCode() === \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE
             && $info->getAdditionalInformation()
         ) {
             foreach ($info->getAdditionalInformation() as $field => $value) {

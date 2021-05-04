@@ -3,13 +3,13 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Cron;
+namespace Clearpay\ClearpayEurope\Model\Cron;
 
-use Clearpay\Clearpay\Model\Adapter\ClearpayTotalLimit as ClearpayTotalLimit;
+use Clearpay\ClearpayEurope\Model\Adapter\ClearpayTotalLimit as ClearpayTotalLimit;
 use Magento\Store\Model\StoreManagerInterface as StoreManagerInterface;
-use Clearpay\Clearpay\Helper\Data as ClearpayHelper;
+use Clearpay\ClearpayEurope\Helper\Data as ClearpayHelper;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
 use Magento\Framework\App\Config\Storage\WriterInterface as WriterInterface;
 use Magento\Config\Model\ResourceModel\Config as RequestConfig;
@@ -112,14 +112,14 @@ class Limit
             }
 
             $this->_resourceConfig->saveConfig(
-                'payment/' . \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE . '/' . \Clearpay\Clearpay\Model\Config\Payovertime::MIN_TOTAL_LIMIT,
+                'payment/' . \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE . '/' . \Clearpay\ClearpayEurope\Model\Config\Payovertime::MIN_TOTAL_LIMIT,
                 $minTotal,
                 'default',
                 0
             );
 
             $this->_resourceConfig->saveConfig(
-                'payment/' . \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE . '/' . \Clearpay\Clearpay\Model\Config\Payovertime::MAX_TOTAL_LIMIT,
+                'payment/' . \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE . '/' . \Clearpay\ClearpayEurope\Model\Config\Payovertime::MAX_TOTAL_LIMIT,
                 $maxTotal,
                 'default',
                 0
@@ -160,14 +160,14 @@ class Limit
             }
 
             $result = $this->_writerInterface->save(
-                'payment/' . \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE . '/' . \Clearpay\Clearpay\Model\Config\Payovertime::MIN_TOTAL_LIMIT,
+                'payment/' . \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE . '/' . \Clearpay\ClearpayEurope\Model\Config\Payovertime::MIN_TOTAL_LIMIT,
                 $minTotal,
                 \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES,
                 $website_id
             );
 
             $this->_writerInterface->save(
-                'payment/' . \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE . '/' . \Clearpay\Clearpay\Model\Config\Payovertime::MAX_TOTAL_LIMIT,
+                'payment/' . \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE . '/' . \Clearpay\ClearpayEurope\Model\Config\Payovertime::MAX_TOTAL_LIMIT,
                 $maxTotal,
                 \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES,
                 $website_id

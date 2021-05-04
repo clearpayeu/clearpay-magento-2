@@ -1,10 +1,11 @@
 <?php
-/** @var Clearpay\Clearpay\Block\Config $this */
+/** @var Clearpay\ClearpayEurope\Block\Config $this */
 if($this->checkCurrency()){
 ?>
 
 <script src="<?php echo $this->getClearpayJsUrl() ?>"></script>
-<script>
+<!--script>
+
     window.Clearpay = window.Clearpay || {};
-</script>
+</script-->
 <?php }?>

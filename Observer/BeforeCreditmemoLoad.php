@@ -3,16 +3,16 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Observer;
+namespace Clearpay\ClearpayEurope\Observer;
 
 use \Magento\Framework\Event\ObserverInterface;
-use \Clearpay\Clearpay\Helper\Data as Helper;
+use \Clearpay\ClearpayEurope\Helper\Data as Helper;
 
 /**
  * Class BeforeCreditmemoLoad
- * @package Clearpay\Clearpay\Observer
+ * @package Clearpay\ClearpayEurope\Observer
  */
 class BeforeCreditmemoLoad implements ObserverInterface
 { 
@@ -42,9 +42,9 @@ class BeforeCreditmemoLoad implements ObserverInterface
 			$order      = $creditmemo->getOrder();
 			$payment    = $order->getPayment();
 			
-			if($payment->getMethod() == \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE ){
-				$clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS);
-				if($clearpayPaymentStatus == \Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_AUTH_APPROVED || $clearpayPaymentStatus == \Clearpay\Clearpay\Model\Response::PAYMENT_STATUS_PARTIALLY_CAPTURED){
+			if($payment->getMethod() == \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE ){
+				$clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::PAYMENT_STATUS);
+				if($clearpayPaymentStatus == \Clearpay\ClearpayEurope\Model\Response::PAYMENT_STATUS_AUTH_APPROVED || $clearpayPaymentStatus == \Clearpay\ClearpayEurope\Model\Response::PAYMENT_STATUS_PARTIALLY_CAPTURED){
 					$block->unsetChild(
 						'submit_offline'
 					);

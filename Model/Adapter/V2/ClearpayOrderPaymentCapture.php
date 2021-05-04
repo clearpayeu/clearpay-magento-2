@@ -3,20 +3,20 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Adapter\V2;
+namespace Clearpay\ClearpayEurope\Model\Adapter\V2;
 
-use \Clearpay\Clearpay\Model\Adapter\Clearpay\Call;
-use \Clearpay\Clearpay\Model\Config\Payovertime as PayovertimeConfig;
+use \Clearpay\ClearpayEurope\Model\Adapter\Clearpay\Call;
+use \Clearpay\ClearpayEurope\Model\Config\Payovertime as PayovertimeConfig;
 use \Magento\Framework\ObjectManagerInterface as ObjectManagerInterface;
 use \Magento\Store\Model\StoreManagerInterface as StoreManagerInterface;
 use \Magento\Framework\Json\Helper\Data as JsonHelper;
-use \Clearpay\Clearpay\Helper\Data as Helper;
+use \Clearpay\ClearpayEurope\Helper\Data as Helper;
 
 /**
  * Class ClearpayOrderPaymentCapture
- * @package Clearpay\Clearpay\Model\Adapter\V2
+ * @package Clearpay\ClearpayEurope\Model\Adapter\V2
  */
 class ClearpayOrderPaymentCapture
 {
@@ -65,13 +65,13 @@ class ClearpayOrderPaymentCapture
 
         try {
             $response = $this->clearpayApiCall->send(
-                $this->clearpayConfig->getApiUrl('v2/payments/'.$clearpay_order_id.'/capture',[],$override),
+                $this->clearpayConfig->getApiUrl('v1/payments/'.$clearpay_order_id.'/capture',[],$override),
                 $requestData,
                 \Magento\Framework\HTTP\ZendClient::POST,
 				$override
             );
         } catch (\Exception $e) {
-            $response = $this->objectManagerInterface->create('Clearpay\Clearpay\Model\Payovertime');
+            $response = $this->objectManagerInterface->create('Clearpay\ClearpayEurope\Model\Payovertime');
             $response->setBody($this->jsonHelper->jsonEncode([
                 'error' => 1,
                 'message' => $e->getMessage()

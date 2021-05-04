@@ -4,16 +4,16 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <css src="Clearpay_Clearpay::css/clearpay.css"/>
+        <css src="Clearpay_ClearpayEurope::css/clearpay.css"/>
     </head>
     <body>
         <referenceBlock name="head.additional">
-            <block class="Clearpay\Clearpay\Block\Config" name="clearpay.config" template="Clearpay_Clearpay::config.phtml" />
+            <block class="Clearpay\ClearpayEurope\Block\Config" name="clearpayeu.config" template="Clearpay_ClearpayEurope::config.phtml" />
         </referenceBlock>
         <referenceBlock name="checkout.root">
             <arguments>
@@ -31,10 +31,10 @@
                                                         <item name="renders" xsi:type="array">
                                                             <!-- merge payment method renders here -->
                                                             <item name="children" xsi:type="array">
-                                                                <item name="clearpay-payments" xsi:type="array">
-                                                                    <item name="component" xsi:type="string">Clearpay_Clearpay/js/view/payment/clearpay-payments</item>
+                                                                <item name="clearpayeu-payments" xsi:type="array">
+                                                                    <item name="component" xsi:type="string">Clearpay_ClearpayEurope/js/view/payment/clearpay-payments</item>
                                                                     <item name="methods" xsi:type="array">
-                                                                        <item name="clearpaypayovertime" xsi:type="array">
+                                                                        <item name="clearpayeupayovertime" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>
                                                                     </item>

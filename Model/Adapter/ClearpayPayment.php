@@ -3,12 +3,12 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Adapter;
+namespace Clearpay\ClearpayEurope\Model\Adapter;
 
-use \Clearpay\Clearpay\Model\Adapter\Clearpay\Call;
-use \Clearpay\Clearpay\Model\Config\Payovertime as ClearpayConfig;
+use \Clearpay\ClearpayEurope\Model\Adapter\Clearpay\Call;
+use \Clearpay\ClearpayEurope\Model\Config\Payovertime as ClearpayConfig;
 use \Magento\Framework\ObjectManagerInterface as ObjectManagerInterface;
 use \Magento\Framework\Json\Helper\Data as JsonHelper;
 
@@ -82,7 +82,7 @@ class ClearpayPayment
         try {
             $response = $this->clearpayApiCall->send($url, null, null, $override);
         } catch (\Exception $e) {
-            $response = $this->objectManagerInterface->create('Clearpay\Clearpay\Model\Payovertime');
+            $response = $this->objectManagerInterface->create('Clearpay\ClearpayEurope\Model\Payovertime');
             $response->setBody($this->jsonHelper->jsonEncode([
                 'error' => 1,
                 'message' => $e->getMessage()
@@ -99,10 +99,10 @@ class ClearpayPayment
      * @param array $override
      * @return mixed|\Zend_Http_Response
      */
-    public function refund($amount, $orderId, $currency = 'GBP', $override = [])
+    public function refund($amount, $orderId, $currency = 'EUR', $override = [])
     {
         // create url to request refunds
-        $url = $this->clearpayConfig->getApiUrl('v2/payments/' . $orderId . '/refund', [], $override);
+        $url = $this->clearpayConfig->getApiUrl('v1/payments/' . $orderId . '/refund', [], $override);
 
         // generate body to be sent to refunds
         $body = [
@@ -124,7 +124,7 @@ class ClearpayPayment
                 $override
             );
         } catch (\Exception $e) {
-            $response = $this->objectManagerInterface->create('Clearpay\Clearpay\Model\Payovertime');
+            $response = $this->objectManagerInterface->create('Clearpay\ClearpayEurope\Model\Payovertime');
             $response->setBody($this->jsonHelper->jsonEncode([
                 'error' => 1,
                 'message' => $e->getMessage()
@@ -142,7 +142,7 @@ class ClearpayPayment
     public function voidOrder($orderId, $override = [])
     {
         // create url to request refunds
-        $url = $this->clearpayConfig->getApiUrl('v2/payments/' . $orderId . '/void', [], $override);
+        $url = $this->clearpayConfig->getApiUrl('v1/payments/' . $orderId . '/void', [], $override);
 
         // refunding now
         try {
@@ -153,7 +153,7 @@ class ClearpayPayment
                 $override
             );
         } catch (\Exception $e) {
-            $response = $this->objectManagerInterface->create('Clearpay\Clearpay\Model\Payovertime');
+            $response = $this->objectManagerInterface->create('Clearpay\ClearpayEurope\Model\Payovertime');
             $response->setBody($this->jsonHelper->jsonEncode([
                 'error' => 1,
                 'message' => $e->getMessage()

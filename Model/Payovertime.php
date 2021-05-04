@@ -3,13 +3,13 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model;
+namespace Clearpay\ClearpayEurope\Model;
 
 use \Magento\Payment\Model\InfoInterface;
 use \Magento\Framework\Exception\LocalizedException as LocalizedException;
-use \Clearpay\Clearpay\Helper\Data as Helper;
+use \Clearpay\ClearpayEurope\Helper\Data as Helper;
 use \Magento\Quote\Model\ResourceModel\Quote\Payment as PaymentQuoteRepository;
 
 class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
@@ -17,7 +17,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
     /**
      * Constant variable
      */
-    const METHOD_CODE = 'clearpaypayovertime';
+    const METHOD_CODE = 'clearpayeupayovertime';
 
     const ADDITIONAL_INFORMATION_KEY_TOKEN = 'clearpay_token';
     const ADDITIONAL_INFORMATION_KEY_ORDERID = 'clearpay_order_id';
@@ -49,12 +49,12 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_canUseInternal = false;
     protected $_canFetchTransactionInfo = true;
 
-    protected $_infoBlockType = 'Clearpay\Clearpay\Block\Info';
+    protected $_infoBlockType = 'Clearpay\ClearpayEurope\Block\Info';
 
     /**
      * For dependency injection
      */
-    protected $supportedContryCurrencyCodes = array('GB'=>'GBP');
+    protected $supportedContryCurrencyCodes = array('IT'=>'EUR','FR'=>'EUR','ES'=>'EUR');
     protected $clearpayPaymentTypeCode = self::CLEARPAY_PAYMENT_TYPE_CODE;
 
     protected $logger;
@@ -112,9 +112,9 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
         \Magento\Payment\Model\Method\Logger $logger,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\Exception\LocalizedExceptionFactory $exception,
-        \Clearpay\Clearpay\Model\Adapter\V2\ClearpayOrderTokenV2 $clearpayOrderTokenV2,
-        \Clearpay\Clearpay\Model\Adapter\ClearpayPayment $clearpayPayment,
-        \Clearpay\Clearpay\Model\Response $clearpayResponse,
+        \Clearpay\ClearpayEurope\Model\Adapter\V2\ClearpayOrderTokenV2 $clearpayOrderTokenV2,
+        \Clearpay\ClearpayEurope\Model\Adapter\ClearpayPayment $clearpayPayment,
+        \Clearpay\ClearpayEurope\Model\Response $clearpayResponse,
         Helper $clearpayHelper,
         PaymentQuoteRepository $paymentQuoteRepository,
         \Magento\Framework\Stdlib\DateTime\DateTime $date,
@@ -215,7 +215,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
     {
         $quote = $this->checkoutSession->getQuote();
         $payment = $quote->getPayment();
-        $token_generated = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKENGENERATED);
+        $token_generated = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKENGENERATED);
         $payment->setAdditionalInformation(self::ADDITIONAL_INFORMATION_KEY_TOKENGENERATED, false);
         $this->_paymentQuoteRepository->save($payment);
         return $this;
@@ -266,14 +266,14 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
     public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
         // debug mode
-        $this->helper->debug('Start \Clearpay\Clearpay\Model\Payovertime::refund()');
+        $this->helper->debug('Start \Clearpay\ClearpayEurope\Model\Payovertime::refund()');
 		
 		$result = $this->clearpayResponse->calculateRefund($payment, $amount);
-		
+
 		if(!array_key_exists('success',$result)){
 			throw new \Magento\Framework\Exception\LocalizedException(__('There was a problem with your refund. Please check the logs.'));
 		}
-		$this->helper->debug('Finished \Clearpay\Clearpay\Model\Payovertime::refund()');
+		$this->helper->debug('Finished \Clearpay\ClearpayEurope\Model\Payovertime::refund()');
 		return $this;
 		
     }
@@ -326,8 +326,8 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
             
             $canUseForCurrency=parent::canUseForCurrency($currencyCode);
             //Currency Check for Cross Border trade
-            if(!empty($this->getConfigData('enable_cbt'))){
-                $specifiedCountires=explode(",",$this->getConfigData('cbt_country'));
+            if(!empty($this->getConfigData('allowed_countries'))){
+                $specifiedCountires=explode("|",$this->getConfigData('allowed_countries'));
                 $canUseForCurrency=false;
                 foreach($specifiedCountires AS $country){
                     if(isset($this->supportedContryCurrencyCodes[$country]) && ($currencyCode==$this->supportedContryCurrencyCodes[$country])){
@@ -335,9 +335,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
                         break;
                     }
                 }
-                
             }
-           
         }
         return $canUseForCurrency;
     }
@@ -351,7 +349,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
     public function fetchTransactionInfo(InfoInterface $payment, $transactionId)
     {
         // Debug mode
-        $this->helper->debug('Start \Clearpay\Clearpay\Model\Payovertime::fetchTransactionInfo()');
+        $this->helper->debug('Start \Clearpay\ClearpayEurope\Model\Payovertime::fetchTransactionInfo()');
 
         $order = $payment->getOrder();
 
@@ -374,20 +372,20 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
             if (isset($response['totalResults']) && $response['totalResults'] > 0) {
                 $result = $response['results'][0];
                 switch ($result['status']) {
-                    case \Clearpay\Clearpay\Model\Status::STATUS_APPROVED:
+                    case \Clearpay\ClearpayEurope\Model\Status::STATUS_APPROVED:
                         // Approved payment will update the order and create invoice
                         $this->clearpayResponse->updatePayment($payment->getOrder(), $result['id']);
                         $this->clearpayResponse->createInvoiceAndUpdateOrder($payment->getOrder(), $result['id']);
                         $payment->setIsTransactionApproved(true);
                         break;
 
-                    case \Clearpay\Clearpay\Model\Status::STATUS_DECLINED;
+                    case \Clearpay\ClearpayEurope\Model\Status::STATUS_DECLINED;
                         // set payment denied and will canceled the order
                         $payment->addTransactionCommentsToOrder(false, __('Payment declined by Clearpay'));
                         $payment->setIsTransactionDenied(true);
                         break;
 
-                    case \Clearpay\Clearpay\Model\Status::STATUS_FAILED;
+                    case \Clearpay\ClearpayEurope\Model\Status::STATUS_FAILED;
                         // set payment denied and will canceled the order
                         $payment->addTransactionCommentsToOrder(false, __('Payment Failed'));
                         $payment->setIsTransactionDenied(true);
@@ -403,7 +401,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
         }
 
         // Debug mode
-        $this->helper->debug('Finished \Clearpay\Clearpay\Model\Payovertime::fetchTransactionInfo()');
+        $this->helper->debug('Finished \Clearpay\ClearpayEurope\Model\Payovertime::fetchTransactionInfo()');
 
         // return to the parent
         return parent::fetchTransactionInfo($payment, $transactionId);

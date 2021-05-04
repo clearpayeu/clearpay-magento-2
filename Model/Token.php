@@ -3,9 +3,9 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model;
+namespace Clearpay\ClearpayEurope\Model;
 
 class Token
 {
@@ -39,8 +39,8 @@ class Token
         $order = $this->checkoutSession->getLastRealOrder();
         $payment = $order->getPayment();
 
-        if ($payment->getMethod() == \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE) {
-            $data = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN);
+        if ($payment->getMethod() == \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE) {
+            $data = $payment->getAdditionalInformation(\Clearpay\ClearpayEurope\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKEN);
             $return = $this->jsonHelper->jsonEncode([
                 'token' => $data
             ]);

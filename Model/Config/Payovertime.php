@@ -3,11 +3,11 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Config;
+namespace Clearpay\ClearpayEurope\Model\Config;
 
-use Clearpay\Clearpay\Model\Adapter\ApiMode;
+use Clearpay\ClearpayEurope\Model\Adapter\ApiMode;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface as StoreManagerInterface;
 use Magento\Framework\App\Request\Http as Request;
@@ -15,7 +15,7 @@ use Magento\Framework\App\State as State;
 
 /**
  * Class Payovertime
- * @package Clearpay\Clearpay\Model\Config
+ * @package Clearpay\ClearpayEurope\Model\Config
  */
 class Payovertime
 {
@@ -33,13 +33,13 @@ class Payovertime
     const DEBUG_MODE             = 'debug';
     const MIN_TOTAL_LIMIT        = 'min_order_total';
     const MAX_TOTAL_LIMIT        = 'max_order_total';
+    const ALLOWED_COUNTRIES      = 'allowed_countries';
     const HTTP_HEADER_SUPPORT    = 'http_header_support';
     const EXCLUDE_CATEGORY       = 'exclude_category';
-    const ENABLE_CBT             = 'enable_cbt';
-    const CBT_COUNTRY            = 'cbt_country';
+    //const ENABLE_CBT             = 'enable_cbt';
+    //const CBT_COUNTRY            = 'cbt_country';
     const ENABLE_FOR_PRODUCT_PAGE= "enable_for_product_page";
     const ENABLE_FOR_CART_PAGE   = "enable_for_cart_page";
-    const EXPRESS_CHECKOUT_KEY   =  "express_checkout_key";
 
     /**
      * @var ApiMode
@@ -191,26 +191,17 @@ class Payovertime
         $url ="";
         if ($type=='api_url') {
             if ($apiMode == 'Sandbox') {
-                $url = 'https://api.eu-sandbox.afterpay.com/';
+                $url = "https://api.sandbox.clearpay.com/";
             } elseif ($apiMode == 'Production') {
-                $url = 'https://api.eu.afterpay.com/';
+                $url = "https://api.clearpay.com/";
             }
         }
 
         if ($type=='web_url') {
             if ($apiMode == 'Sandbox') {
-                $url = 'https://portal.sandbox.clearpay.co.uk/';
+                $url = "https://merchant-tools.sandbox.clearpay.com/";
             } elseif ($apiMode == 'Production') {
-                $url = 'https://portal.clearpay.co.uk/';
-            }
-        }
-        
-        // get JS Library URL
-        if ($type=='js_lib_url') {
-            if ($apiMode == 'Sandbox') {
-                $url = 'https://js.sandbox.afterpay.com/';
-            } elseif ($apiMode == 'Production') {
-                $url = 'https://js.afterpay.com/';
+                $url = "https://merchant-tools.clearpay.com/";
             }
         }
         
@@ -281,10 +272,10 @@ class Payovertime
         }
 
         if (!empty($website_id) && $website_id) {
-            return $this->scopeConfig->getValue('payment/' . \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE . '/' . $path, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES, $website_id);
+            return $this->scopeConfig->getValue('payment/' . \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE . '/' . $path, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES, $website_id);
         } else {
-            // var_dump($this->scopeConfig->getValue('payment/' . \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE . '/' . $path, 'default'));
-            return $this->scopeConfig->getValue('payment/' . \Clearpay\Clearpay\Model\Payovertime::METHOD_CODE . '/' . $path, 'default');
+            // var_dump($this->scopeConfig->getValue('payment/' . \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE . '/' . $path, 'default'));
+            return $this->scopeConfig->getValue('payment/' . \Clearpay\ClearpayEurope\Model\Payovertime::METHOD_CODE . '/' . $path, 'default');
         }
     }
 
@@ -368,6 +359,14 @@ class Payovertime
         return (float)$this->_getConfigData(self::MIN_TOTAL_LIMIT);
     }
 
+    /**
+     * @return float
+     */
+    public function getAllowedCountries()
+    {
+        return $this->_getConfigData(self::ALLOWED_COUNTRIES);
+    }
+
 	/**
      * @return int
      */
@@ -397,34 +396,10 @@ class Payovertime
     }
     
     /**
-     * @return int
+     * @return bool
      */
     public function isEnabledForCartPage()
     {
-        return $this->_getConfigData(self::ENABLE_FOR_CART_PAGE);
+        return (bool)$this->_getConfigData(self::ENABLE_FOR_CART_PAGE);
     }
-        
-    /**
-     * Calculated the currency code
-     *
-     * @return $text
-     */
-    public function getCurrentCountryCode()
-    {
-        $websiteId=$this->getWebsiteId();;
-        $countryCode = $this->scopeConfig->getValue('general/country/default', \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES,$websiteId);
-        return $countryCode;
-    }
-    
-    /**
-     * Get config for express checkout key
-     *
-     * @return string
-     */
-    public function getExpressCheckoutKey()
-    {
-        return $this->_getConfigData(self::EXPRESS_CHECKOUT_KEY);
-    }
-    
-   
 }

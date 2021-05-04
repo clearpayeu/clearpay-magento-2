@@ -3,13 +3,13 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Adapter\Clearpay;
+namespace Clearpay\ClearpayEurope\Model\Adapter\Clearpay;
 
 /**
  * Class ClearpayCurl
- * @package Clearpay\Clearpay\Model\Adapter\Clearpay
+ * @package Clearpay\ClearpayEurope\Model\Adapter\Clearpay
  * @see \Zend\Http\Client
  */
 class ClearpayClient
@@ -61,7 +61,7 @@ class ClearpayClient
     public function request($method = 'GET')
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $response_object = $objectManager->get('Clearpay\Clearpay\Model\Adapter\Clearpay\ClearpayResponse');
+        $response_object = $objectManager->get('Clearpay\ClearpayEurope\Model\Adapter\Clearpay\ClearpayResponse');
 
         $response_object = $this->execute($method, $response_object);
 

@@ -4,17 +4,17 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <css src="Clearpay_Clearpay::css/clearpay.css"/>
-        <link src="Clearpay_Clearpay::js/view/product/clearpay-products.js"/>
+        <css src="Clearpay_ClearpayEurope::css/clearpay.css"/>
+        <link src="Clearpay_ClearpayEurope::js/view/product/clearpay-products.js"/>
     </head>
     <body>
         <referenceContainer name="product.info.main">
-            <block class="Clearpay\Clearpay\Block\Catalog\Installments" name="clearpay.price.installments" after="product.info.price" template="Clearpay_Clearpay::clearpay/product.phtml" />
+            <block class="Clearpay\ClearpayEurope\Block\Catalog\Installments" name="clearpayeu.price.installments" after="product.info.price" template="Clearpay_ClearpayEurope::clearpay/product.phtml" />
         </referenceContainer>
     </body>
 </page>

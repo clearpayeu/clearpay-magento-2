@@ -4,25 +4,24 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <payment>
-            <clearpaypayovertime>
+            <clearpayeupayovertime>
                 <active>0</active>
                 <title>Clearpay</title>
                 <api_mode>sandbox</api_mode>
-                <model>Clearpay\Clearpay\Model\Payovertime</model>
+                <model>Clearpay\ClearpayEurope\Model\Payovertime</model>
                 <payment_action>authorize_capture</payment_action>
                 <merchant_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <allowspecific>1</allowspecific>
-                <specificcountry>GB</specificcountry>
                 <http_header_support>0</http_header_support>
                 <enable_for_product_page>1</enable_for_product_page>
                 <enable_for_cart_page>1</enable_for_cart_page> 
-            </clearpaypayovertime>
+            </clearpayeupayovertime>
         </payment>
     </default>
 </config>

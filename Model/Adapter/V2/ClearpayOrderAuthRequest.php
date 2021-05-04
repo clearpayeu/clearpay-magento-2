@@ -3,20 +3,20 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2021 Clearpay https://www.clearpay.com
  */
-namespace Clearpay\Clearpay\Model\Adapter\V2;
+namespace Clearpay\ClearpayEurope\Model\Adapter\V2;
 
-use \Clearpay\Clearpay\Model\Adapter\Clearpay\Call;
-use \Clearpay\Clearpay\Model\Config\Payovertime as PayovertimeConfig;
+use \Clearpay\ClearpayEurope\Model\Adapter\Clearpay\Call;
+use \Clearpay\ClearpayEurope\Model\Config\Payovertime as PayovertimeConfig;
 use \Magento\Framework\ObjectManagerInterface as ObjectManagerInterface;
 use \Magento\Store\Model\StoreManagerInterface as StoreManagerInterface;
 use \Magento\Framework\Json\Helper\Data as JsonHelper;
-use \Clearpay\Clearpay\Helper\Data as Helper;
+use \Clearpay\ClearpayEurope\Helper\Data as Helper;
 
 /**
  * Class ClearpayOrderAuthRequest
- * @package Clearpay\Clearpay\Model\Adapter\V2
+ * @package Clearpay\ClearpayEurope\Model\Adapter\V2
  */
 class ClearpayOrderAuthRequest
 {
@@ -58,18 +58,18 @@ class ClearpayOrderAuthRequest
      * @return mixed|\Zend_Http_Response
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function generate($token, $merchant_order_id,$orderAmount=null)
+    public function generate($token, $merchant_order_id)
     {
-        $requestData = $this->_buildAuthRequest($token, $merchant_order_id,$orderAmount);
+        $requestData = $this->_buildAuthRequest($token, $merchant_order_id);
 
         try {
             $response = $this->clearpayApiCall->send(
-                $this->clearpayConfig->getApiUrl('v2/payments/auth'),
+                $this->clearpayConfig->getApiUrl('v1/payments/capture'),
                 $requestData,
                 \Magento\Framework\HTTP\ZendClient::POST
             );
         } catch (\Exception $e) {
-            $response = $this->objectManagerInterface->create('Clearpay\Clearpay\Model\Payovertime');
+            $response = $this->objectManagerInterface->create('Clearpay\ClearpayEurope\Model\Payovertime');
             $response->setBody($this->jsonHelper->jsonEncode([
                 'error' => 1,
                 'message' => $e->getMessage()
@@ -83,14 +83,12 @@ class ClearpayOrderAuthRequest
      * @param $merchant_order_id
      * @return array
      */
-    protected function _buildAuthRequest($token, $merchant_order_id,$orderAmount=null)
+    protected function _buildAuthRequest($token, $merchant_order_id)
     {
         $params['requestId'] = uniqid();
         $params['merchantReference'] = $merchant_order_id;
         $params['token'] = $token;
-        if(!is_null($orderAmount)){
-            $params['amount'] = $orderAmount;
-        }
+
         return $params;
     }
 }
