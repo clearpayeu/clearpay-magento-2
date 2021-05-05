@@ -40,6 +40,7 @@ class Response extends \Magento\Framework\App\Action\Action
 	protected $_quoteValidator;
 	protected $_timezone;
 	protected $_clearpayApiPayment;
+	protected $_expressPayment;
 	
     /**
      * Response constructor.
@@ -60,6 +61,10 @@ class Response extends \Magento\Framework\App\Action\Action
      * @param \Magento\Sales\Model\Order\Payment\Transaction\Repository $transactionRepository
      * @param \Magento\Framework\Notification\NotifierInterface $notifierPool
      * @param \Clearpay\Clearpay\Model\Adapter\V2\ClearpayOrderPaymentCapture $paymentCapture
+     * @param \Magento\Quote\Model\QuoteValidator $quoteValidator
+     * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone
+     * @param \Clearpay\Clearpay\Model\Adapter\ClearpayPayment $clearpayApiPayment
+     * @param \Clearpay\Clearpay\Model\Adapter\ClearpayExpressPayment $expressPayment
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -82,7 +87,8 @@ class Response extends \Magento\Framework\App\Action\Action
 		\Clearpay\Clearpay\Model\Adapter\V2\ClearpayOrderPaymentCapture $paymentCapture,
 		\Magento\Quote\Model\QuoteValidator $quoteValidator,
 		\Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
-		\Clearpay\Clearpay\Model\Adapter\ClearpayPayment $clearpayApiPayment
+		\Clearpay\Clearpay\Model\Adapter\ClearpayPayment $clearpayApiPayment,
+		\Clearpay\Clearpay\Model\Adapter\ClearpayExpressPayment $expressPayment
     ) {
         $this->_resultForwardFactory = $resultForwardFactory; 
 		$this->response = $response;
@@ -104,6 +110,7 @@ class Response extends \Magento\Framework\App\Action\Action
 		$this->_quoteValidator = $quoteValidator;
 		$this->_timezone = $timezone;
 		$this->_clearpayApiPayment = $clearpayApiPayment;
+		$this->_expressPayment = $expressPayment;
 		
         parent::__construct($context);
     }
@@ -164,12 +171,12 @@ class Response extends \Magento\Framework\App\Action\Action
                     if (!$response_check) {
                         // Check the order token being use
                         throw new \Magento\Framework\Exception\LocalizedException(__('There are issues when processing your payment. Invalid Token'));
-                    } elseif ($merchant_order_id != $response_check['merchantReference']) {
-                        // Check order id
-                        throw new \Magento\Framework\Exception\LocalizedException(__('There are issues when processing your payment. Invalid Merchant Reference'));
                     } elseif (round($quote->getBaseGrandTotal(), 2) != round($response_check['amount']['amount'], 2)) {
                         // Check the order amount
                         throw new \Magento\Framework\Exception\LocalizedException(__('There are issues when processing your payment. Invalid Amount'));
+                    } elseif ($this->_expressPayment->isCartUpdated($quote, $response_check['items'])) {
+                        // Check cart Items
+                        throw new \Magento\Framework\Exception\LocalizedException(__('There are issues when processing your payment. Invalid Cart Items'));
                     }
 
 					if(!$this->_helper->getConfig('payment/clearpaypayovertime/payment_flow') || $this->_helper->getConfig('payment/clearpaypayovertime/payment_flow')=="immediate" || $quote->getIsVirtual()){

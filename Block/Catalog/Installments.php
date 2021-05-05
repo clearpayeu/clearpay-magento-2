@@ -28,8 +28,8 @@ class Installments extends JsConfig
     /**
      * @var ClearpayPayovertime
      */
-    private $clearpayPayovertime;
-    
+    private $clearpayPayovertime;    
+
     /**
      * @var Resolver
      */
@@ -92,9 +92,9 @@ class Installments extends JsConfig
     public function getTypeOfProduct()
     {
         $product = $this->registry->registry('product');
-		return $product->getTypeId();
+        return $product->getTypeId();
     }
-    
+
     /**
      * @return string
      */
@@ -102,7 +102,7 @@ class Installments extends JsConfig
     {
         // get product
         $product = $this->registry->registry('product');
-        
+
         // set if final price is exist
         $price = $product->getPriceInfo()->getPrice('final_price')->getValue();
 
@@ -116,13 +116,12 @@ class Installments extends JsConfig
     {
         $canUse=false;
         //Check for Supported currency
+
         if($this->clearpayConfig->getCurrencyCode())
         {
             $canUse= $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode());
         } 
         
         return $canUse;
-        
     }
-    
 }

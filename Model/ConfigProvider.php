@@ -20,14 +20,19 @@ class ConfigProvider implements ConfigProviderInterface
      * @var Config\Payovertime
      */
     protected $clearpayConfig;
+    /**
+     * @var Payovertime
+     */
+    protected $clearpayPayovertime;
 
     /**
      * ConfigProvider constructor.
      * @param Config\Payovertime $config
      */
-    public function __construct(\Clearpay\Clearpay\Model\Config\Payovertime $config)
+    public function __construct(\Clearpay\Clearpay\Model\Config\Payovertime $config,\Clearpay\Clearpay\Model\Payovertime $clearpayPayovertime)
     {
         $this->clearpayConfig = $config;
+        $this->clearpayPayovertime = $clearpayPayovertime;
     }
 
     /**
@@ -51,6 +56,7 @@ class ConfigProvider implements ConfigProviderInterface
                     'paymentAction'     => $this->clearpayConfig->getPaymentAction(),
                     'termsConditionUrl' => self::TERMS_CONDITION_LINK,
                     'currencyCode'     => $this->clearpayConfig->getCurrencyCode(),
+                    'baseCurrencyCode'     => $this->clearpayPayovertime->getStoreCurrencyCode(),
                 ],
             ],
         ]);

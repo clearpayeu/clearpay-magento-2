@@ -4,6 +4,7 @@ namespace Clearpay\Clearpay\Block;
 
 use Magento\Framework\View\Element\Template;
 use Clearpay\Clearpay\Model\Config\Payovertime;
+use Clearpay\Clearpay\Model\Payovertime as ClearpayPayovertime;
 use Magento\Framework\Json\Helper\Data;
 
 class Config extends Template
@@ -29,11 +30,13 @@ class Config extends Template
         Payovertime $payovertime,
         Data $dataHelper,
         Template\Context $context,
+        ClearpayPayovertime $clearpayPayovertime,
         array $data
     ) {
     
         $this->_payOverTime = $payovertime;
         $this->_dataHelper = $dataHelper;
+        $this->clearpayPayovertime = $clearpayPayovertime;
 
         parent::__construct($context, $data);
     }
@@ -59,12 +62,7 @@ class Config extends Template
      */
 	public function checkCurrency()
     {
-		$supportedCurrency=['GBP'];
-		if(in_array($this->_payOverTime->getCurrencyCode(),$supportedCurrency)){
-			return true;
-		}
-		else{
-			return false;
-		}
+        return $this->clearpayPayovertime->canUseForCurrency($this->_payOverTime->getCurrencyCode()) && $this->_payOverTime->isActive();
+		
     }
 }

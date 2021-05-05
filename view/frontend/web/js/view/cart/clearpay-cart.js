@@ -21,7 +21,8 @@ require(
 
 			 //CountryCode Object to pass in initialize function.
 	         var countryCurrencyMapping ={GBP:"GB"};
-	         var countryCode = (clearpayData.currencyCode in countryCurrencyMapping)? countryCurrencyMapping[clearpayData.currencyCode]:'';
+	         var countryCode = (clearpayData.baseCurrencyCode in countryCurrencyMapping)? countryCurrencyMapping[clearpayData.baseCurrencyCode]:'';
+	        
 			 var isShippingRequired= (!quote.isVirtual())?true:false;
 		if( $("#clearpay-express-button").length && countryCode!=""){
 			 AfterPay.initializeForPopup({
@@ -57,15 +58,17 @@ require(
 
 		            },
 		            onComplete: function (orderData) {
-		            	$("body").trigger('processStart');
-		            	 if (orderData.data.status == 'SUCCESS') {
+
+		            	if (orderData.data.status == 'SUCCESS') {
 
 			            	$.ajax({
 			                    url: mageUrl.build("clearpay/payment/express")+'?action=confirm',
 			                    method: 'POST',
 			                    data: orderData.data,
+			                    beforeSend: function(){
+			                    	$("body").trigger('processStart');
+			                    },
 			                    success: function(result){
-			                    	$("body").trigger('processStop');
 			                    	if (result.success) {
 			                    		//To Clear mini-cart
 			                    		var sections = ['cart'];
@@ -74,18 +77,22 @@ require(
 
 			                    		window.location.href = mageUrl.build("checkout/onepage/success");
 			                    	}
-			                    }
+			                    },
+			                    complete: function(){
+			                    	$("body").trigger('processStop');
+			                      }
 			                });
 		            	 }
-		            	 $("body").trigger('processStop');
 
+		            	
 		            },
 		          pickup: false,
 		        });
 
 		 }
 	 }
-	 	
+
+
 	 	$(document).ready(function() {
 		 initClearpayExpress();
 		});
