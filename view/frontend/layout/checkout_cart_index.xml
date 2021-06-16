@@ -8,10 +8,6 @@
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head>
-        <css src="Clearpay_Clearpay::css/clearpay.css"/>
-		<link src="Clearpay_Clearpay::js/view/cart/clearpay-cart.js"/>
-    </head>
     <body>
         <referenceContainer name="checkout.cart.methods">
             <block class="Clearpay\Clearpay\Block\Cart\Button" name="clearpay.cart.buynow" after="checkout.cart.shortcut.buttons" template="Clearpay_Clearpay::clearpay/cart.phtml" />

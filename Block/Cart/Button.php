@@ -14,6 +14,7 @@ use Clearpay\Clearpay\Model\Payovertime as ClearpayPayovertime;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\Locale\Resolver as Resolver;
+use Magento\Framework\Serialize\Serializer\Json as JsonHelper;
 
 
 class Button extends \Clearpay\Clearpay\Block\JsConfig
@@ -25,6 +26,10 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
     protected $clearpayPayovertime;
     protected $checkoutSession;
     protected $customerSession;
+    /**
+     * @var JsonHelper
+     */
+    protected $_jsonHelper;
 
     /**
      * Button constructor.
@@ -33,6 +38,7 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
      * @param ClearpayPayovertime $clearpayPayovertime
      * @param CheckoutSession $checkoutSession
      * @param CustomerSession $customerSession
+     * @param JsonHelper $jsonHelper
      * @param array $data
      * @param Resolver $localeResolver
      */
@@ -42,6 +48,7 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
         ClearpayPayovertime $clearpayPayovertime,
         CheckoutSession $checkoutSession,
         CustomerSession $customerSession,
+        JsonHelper $jsonHelper,
         array $data=[],
         Resolver $localeResolver
     ) {
@@ -49,7 +56,9 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
         $this->clearpayPayovertime = $clearpayPayovertime;
         $this->checkoutSession = $checkoutSession;
         $this->customerSession = $customerSession;
-        parent::__construct($clearpayConfig,$context, $localeResolver,$data);
+
+        parent::__construct($clearpayConfig,$clearpayPayovertime,$context, $localeResolver,$jsonHelper,$data);
+
     }
 
     /**
@@ -59,37 +68,37 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
     {
         return $this->clearpayConfig->isActive();
     }
-    
+
     /**
      * @return bool
      */
     public function canShow()
     {
-		 // check if payment is active
+        // check if payment is active
         if (!$this->_getPaymentIsActive()) {
             return false;
         }
 		else{
 			//Check for Supported currency
 			if($this->clearpayConfig->getCurrencyCode()){
-				
+
 				$quote = $this->checkoutSession->getQuote();
 				// get grand total (final amount need to be paid)
 				$grandTotal =$quote->getGrandTotal();
 				$excluded_categories=$this->clearpayConfig->getExcludedCategories();
-				
-				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode()) ){ 
-					
+
+				if($this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode()) ){
+
 					if($excluded_categories !=""){
 						$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 						$productRepository = $objectManager->get('\Magento\Catalog\Model\ProductRepository');
 						$excluded_categories_array =  explode(",",$excluded_categories);
-						
+
 						foreach ($quote->getAllVisibleItems() as $item) {
 							$productid = $item->getProductId();
 							$product=$productRepository->getById($productid);
 							$categoryids = $product->getCategoryIds();
-							
+
 							foreach($categoryids as $k)
 							{
 								if(in_array($k,$excluded_categories_array)){
@@ -103,25 +112,25 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
 				else{
 					return false;
 				}
-			} 
+			}
 			else {
 				return false;
 			}
 		}
     }
-    
+
     /**
      * @return string
      */
     public function getFinalAmount()
     {
-           
+
         $grandTotal = $this->checkoutSession->getQuote()->getGrandTotal();
-       
+
         return !empty($grandTotal)?number_format($grandTotal, 2,".",""):"0.00";
-        
+
     }
-    /* 
+    /*
      * @return boolean
     */
     public function canUseCurrency()
@@ -131,9 +140,28 @@ class Button extends \Clearpay\Clearpay\Block\JsConfig
         if($this->clearpayConfig->getCurrencyCode())
         {
             $canUse= $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode());
-        } 
-        
+        }
+
         return $canUse;
-        
+
+    }
+    /*
+    * @return boolean
+    */
+    public function isWithinLimits()
+    {
+        $isWithinLimits=false;
+        $grandTotal = $this->checkoutSession->getQuote()->getGrandTotal();
+        if($grandTotal > 0 && $this->clearpayConfig->getMaxOrderLimit() >= $grandTotal && $this->clearpayConfig->getMinOrderLimit() <= $grandTotal){
+            $isWithinLimits = true;
+        }
+        return $isWithinLimits;
+    }
+    /*
+    * @return boolean
+    **/
+    public function isQuoteVirtual()
+    {
+        return $this->checkoutSession->getQuote()->isVirtual();
     }
 }

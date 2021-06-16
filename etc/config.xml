@@ -21,8 +21,12 @@
                 <specificcountry>GB</specificcountry>
                 <http_header_support>0</http_header_support>
                 <enable_for_product_page>1</enable_for_product_page>
-                <enable_for_cart_page>1</enable_for_cart_page> 
+                <enable_for_cart_page>1</enable_for_cart_page>
+                <express_checkout_product_page>0</express_checkout_product_page>
+                <express_checkout_cart_page>0</express_checkout_cart_page>
+                <express_checkout_minicart_page>0</express_checkout_minicart_page>
             </clearpaypayovertime>
+
         </payment>
     </default>
 </config>

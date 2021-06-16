@@ -39,6 +39,9 @@ class Payovertime
     const CBT_COUNTRY            = 'cbt_country';
     const ENABLE_FOR_PRODUCT_PAGE= "enable_for_product_page";
     const ENABLE_FOR_CART_PAGE   = "enable_for_cart_page";
+    const EXPRESS_CHECKOUT_PRODUCT_PAGE   = "express_checkout_product_page";
+    const EXPRESS_CHECKOUT_CART_PAGE   = "express_checkout_cart_page";
+    const EXPRESS_CHECKOUT_MINICART_PAGE   = "express_checkout_minicart_page";
     const EXPRESS_CHECKOUT_KEY   =  "express_checkout_key";
 
     /**
@@ -175,19 +178,7 @@ class Payovertime
 
         $store = $storeManager->getStore();
         $currency = $store->getCurrentCurrencyCode();
-        //In case of multiple websites, find the currency for the selected store based on the website ID.
-        if (!empty($websiteId)) {
-            $websites = $storeManager->getWebsites();
 
-            foreach ($websites as $website) {
-                foreach ($website->getStores() as $store) {
-                    if (!empty($websiteId) && $websiteId == $website->getId()) {
-                        $store = $storeManager->getStore($store);
-                        $currency = $store->getCurrentCurrencyCode();
-                    }
-                }
-            }
-        }
         $url ="";
         if ($type=='api_url') {
             if ($apiMode == 'Sandbox') {
@@ -204,7 +195,7 @@ class Payovertime
                 $url = 'https://portal.clearpay.co.uk/';
             }
         }
-        
+
         // get JS Library URL
         if ($type=='js_lib_url') {
             if ($apiMode == 'Sandbox') {
@@ -213,7 +204,7 @@ class Payovertime
                 $url = 'https://js.afterpay.com/';
             }
         }
-        
+
         // get JS Library URL
         if ($type=='js_lib_url') {
             if ($apiMode == 'Sandbox') {
@@ -387,7 +378,7 @@ class Payovertime
         $result = preg_replace("/[^a-zA-Z0-9]+/", "", $string);
         return $result;
     }
-    
+
     /**
      * @return bool
      */
@@ -395,7 +386,7 @@ class Payovertime
     {
         return (bool)$this->_getConfigData(self::ENABLE_FOR_PRODUCT_PAGE);
     }
-    
+
     /**
      * @return int
      */
@@ -403,7 +394,7 @@ class Payovertime
     {
         return $this->_getConfigData(self::ENABLE_FOR_CART_PAGE);
     }
-        
+
     /**
      * Calculated the currency code
      *
@@ -415,7 +406,7 @@ class Payovertime
         $countryCode = $this->scopeConfig->getValue('general/country/default', \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES,$websiteId);
         return $countryCode;
     }
-    
+
     /**
      * Get config for express checkout key
      *
@@ -433,8 +424,8 @@ class Payovertime
     public function isCbtEnabled()
     {
         return $this->_getConfigData(self::ENABLE_CBT);
-    } 
-	
+    }
+
 	/* Get cbt countries
      *
      * @return string
@@ -443,6 +434,36 @@ class Payovertime
     {
         return $this->_getConfigData(self::CBT_COUNTRY);
     }
-    
-   
+    /**
+     * @return int
+     */
+    public function isExpressCheckoutProductPage()
+    {
+        return $this->_getConfigData(self::EXPRESS_CHECKOUT_PRODUCT_PAGE);
+    }
+    /**
+     * @return int
+     */
+    public function isExpressCheckoutCartPage()
+    {
+        return $this->_getConfigData(self::EXPRESS_CHECKOUT_CART_PAGE);
+    }
+    /**
+     * @return int
+     */
+    public function isExpressCheckoutMiniCartPage()
+    {
+        return $this->_getConfigData(self::EXPRESS_CHECKOUT_MINICART_PAGE);
+    }
+
+    /**
+     * Get store identifier
+     *
+     * @return  int
+     */
+    public function getStoreId()
+    {
+        return $this->storeManager->getStore()->getId();
+    }
+
 }

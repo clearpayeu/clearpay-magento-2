@@ -49,7 +49,7 @@ define(
                 var total = quote.getCalculatedTotal();
                 var format = window.checkoutConfig.priceFormat.pattern
 				var clearpay = window.checkoutConfig.payment.clearpay;
-				
+
                 storage.get(resourceUrlManager.getUrlForCartTotals(quote), false)
                 .done(
                     function (response) {
@@ -62,6 +62,7 @@ define(
                         $(".clearpay_instalments_amount_last").text(format.replace(/%s/g, installmentFeeLast.toFixed(window.checkoutConfig.priceFormat.precision)));
 						$(".clearpay_total_amount").text(format.replace(/%s/g, amount.toFixed(window.checkoutConfig.priceFormat.precision)));
 						return format.replace(/%s/g, amount);
+
                     }
                 )
                 .fail(
@@ -81,7 +82,7 @@ define(
 
                 var clearpay = window.checkoutConfig.payment.clearpay;
                 var clearpayCheckoutText = 'Four interest-free payments totalling';
-                
+
                 return clearpayCheckoutText;
             },
 			getFirstInstalmentText: function () {
@@ -89,25 +90,27 @@ define(
                 var clearpay = window.checkoutConfig.payment.clearpay;
                 var clearpayFirstInstalmentText = '';
                	clearpayFirstInstalmentText = 'First instalment';
-               
+
                 return clearpayFirstInstalmentText;
             },
 			getTermsText: function () {
 
                 var clearpay = window.checkoutConfig.payment.clearpay;
                 var clearpayTermsText = '';
-            
+
 				clearpayTermsText = 'You will be redirected to the Clearpay website when you proceed to checkout.';
-                
+
                 return clearpayTermsText;
+
             },
 
 			getTermsLink: function () {
 
                 var clearpay = window.checkoutConfig.payment.clearpay;
                 var clearpayCheckoutTermsLink = "https://www.clearpay.co.uk/terms";
-                
+
                 return clearpayCheckoutTermsLink;
+
             },
 
             /**
@@ -141,10 +144,11 @@ define(
                     //CountryCode Object to pass in initialize function.
 
                     var countryCode = {countryCode: "GB"};
-					
-					//Update billing address of the quote
-					setBillingAddressAction(globalMessageList);
 
+                    //Update billing address of the quote
+                    const setBillingAddressActionResult = setBillingAddressAction(globalMessageList);
+
+                    setBillingAddressActionResult.done(function () {
                         //handle guest and registering customer emails
                         if (!window.checkoutConfig.quoteData.customer_id) {
                             email = document.getElementById("customer-email").value;
@@ -201,6 +205,9 @@ define(
                             customerData.invalidate(['cart']);
                             $('body').trigger('processStop');
                         });
+                    }).fail(function () {
+						window.scrollTo({top: 0, behavior: 'smooth'});
+                    });
                 }
             },
 
@@ -210,17 +217,17 @@ define(
              * @param response
              */
             afterPlaceOrder: function () {
-                
+
                 // start clearpay payment is here
                 var clearpay = window.checkoutConfig.payment.clearpay;
 
                 // Making sure it using current flow
 
                 var url = mageUrl.build("clearpay/payment/process");
-				
+
 				//Update billing address of the quote
 				setBillingAddressAction(globalMessageList);
-                
+
                 $.ajax({
                     url: url,
                     method:'post',

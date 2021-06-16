@@ -25,7 +25,7 @@ class Response
     const RESPONSE_STATUS_PENDING  = 'PENDING';
     const RESPONSE_STATUS_FAILED   = 'FAILED';
     const RESPONSE_STATUS_DECLINED = 'DECLINED';
-    
+
 	const PAYMENT_STATUS_AUTH_APPROVED = 'AUTH_APPROVED';
 	const PAYMENT_STATUS_CAPTURED = 'CAPTURED';
 	const PAYMENT_STATUS_PARTIALLY_CAPTURED = 'PARTIALLY_CAPTURED';
@@ -240,7 +240,7 @@ class Response
         $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID, $orderId);
         // have save here to link clearpay order id right after checking the API
         $this->_paymentRepository->save($payment);
-        
+
         // debug mode
         $this->helper->debug('Added Clearpay Payment ID ' . $orderId . ' for Magento order ' . $order->getIncrementId());
     }
@@ -321,22 +321,22 @@ class Response
         $result           = [];
         $override         = [];
         $orderId          = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
-        
+
         if($orderId) {
-            
+
             $order           = $payment->getOrder();
             $creditmemo      = $payment->getCreditmemo();
             $amountToCapture = 0.00;
             $storeCredit     = $creditmemo->getCustomerBalanceAmount();
             $override        = ["website_id" => $order->getStore()->getWebsiteId()];
-            
+
             $clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS);
-            
+
             if($clearpayPaymentStatus == self::PAYMENT_STATUS_CAPTURED){
                 $clearpayRefund = true;
             }
-            elseif($clearpayPaymentStatus == self::PAYMENT_STATUS_PARTIALLY_CAPTURED || $clearpayPaymentStatus == self::PAYMENT_STATUS_AUTH_APPROVED){  
-                
+            elseif($clearpayPaymentStatus == self::PAYMENT_STATUS_PARTIALLY_CAPTURED || $clearpayPaymentStatus == self::PAYMENT_STATUS_AUTH_APPROVED){
+
                 $orderTotal                = $order->getGrandTotal();
                 $shippingApplied           = $creditmemo->getShippingInclTax();
                 $adjustmentPositive        = $creditmemo->getAdjustmentPositive();
@@ -356,17 +356,17 @@ class Response
                 $orderShippingAmount       = $order->getShippingInclTax();
                 $actualOpenToCaptureAmount = $openToCaptureAmount - ($rolloverRefund + $rolloverAmount);
                 $shippingRefunded          = ($order->getShippingRefunded() + $order->getShippingTaxRefunded()) - $shippingApplied;
-                
+
                 if($orderDiscount > 0){
                     $refundedDiscount = $order->getCustomerBalanceRefunded() + $order->getGiftCardsRefunded();
                     $appliedDiscount  = $creditmemo->getCustomerBalanceAmount() + $creditmemo->getGiftCardsAmount();
                 }
-                
+
                 foreach ($creditmemo->getAllItems() as $item) {
                     $orderItem = $item->getOrderItem();
                     if (!$orderItem->getHasChildren()) {
                         $qtyToRefund    = $item->getQty();
-                        
+
                         if($orderItem->getIsVirtual()){
                             $amountCaptured = $amountCaptured + $this->calculateItemPrice($orderItem,$qtyToRefund);
                         }
@@ -385,28 +385,30 @@ class Response
                         }
                     }
                 }
-                
+
                 if($order->getShipmentsCollection()->count() > 0 && number_format($orderTotal -  $openToCaptureAmount, 2, '.', '') > 0.00){
                     $amountCaptured = $amountCaptured + ($orderShippingAmount - ($orderShippingAmount - $shippingApplied));
                 }
-                
+
                 if($capturedDiscount > 0 && $appliedDiscount > 0){
                     if($amount > 0){
                         $amountCaptured = $amountCaptured - $capturedDiscount;
                     }
                 }
-                
+
                 if($order->getShipmentsCollection()->count() == 0){
                     $amountNotCaptured = $amountCaptured + $orderShippingAmount;
                 }
-                
+
                 if(number_format($amount - $orderTotal, 2, '.', '') == 0.00){
                     //Full Order Refund
                     if($actualOpenToCaptureAmount != $orderTotal){
                         $amount = $amount - $actualOpenToCaptureAmount;
                         $clearpayRefund = true;
                     }
-                    $clearpayVoid = true;       
+
+                    $clearpayVoid = true;
+
                 }
                 else
                 {
@@ -420,17 +422,18 @@ class Response
                                 $amountToRefund = $amount - $amountCaptured;
                                 $amount = $amountCaptured;
                             }
-                            
+
                             $clearpayRefund = true;
+
                         }
                         else{
                             $amountToRefund = $amount;
                             $amount = 0.00;
                         }
                     }
-                    
+
                     if($appliedDiscount > 0){
-                            
+
                         if($amount == 0.00 && $amountToRefund == 0.00){
                             $amountToCapture = min($appliedDiscount - ($rolloverDiscount + $rolloverRefund), $amountNotCaptured);
                         }
@@ -442,7 +445,7 @@ class Response
                             $amountToCapture = 0.00;
                         }
                         $reducedRolloverDiscount  = max((($appliedDiscount - $amountCaptured) - $amountToCapture),0.00);
-                        
+
                         if($rolloverDiscount > 0){
                             $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT, max(($rolloverDiscount - $reducedRolloverDiscount),"0.00"));
                         }
@@ -450,7 +453,7 @@ class Response
                             $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT, "0.00");
                         }
                     }
-                    
+
                     if(number_format($amountToRefund - $actualOpenToCaptureAmount, 2, '.', '') == 0.00){
                         $amountToCapture = 0.00;
                         $clearpayVoid    = true;
@@ -458,12 +461,14 @@ class Response
                     elseif($amountToRefund < $actualOpenToCaptureAmount && $amountToRefund != 0.00){
                         if($order->getShipmentsCollection()->count()==0){
                             $amountInclShipping   = $amountToRefund + (($orderShippingAmount-$shippingRefunded) - $shippingApplied);
-                            
+
                             if(number_format(($amountInclShipping+ $amountToCapture) -  $orderTotal, 2, '.', '') == 0.00 || number_format(($amountInclShipping+ $amountToCapture) -  $actualOpenToCaptureAmount, 2, '.', '') == 0.00){
                                 if($shippingApplied < $orderShippingAmount){
                                     $amountToCapture = $amountToCapture + (($orderShippingAmount-$shippingRefunded) - $shippingApplied);
                                 }
-                                $clearpayVoid = true;                                       
+
+                                $clearpayVoid = true;
+
                             }
                             elseif(number_format($amountInclShipping -  $orderTotal, 2, '.', '') == 0.00 || number_format($amountInclShipping -  $actualOpenToCaptureAmount, 2, '.', '') == 0.00){
                                 $clearpayVoid = true;
@@ -477,11 +482,11 @@ class Response
                         else{
                             if($amountToCapture > 0){
                                 if(number_format(($amountToRefund + ($amountToCapture - $shippingApplied)) - $actualOpenToCaptureAmount, 2, '.', '') == 0.00 || number_format(($amountToRefund + ($amountToCapture - $shippingApplied)) - $orderTotal, 2, '.', '') == 0.00){
-                                    $amountToCapture = $amountToCapture - $shippingApplied; 
+                                    $amountToCapture = $amountToCapture - $shippingApplied;
                                     $clearpayVoid = true;
                                 }
                                 elseif(number_format(($amountToRefund + ($amountToCapture - $shippingApplied)) - $actualOpenToCaptureAmount, 2, '.', '') > 0.00){
-                                    $amountToCapture = $amountToCapture - (($amountToRefund + $amountToCapture) - $openToCaptureAmount); 
+                                    $amountToCapture = $amountToCapture - (($amountToRefund + $amountToCapture) - $openToCaptureAmount);
                                     $clearpayVoid = true;
                                 }
                                 else{
@@ -507,17 +512,20 @@ class Response
                     }
                 }
             }
+
             $result['success'] = $this->clearpayProcessRefund($payment,$order,$amountToCapture,$clearpayRefund,$amount,$clearpayVoid,$orderId,$override);
-            
+
             if($storeCredit > 0){
                 $storeCredit = $storeCredit + $order->getBaseCustomerBalanceRefunded();
                 $order->setBaseCustomerBalanceRefunded($storeCredit);
                 $order->setCustomerBalanceRefunded($storeCredit);
             }
 
-        } 
+        }
         else {
+
             throw new \Magento\Framework\Exception\LocalizedException(__('There are no Clearpay payment linked to this order. Please use refund offline for this order.'));
+
         }
         return $result;
     }
@@ -534,29 +542,31 @@ class Response
         $result           = [];
         $amountToCapture  = 0.00;
         $orderId          = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
-        
+
         if($orderId) {
             $order = $payment->getOrder();
             if($amount > 0){
                 $override = ["website_id" => $order->getStore()->getWebsiteId()];
-                
+
                 $clearpayPaymentStatus = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS);
                 if($clearpayPaymentStatus == self::PAYMENT_STATUS_CAPTURED){
                     $clearpayRefund = true;
                 }
-                elseif($clearpayPaymentStatus == self::PAYMENT_STATUS_PARTIALLY_CAPTURED || $clearpayPaymentStatus == self::PAYMENT_STATUS_AUTH_APPROVED){  
-                    
+                elseif($clearpayPaymentStatus == self::PAYMENT_STATUS_PARTIALLY_CAPTURED || $clearpayPaymentStatus == self::PAYMENT_STATUS_AUTH_APPROVED){
+
                     $orderTotal               = $order->getGrandTotal();
                     $openToCaptureAmount      = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT);
                     $rolloverRefund           = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND);
-                    $refundAmountAvailable    = $orderTotal - $openToCaptureAmount; 
-                    
+                    $refundAmountAvailable    = $orderTotal - $openToCaptureAmount;
+
                     if(number_format($amount - $orderTotal, 2, '.', '') == 0.00){
                         if($openToCaptureAmount != $orderTotal){
                             $amount = $amount - $openToCaptureAmount;
                             $clearpayRefund = true;
                         }
-                        $clearpayVoid = true;       
+
+                        $clearpayVoid = true;
+
                     }
                     else
                     {
@@ -564,7 +574,7 @@ class Response
                             $clearpayVoid = true;
                         }
                         elseif($amount < $openToCaptureAmount){
-                            
+
                             $rolloverRefund = $rolloverRefund + $amount;
                             $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND, number_format($rolloverRefund, 2, '.', ''));
                             $result['success'] = true;
@@ -577,10 +587,10 @@ class Response
                     }
                 }
             }
-            
+
             $result['success'] = $this->clearpayProcessRefund($payment,$order,$amountToCapture,$clearpayRefund,$amount,$clearpayVoid,$orderId,$override);
-        } 
-        
+        }
+
         return $result;
     }
     /**
@@ -598,7 +608,7 @@ class Response
                 'amount'   => number_format($amountToCapture, 2, '.', ''),
                 'currency' => $order->getOrderCurrencyCode()
             ];
-          
+
             $captureResponse = $this->paymentCapture->send($totalAmount,$merchant_order_id,$orderId,$override);
             $captureResponse = $this->jsonHelper->jsonDecode($captureResponse->getBody());
 
@@ -612,36 +622,38 @@ class Response
             else{
                 $this->helper->debug("Transaction Exception : " . json_encode($captureResponse));
                 throw new \Magento\Framework\Exception\LocalizedException(__('Clearpay API Error: ' .$captureResponse['message']));
-            }   
+            }
         }
         //Refund reqest
         if($clearpayRefund && $amount > 0){
-        
+
             $refundResponse = $this->clearpayApiPayment->refund(number_format($amount, 2, '.', ''),$orderId,$order->getOrderCurrencyCode(),$override);
 
             $refundResponse = $this->jsonHelper->jsonDecode($refundResponse->getBody());
 
             if (!empty($refundResponse['refundId'])) {
                 $success = true;
-                
+
             } else {
                 $this->helper->debug('Clearpay API Error: ' . $refundResponse['message']);
                 throw new \Magento\Framework\Exception\LocalizedException(__('Clearpay API Error: ' .$refundResponse['message']));
             }
         }
-        
+
+
         if($clearpayVoid){
             //Void request
             $voidResponse = $this->clearpayApiPayment->voidOrder($orderId,$override);
             $voidResponse = $this->jsonHelper->jsonDecode($voidResponse->getBody());
-                
+
             if(!array_key_exists("errorCode",$voidResponse)) {
+
                 $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::PAYMENT_STATUS, $voidResponse['paymentState']);
-                
+
                 if(array_key_exists('openToCaptureAmount',$voidResponse) && !empty($voidResponse['openToCaptureAmount'])){
                     $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::OPEN_TOCAPTURE_AMOUNT,$voidResponse['openToCaptureAmount']['amount']);
                 }
-                
+
                 if($payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND) > 0){
                     $payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND, "0.00");
                 }
@@ -667,10 +679,10 @@ class Response
         $totalQtyOrdered = $item->getQtyOrdered();
         $totalTaxAmount  = $item->getBaseTaxAmount();
         $totalDiscount   = $item->getDiscountAmount();
-        
+
         $taxPerItem      = $totalTaxAmount/$totalQtyOrdered;
         $discountPerItem = $totalDiscount / $totalQtyOrdered;
-        
+
         $pricePerItem    = $item->getPrice() + $taxPerItem;
         $itemPrice       = $qty * ($pricePerItem - $discountPerItem);
         return $itemPrice;

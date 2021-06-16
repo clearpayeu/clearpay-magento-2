@@ -8,10 +8,6 @@
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head>
-        <css src="Clearpay_Clearpay::css/clearpay.css"/>
-        <link src="Clearpay_Clearpay::js/view/product/clearpay-products.js"/>
-    </head>
     <body>
         <referenceContainer name="product.info.main">
             <block class="Clearpay\Clearpay\Block\Catalog\Installments" name="clearpay.price.installments" after="product.info.price" template="Clearpay_Clearpay::clearpay/product.phtml" />

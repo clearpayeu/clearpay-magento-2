@@ -15,4 +15,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Checkout\CustomerData\AbstractItem">
+        <plugin name="clearpay_additional_attributes" type="Clearpay\Clearpay\Plugin\Checkout\CustomerData\Cart" />
+    </type>
 </config>
