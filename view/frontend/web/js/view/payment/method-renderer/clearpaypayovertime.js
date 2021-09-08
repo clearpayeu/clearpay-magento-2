@@ -2,7 +2,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2021 Clearpay https://www.clearpay.com
  */
 /*browser:true*/
 /*global define*/
@@ -154,7 +154,7 @@ define(
                             email = document.getElementById("customer-email").value;
                         }
 
-                        data = data + '&email=' + email;
+                        data = data + '&email=' + encodeURIComponent(email);
 
 
                         $.ajax({

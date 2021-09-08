@@ -61,11 +61,13 @@ if ($block->isPaymentMethodActive() && $product_type != "grouped" && $block->can
                     "clearpayConfig":<?php echo $block->getClearpayConfigs(); ?>,
                     "productPriceFormat":<?php echo $productPriceFormat; ?>,
                     "isECenabled":<?php echo $isECenabled;?>,
-                    "isDisplay":<?php echo $isDisplay;?>
+                    "isDisplay":<?php echo $isDisplay;?>,
+                    "isProductVirtual":"<?= $block->getProduct()->isVirtual(); ?>"
                 }
             }
         }
     </script>
+
    <?php if ($block->isDisplayEConProductPage() && $clearpay_eligible != "false") { ?>
         <script type="text/x-magento-init">
         {

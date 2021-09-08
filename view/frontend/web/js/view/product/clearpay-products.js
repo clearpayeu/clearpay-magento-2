@@ -5,11 +5,9 @@
 define(
     [
         "jquery",
-        "Magento_Catalog/js/price-utils",
-        'mage/url',
-        'Magento_Customer/js/customer-data'
+        'Clearpay_Clearpay/js/view/express/button'
     ],
-    function ( $, priceUtils, mageUrl,customerData) {
+    function ($, expressBtn) {
 
         return function (config) {
 
@@ -43,14 +41,18 @@ define(
                     $('afterpay-placement').attr('data-amount', (Math.round((parseFloat(price) + epsilon) * 100) / 100).toFixed(2));
                 }
                 if(config.isECenabled==1) {
-                    if ((config.clearpayConfig.paymentActive == true && price <= config.clearpayConfig.maxLimit && price >= config.clearpayConfig.minLimit && price > 0)) {
+
+                    if (config.clearpayConfig.paymentActive == true &&
+                        price <= config.clearpayConfig.maxLimit &&
+                        price >= config.clearpayConfig.minLimit &&
+                        price > 0 &&
+                        expressBtn.canDisplayOnPDP(config.isProductVirtual)){
 
                         $("#clearpay-pdp-express-button").show();
                     } else {
                         $("#clearpay-pdp-express-button").hide();
                     }
                 }
-
 
 
             }

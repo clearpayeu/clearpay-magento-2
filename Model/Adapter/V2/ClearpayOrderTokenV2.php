@@ -2,8 +2,8 @@
 /**
  * Magento 2 extensions for Clearpay Payment
  *
- * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+* @author Clearpay
+ * @copyright 2016-2021 Clearpay https://www.clearpay.com
  */
 namespace Clearpay\Clearpay\Model\Adapter\V2;
 
@@ -98,7 +98,7 @@ class ClearpayOrderTokenV2
         }else{
             $requestData = $this->_buildOrderTokenRequest($object, $override);
         }
-        $targetUrl = $this->_clearpayConfig->getApiUrl('v2/checkouts/', null, $override);    
+       $targetUrl = $this->_clearpayConfig->getApiUrl('v2/checkouts/', null, $override);
         if(isset($override["mode"]) && ($override["mode"]==$this->expressCheckout)){
             $this->handleExpressValidation($requestData);
         }else{

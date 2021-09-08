@@ -4,7 +4,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2021 Clearpay https://www.Clearpay.com
  */
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
@@ -13,7 +13,9 @@
     </head>
     <body>
         <referenceContainer name="minicart.addons">
-            <block ifconfig="payment/clearpaypayovertime/express_checkout_minicart_page" cacheable="false" class="Clearpay\Clearpay\Block\Cart\Button" name="clearpay.minicart.buynow" after="-" template="Clearpay_Clearpay::clearpay/minicart.phtml" />
+
+            <block ifconfig="payment/clearpaypayovertime/express_checkout_minicart_page" class="Clearpay\Clearpay\Block\Cart\Button" name="clearpay.minicart.buynow" after="-" template="Clearpay_Clearpay::clearpay/minicart.phtml" />
+
         </referenceContainer>
     </body>
 </page>

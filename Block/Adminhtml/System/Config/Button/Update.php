@@ -3,7 +3,7 @@
  * Magento 2 extensions for Clearpay Payment
  *
  * @author Clearpay
- * @copyright 2016-2020 Clearpay https://www.clearpay.co.uk
+ * @copyright 2016-2021 Clearpay https://www.clearpay.co.uk
  */
 namespace Clearpay\Clearpay\Block\Adminhtml\System\Config\Button;
 

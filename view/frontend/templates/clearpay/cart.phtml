@@ -55,7 +55,7 @@ if ($block->isPaymentMethodActive()  && $block->canUseCurrency() && $data_amount
 
 <?php
     }
-if ($data_amount >= $min_limit && $data_amount <= $max_limit && $clearpay_eligible != "false" ) {
+if ($data_amount >= $min_limit && $data_amount <= $max_limit && $clearpay_eligible != "false" && !$block->isQuoteVirtual()) {
         if ($cartDisplayMode == \Clearpay\Clearpay\Model\Config\Source\CartMode::EXPRESS_CHECKOUT || $block->isDisplayEConCartPage() ) {
 ?>
         <button id="clearpay-cart-express-button" data-afterpay-entry-point="cart" class="clearpay primary express-button">
