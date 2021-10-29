@@ -11,10 +11,22 @@ namespace Clearpay\Clearpay\Model\ExpressPayment;
 
 class ShippingListProvider
 {
-    private \Magento\Checkout\Api\TotalsInformationManagementInterface $totalsInformationManagement;
-    private \Magento\Checkout\Api\Data\TotalsInformationInterfaceFactory $totalsInformationFactory;
-    private \Clearpay\Clearpay\Model\Adapter\ClearpayExpressPayment $clearpayExpressPayment;
-    private \Magento\Quote\Api\ShipmentEstimationInterface $shipmentEstimation;
+    /**
+     * @var \Magento\Checkout\Api\TotalsInformationManagementInterface
+     */
+    private $totalsInformationManagement;
+    /**
+     * @var \Magento\Checkout\Api\Data\TotalsInformationInterfaceFactory
+     */
+    private $totalsInformationFactory;
+    /**
+     * @var \Clearpay\Clearpay\Model\Adapter\ClearpayExpressPayment
+     */
+    private $clearpayExpressPayment;
+    /**
+     * @var \Magento\Quote\Api\ShipmentEstimationInterface
+     */
+    private $shipmentEstimation;
 
     public function __construct(
         \Magento\Checkout\Api\TotalsInformationManagementInterface $totalsInformationManagement,
