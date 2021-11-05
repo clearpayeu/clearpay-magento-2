@@ -63,7 +63,10 @@ class Express extends \Magento\Framework\App\Action\Action
     
     protected $_timezone;
 
-    private \Clearpay\Clearpay\Model\ExpressPayment\ShippingListProvider $shippingListProvider;
+    /**
+     * @var \Clearpay\Clearpay\Model\ExpressPayment\ShippingListProvider
+     */
+    private $shippingListProvider;
 
     /**
      * Response constructor.
