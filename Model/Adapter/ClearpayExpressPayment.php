@@ -221,6 +221,7 @@ class ClearpayExpressPayment
 
             // Set Billing Details
 
+            $data['shipping']['region'] =  $data['shipping']['region'] ?? "";
             $billingAddress->setFirstname($firstName)
             ->setLastname($lastName)
             ->setEmail($data['consumer']['email'])

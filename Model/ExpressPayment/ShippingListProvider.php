@@ -9,18 +9,35 @@
 
 namespace Clearpay\Clearpay\Model\ExpressPayment;
 
+use Clearpay\Clearpay\Model\Adapter\ClearpayExpressPayment;
+use Magento\Checkout\Api\Data\TotalsInformationInterfaceFactory;
+use Magento\Checkout\Api\TotalsInformationManagementInterface;
+use Magento\Quote\Api\ShipmentEstimationInterface;
+
 class ShippingListProvider
 {
-    private \Magento\Checkout\Api\TotalsInformationManagementInterface $totalsInformationManagement;
-    private \Magento\Checkout\Api\Data\TotalsInformationInterfaceFactory $totalsInformationFactory;
-    private \Clearpay\Clearpay\Model\Adapter\ClearpayExpressPayment $clearpayExpressPayment;
-    private \Magento\Quote\Api\ShipmentEstimationInterface $shipmentEstimation;
+    /**
+     * @var TotalsInformationManagementInterface
+     */
+    private $totalsInformationManagement;
+    /**
+     * @var TotalsInformationInterfaceFactory
+     */
+    private $totalsInformationFactory;
+    /**
+     * @var ClearpayExpressPayment
+     */
+    private $clearpayExpressPayment;
+    /**
+     * @var ShipmentEstimationInterface
+     */
+    private $shipmentEstimation;
 
     public function __construct(
-        \Magento\Checkout\Api\TotalsInformationManagementInterface $totalsInformationManagement,
-        \Magento\Checkout\Api\Data\TotalsInformationInterfaceFactory $totalsInformationFactory,
-        \Clearpay\Clearpay\Model\Adapter\ClearpayExpressPayment $clearpayExpressPayment,
-        \Magento\Quote\Api\ShipmentEstimationInterface $shipmentEstimation
+        TotalsInformationManagementInterface $totalsInformationManagement,
+        TotalsInformationInterfaceFactory $totalsInformationFactory,
+        ClearpayExpressPayment $clearpayExpressPayment,
+        ShipmentEstimationInterface $shipmentEstimation
     ) {
         $this->totalsInformationManagement = $totalsInformationManagement;
         $this->totalsInformationFactory = $totalsInformationFactory;
@@ -36,6 +53,9 @@ class ShippingListProvider
         );
         $shippingList = [];
         foreach ($shippingMethods as $shippingMethod) {
+            if (!$shippingMethod->getAvailable()) {
+                continue;
+            }
 
             /** @var \Magento\Checkout\Api\Data\TotalsInformationInterface $totalsInformation */
             $totalsInformation = $this->totalsInformationFactory->create()

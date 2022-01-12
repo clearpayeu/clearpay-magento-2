@@ -5,9 +5,10 @@
 define(
     [
         "jquery",
-        'Clearpay_Clearpay/js/view/express/button'
+        'Clearpay_Clearpay/js/view/express/button',
+        'Magento_Customer/js/customer-data'
     ],
-    function ($, expressBtn) {
+    function ($, expressBtn, customerData) {
 
         return function (config) {
 
@@ -26,20 +27,8 @@ define(
 
 
             });
-
-            function setFinalAmount() {
-
-                    let price_raw = $(".page-main [data-price-type=finalPrice]:first").text() || '';
-                    if (!price_raw) price_raw = $('.page-main .product-info-price .price-final_price .price-wrapper:not([data-price-type="oldPrice"]) span.price:first').text();
-
-                    // Show Express Checkout button
-
-                    var newPrice=price_raw.match(/[\d\.\,]+/g);
-                    var price =price_to_number(newPrice[0],config.productPriceFormat.decimalSymbol,config.productPriceFormat.groupSymbol);
-                if(config.isDisplay==1) {
-                    const epsilon = Number.EPSILON ||  Math.pow(2, -52);
-                    $('afterpay-placement').attr('data-amount', (Math.round((parseFloat(price) + epsilon) * 100) / 100).toFixed(2));
-                }
+            function setExpressCheckout(config, price, expressBtn)
+            {
                 if(config.isECenabled==1) {
 
                     if (config.clearpayConfig.paymentActive == true &&
@@ -53,7 +42,26 @@ define(
                         $("#clearpay-pdp-express-button").hide();
                     }
                 }
+            }
+            function setFinalAmount() {
 
+                    let price_raw = $(".page-main [data-price-type=finalPrice]:first").text() || '';
+                    if (!price_raw) price_raw = $('.page-main .product-info-price .price-final_price .price-wrapper:not([data-price-type="oldPrice"]) span.price:first').text();
+
+
+                    // Show Express Checkout button
+
+                    var newPrice=price_raw.match(/[\d\.\,]+/g);
+                    var price =price_to_number(newPrice[0],config.productPriceFormat.decimalSymbol,config.productPriceFormat.groupSymbol);
+                    if(config.isDisplay==1) {
+                        const epsilon = Number.EPSILON ||  Math.pow(2, -52);
+                        $('afterpay-placement').attr('data-amount', (Math.round((parseFloat(price) + epsilon) * 100) / 100).toFixed(2));
+                    }
+                    var cart = customerData.get('cart');
+                    setExpressCheckout(config, price, expressBtn);
+                    cart.subscribe(function () {
+                        setExpressCheckout(config, price, expressBtn);
+                    });
 
             }
 

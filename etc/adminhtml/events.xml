@@ -8,9 +8,6 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-	<event name="sales_order_shipment_save_before">
-        <observer name="clearpay_before_shipment" instance="Clearpay\Clearpay\Observer\BeforeShipment" />
-    </event>
 	<event name="view_block_abstract_to_html_before">
         <observer name="clearpay_view_block_abstract_to_html_before" instance="Clearpay\Clearpay\Observer\BeforeCreditmemoLoad" />
     </event>

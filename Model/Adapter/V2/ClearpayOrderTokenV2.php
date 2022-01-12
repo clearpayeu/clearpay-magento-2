@@ -294,13 +294,14 @@ class ClearpayOrderTokenV2
             'amount'   => isset($taxAmount) ? round((float)$taxAmount, $precision) : 0,
             'currency' => (string)$data['store_currency_code']
         ];
-	
+
+
 		if(!empty($shippingAddress) && !empty($shippingAddress->getStreetLine(1)))
 		{
-			$params['shipping'] = [
+            $params['shipping'] = [
 				'name'          => (string)$shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname(),
 				'line1'         => (string)$shippingAddress->getStreetLine(1),
-				'line2'         => (string)$shippingAddress->getStreetLine(2),
+				'line2'         => $this->getAddressLine2($shippingAddress),
 				'area1'         => (string)$shippingAddress->getCity(),
 				'area2'         => "",
 				'postcode'      => (string)$shippingAddress->getPostcode(),
@@ -313,7 +314,7 @@ class ClearpayOrderTokenV2
         $params['billing'] = [
             'name'          => (string)$billingAddress->getFirstname() . ' ' . $billingAddress->getLastname(),
             'line1'         => (string)$billingAddress->getStreetLine(1),
-            'line2'         => (string)$billingAddress->getStreetLine(2),
+            'line2'         => $this->getAddressLine2($billingAddress),
             'area1'         => (string)$billingAddress->getCity(),
             'area2'         => "",
             'postcode'      => (string)$billingAddress->getPostcode(),
@@ -401,13 +402,13 @@ class ClearpayOrderTokenV2
             'amount'   => isset($taxAmount) ? round((float)$taxAmount, $precision) : 0,
             'currency' => (string)$data['store_currency_code']
         ];
-        
+
         if(!empty($shippingAddress) && !empty($shippingAddress->getStreetLine(1)))
         {
             $params['shipping'] = [
                 'name'          => (string)$shippingAddress->getFirstname() . ' ' . $shippingAddress->getLastname(),
                 'line1'         => (string)$shippingAddress->getStreetLine(1),
-                'line2'         => (string)$shippingAddress->getStreetLine(2),
+                'line2'         => $this->getAddressLine2($shippingAddress),
                 'area1'         => (string)$shippingAddress->getCity(),
                 'area2'         => "",
                 'postcode'      => (string)$shippingAddress->getPostcode(),
@@ -417,10 +418,11 @@ class ClearpayOrderTokenV2
             ];
         }
         if(!empty($billingAddress) && !empty($billingAddress->getStreetLine(1))){
+
             $params['billing'] = [
                 'name'          => (string)$billingAddress->getFirstname() . ' ' . $billingAddress->getLastname(),
                 'line1'         => (string)$billingAddress->getStreetLine(1),
-                'line2'         => (string)$billingAddress->getStreetLine(2),
+                'line2'         => $this->getAddressLine2($billingAddress),
                 'area1'         => (string)$billingAddress->getCity(),
                 'area2'         => "",
                 'postcode'      => (string)$billingAddress->getPostcode(),
@@ -435,5 +437,16 @@ class ClearpayOrderTokenV2
         ];
         
         return $params;
+    }
+
+    /**
+     * Get Address Line 2
+     *
+     * @param Magento\Sales\Api\Data\OrderAddressInterface $address
+     * @return String
+     */
+    private function getAddressLine2($address): string
+    {
+        return implode(', ', array_filter([$address->getStreetLine(2), $address->getStreetLine(3)]));
     }
 }

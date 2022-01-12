@@ -123,11 +123,12 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
         \Magento\Sales\Model\Order\Payment\Transaction\BuilderInterface $transactionBuilder,
         \Magento\Framework\Json\Helper\Data $jsonHelper,
         \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Clearpay\Clearpay\Model\Adapter\V2\ClearpayOrderTokenCheck $clearpayOrderTokenCheck,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-    
+
         parent::__construct(
             $context,
             $registry,
@@ -152,7 +153,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
         $this->transactionBuilder = $transactionBuilder;
         $this->jsonHelper = $jsonHelper;
         $this->messageManager = $messageManager;
-
+        $this->clearpayOrderTokenCheck = $clearpayOrderTokenCheck;
         $this->clearpayOrderTokenV2 = $clearpayOrderTokenV2;
         $this->_paymentQuoteRepository = $paymentQuoteRepository;
     }
@@ -189,7 +190,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
 
         $result = $this->jsonHelper->jsonDecode($result->getBody(), true);
         $orderToken = array_key_exists('token', $result) ? $result['token'] : false;
-        
+
         if (!array_key_exists('token', $result)) {
             $orderToken = array_key_exists('orderToken', $result) ? $result['orderToken'] : false;
         }
@@ -216,6 +217,11 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
         $quote = $this->checkoutSession->getQuote();
         $payment = $quote->getPayment();
         $token_generated = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_TOKENGENERATED);
+        if (!$this->clearpayOrderTokenCheck->getIsTokenChecked()) {
+            $error = __('There are issues when processing your payment. Invalid Token');
+            $this->helper->debug('Unexpected behavior: ' . $error);
+            throw new \Magento\Framework\Exception\LocalizedException($error);
+        }
         $payment->setAdditionalInformation(self::ADDITIONAL_INFORMATION_KEY_TOKENGENERATED, false);
         $this->_paymentQuoteRepository->save($payment);
         return $this;
@@ -267,15 +273,15 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
     {
         // debug mode
         $this->helper->debug('Start \Clearpay\Clearpay\Model\Payovertime::refund()');
-		
+
 		$result = $this->clearpayResponse->calculateRefund($payment, $amount);
-		
+
 		if(!array_key_exists('success',$result)){
 			throw new \Magento\Framework\Exception\LocalizedException(__('There was a problem with your refund. Please check the logs.'));
 		}
 		$this->helper->debug('Finished \Clearpay\Clearpay\Model\Payovertime::refund()');
 		return $this;
-		
+
     }
 
     /**
@@ -290,25 +296,25 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
 		else{
 			$excluded_categories=$this->getConfigData('exclude_category');
 			if($excluded_categories!=""){
-				
+
 				$quote = $this->checkoutSession->getQuote();
 				$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 				$productRepository = $objectManager->get('\Magento\Catalog\Model\ProductRepository');
 				$excluded_categories_array =  explode(",",$excluded_categories);
-			
+
 				foreach ($quote->getAllVisibleItems() as $item) {
 					$productid = $item->getProductId();
-					
+
 					$product=$productRepository->getById($productid);
 					$categoryids = $product->getCategoryIds();
-				
+
 					foreach($categoryids as $k)
 					{
 						if(in_array($k,$excluded_categories_array)){
 							return false;
 						}
 					}
-				}	
+				}
 			}
 			return true;
 		}
@@ -323,7 +329,7 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
         $canUseForCurrency= false;
         $storeCurrencyCode=$this->getStoreCurrencyCode();
         if (in_array($currencyCode, $this->supportedContryCurrencyCodes) ) {
-            
+
             if ($currencyCode==$storeCurrencyCode ) {
                 $canUseForCurrency=parent::canUseForCurrency($currencyCode);
 				}else if(!empty($this->getConfigData('enable_cbt')) && !empty($this->getConfigData('cbt_country'))){
@@ -335,9 +341,9 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
                         break;
                     }
                 }
-                
+
             }
-           
+
         }
         return $canUseForCurrency;
     }

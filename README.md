@@ -1,82 +1,119 @@
-<h2> 1.1    New Clearpay Installation with Composer (Recommended) </h2>
-<p> This section outlines the steps to install Clearpay plugin using Composer. </p>
+# Clearpay for Magento 2
 
+## Installation
+
+### Install using Composer (Recommended)
 <ol>
-	<li> Open Command Line Interface and navigate to the Magento directory on your server</li>
-	<li> In CLI, run the below command to install Clearpay module: <br/> <em>composer require clearpay/module-clearpay</em> </li>
-	<li> At the Composer request, enter your Magento marketplace credentials (public key - username, private key - password)</li>
-	<li> Make sure that Composer finished the installation without errors </li>
-	<li> In CLI, run the Magento setup upgrade: <br/> <em>php bin/magento setup:upgrade</em> </li>
-	<li> In CLI, run the Magento Dependencies Injection Compile: <br/> <em>php bin/magento setup:di:compile</em> </li>
-	<li> In CLI, run the Magento Static Content deployment: <br/> <em>php bin/magento setup:static-content:deploy</em> </li>
-	<li> Login to Magento Admin and navigate to System/Cache Management </li>
-	<li> Flush the cache storage by selecting Flush Cache Storage </li>
+<li> From the CLI, run the following commands to install the Clearpay module.
+<br/>The right installation command is dependent on your Magento 2 version:
+
+| Magento version | Command to run                                              |
+|-----------------|-------------------------------------------------------------|
+| 2.4.*           | composer install clearpay-global/module-clearpay            |
+| 2.3.*           | composer install clearpay-global/module-clearpay:^4         |
+| < 2.3.0         | composer install clearpay-global/module-clearpay:dev-legacy-main |
+</li>
+<li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
+<li> Compile dependency injection: <code><em>php bin/magento setup:di:compile</em></code> </li>
+<li> Deploy static view files (production mode only): <code><em>php bin/magento setup:static-content:deploy</em></code> </li>
+<li> Flush Magento cache: <code><em>php bin/magento cache:flush</em></code></li>
 </ol>
 
-<h2> 1.2   New Clearpay Installation </h2>
-<p>This section outlines the steps to install the Clearpay plugin for the first time.</p>
-
-<p> Note: [MAGENTO] refers to the root folder where Magento is installed. </p>
-
+### Install manually
 <ol>
-	<li> Download the Magento-Clearpay plugin - Available as a .zip or tar.gz file from the Clearpay GitHub directory. </li>
-	<li> Unzip the file </li>
-	<li> Create directory Clearpay/Clearpay in: <br/> <em>[MAGENTO]/app/code/</em></li>
-	<li> Copy the files to <em>'Clearpay/Clearpay'</em> folder </li>
-	<li> Open Command Line Interface </li>
-	<li> In CLI, run the below command to enable Clearpay module: <br/> <em>php bin/magento module:enable Clearpay_Clearpay</em> </li>
-	<li> In CLI, run the Magento setup upgrade: <br/> <em>php bin/magento setup:upgrade</em> </li>
-	<li> In CLI, run the Magento Dependencies Injection Compile: <br/> <em>php bin/magento setup:di:compile</em> </li>
-	<li> In CLI, run the Magento Static Content deployment: <br/> <em>php bin/magento setup:static-content:deploy</em> </li>
-	<li> Login to Magento Admin and navigate to System/Cache Management </li>
-	<li> Flush the cache storage by selecting Flush Cache Storage </li>
+	<li> Download the Clearpay module for Magento 2 - Available as a .zip or tar.gz file from the Clearpay GitHub directory. 
+   <br/>The right installation module is dependent on your Magento 2 version:
+
+| Magento version | Download                                          |
+|-----------------|--------------------------------------------------------|
+| 2.4.*           | [Clearpay](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/main.zip) |
+| 2.3.*           | [Clearpay:4.*](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
+| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
+</li>
+<li> Unzip the file</li>
+<li> Create directory `Clearpay/Clearpay` in: <em>[MAGENTO]/app/code/ </em> </li>
+<li> Copy the files to `Clearpay/Clearpay` folder </li>
+<li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
+<li> Compile dependency injection: <code><em>php bin/magento setup:di:compile</em></code> </li>
+<li> Deploy static view files (production mode only): <code><em>php bin/magento setup:static-content:deploy</em></code> </li>
+<li> Flush Magento cache: <code><em>php bin/magento cache:flush</em></code></li>
 </ol>
 
-<h2> 1.3	Clearpay Merchant Setup </h2>
-<p> Complete the below steps to configure the merchant’s Clearpay Merchant Credentials in Magento Admin. </p>
-<p> Note: Prerequisite for this section is to obtain a Clearpay Merchant ID and Secret Key from Clearpay. </p>
+## Clearpay Merchant Setup
+Complete the below steps to configure the merchant’s Clearpay Merchant Credentials in Magento Admin.
+<em><strong>Note:</strong> Prerequisite for this section is to obtain an Clearpay Merchant ID and Secret Key from Clearpay.</em>
 
 <ol>
-	<li> Navigate to <em>Magento Admin/Stores/Configuration/Sales/Payment Methods/Clearpay</em> </li>
+   <li> Navigate to <em>Magento Admin/Stores/Configuration/Sales/Payment Methods/Clearpay</em> </li>
 	<li> Enter the <em>Merchant ID</em> and <em>Merchant Key</em>. </li>
 	<li> Enable Clearpay plugin using the <em>Enabled</em> checkbox. </li>
 	<li> Configure the Clearpay API Mode (<em>Sandbox Mode</em> for testing on a staging instance and <em>Production Mode</em> for a live website and legitimate transactions). </li>
 	<li> Save the configuration. </li>
-	<li> Click the <em>Update Limits</em> button to retrieve the Minimum and Maximum Clearpay Order values.</li>
+	<li> Navigate to <em>Magento Admin/System/Tools/Cache Management</em> </li>
+    <li> Click <em>Flush Magento Cache</em> button</li>
 </ol>
 
-<h2> 1.4	Upgrade Of Clearpay Installation using Composer</h2>
+## Upgrade
+
+### Composer Upgrade (Recommended)
 <p> This section outlines the steps to upgrade the currently installed Clearpay plugin version using composer. </p>
-<p> Notes: </p>
-<p>Prerequisite for this section is that the module should be installed using composer. Please see section 1.1 for guidelines to install Clearpay module using composer.</p>
+<p> <strong>Notes:</strong> Prerequisite for this section is that the module should be installed using composer. Please see section <em>'Install using Composer'</em> for guidelines to install Clearpay module using composer.</p>
 <p>[MAGENTO] refers to the root folder where Magento is installed. </p>
 
 <ol>
 	<li> Open Command Line Interface and navigate to the Magento directory on your server</li>
-	<li> In CLI, run the below command to update Clearpay module: <br/> <em>composer update clearpay/module-clearpay</em> </li>
-	<li> Make sure that Composer finished the update without errors </li>
-	<li> In CLI, run the Magento setup upgrade: <br/> <em>php bin/magento setup:upgrade</em> </li>
-	<li> In CLI, run the Magento Dependencies Injection Compile: <br/> <em>php bin/magento setup:di:compile</em> </li>
-	<li> In CLI, run the Magento Static Content deployment: <br/> <em>php bin/magento setup:static-content:deploy</em> </li>
-	<li> Login to Magento Admin and navigate to System/Cache Management </li>
-	<li> Flush the cache storage by selecting Flush Cache Storage </li>
+	<li> In CLI, run the below command to update Clearpay module:  
+<br/>The right installation command is dependent on your Magento 2 version:
+
+| Magento version | Command to run                                         |
+|-----------------|--------------------------------------------------------|
+| 2.4.*           | composer update clearpay-global/module-clearpay:latest |
+| 2.3.*           | composer update clearpay-global/module-clearpay:^4 |
+| < 2.3.0         | composer update clearpay-global/module-clearpay:dev-legacy-main |
+ </li>
+<li> Make sure that Composer finished the update without errors </li>
+<li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
+<li> Compile dependency injection: <code><em>php bin/magento setup:di:compile</em></code> </li>
+<li> Deploy static view files (production mode only): <code><em>php bin/magento setup:static-content:deploy</em></code> </li>
+<li> Flush Magento cache: <code><em>php bin/magento cache:flush</em></code></li>
 </ol>
 
-<h2> 1.5	Upgrade Of Clearpay Installation </h2>
-<p> This section outlines the steps to upgrade the currently installed Clearpay plugin version. </p>
-<p> The process of upgrading the Clearpay plugin version involves the complete removal of Clearpay plugin files. </p>
-<p> Note: [MAGENTO] refers to the root folder where Magento is installed. </p>
+### Manual Upgrade
+<p>This section outlines the steps to upgrade the currently installed Clearpay plugin version.<br/>
+The process of upgrading the Clearpay plugin version involves the complete removal of Clearpay plugin files. <br/>
+</p>
+<em><strong>Note:</strong>  [MAGENTO] refers to the root folder where Magento is installed. </em>
 
 <ol>
 	<li> Remove Files in: <em>[MAGENTO]/app/code/Clearpay/Clearpay</em></li>
-	<li> Download the Magento-Clearpay plugin - Available as a .zip or tar.gz file from the Clearpay GitHub directory. </li>
+	<li> Download the Magento-Clearpay plugin - Available as a .zip or tar.gz file from the Clearpay GitHub directory. 
+ <br/>The right Clearpay module upgradation is dependent on your Magento 2 version:
+
+| Magento version | Download                                          |
+|-----------------|--------------------------------------------------------|
+https://github.com/clearpay/magento-2/archive/refs/heads/2.3-main.zip
+| 2.4.*           | [Clearpay:latest](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/main.zip) |
+| 2.3.*           | [Clearpay:4.*](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
+| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
+   </li>
 	<li> Unzip the file </li>
-	<li> Copy the files in folder to: <br/> <em>[MAGENTO]/app/code/Clearpay/Clearpay</em> </li>
+	<li> Copy the files in folder to:  <em>[MAGENTO]/app/code/Clearpay/Clearpay</em> </li>
 	<li> Open Command Line Interface </li>
-	<li> In CLI, run the below command to enable Clearpay module: <br/> <em>php bin/magento module:enable Clearpay_Clearpay</em> </li>
-	<li> In CLI, run the Magento setup upgrade: <br/> <em>php bin/magento setup:upgrade</em> </li>
-	<li> In CLI, run the Magento Dependencies Injection Compile: <br/> <em>php bin/magento setup:di:compile</em> </li>
-	<li> In CLI, run the Magento Static Content deployment: <br/> <em>php bin/magento setup:static-content:deploy</em> </li>
-	<li> Login to Magento Admin and navigate to System/Cache Management </li>
-	<li> Flush the cache storage by selecting Flush Cache Storage </li>
+	<li> In CLI, run the command to enable Clearpay module: <code><em>php bin/magento module:enable Clearpay_Clearpay</em></code> </li>
+	<li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
+   <li> Compile dependency injection: <code><em>php bin/magento setup:di:compile</em></code> </li>
+   <li> Deploy static view files (production mode only): <code><em>php bin/magento setup:static-content:deploy</em></code> </li>
+   <li> Flush Magento cache: <code><em>php bin/magento cache:flush</em></code></li>
 </ol>
+
+## Uninstall
+
+<ol>
+<li> From the CLI, run the following commands to uninstall Clearpay module: <code><em> bin/magento module:uninstall Clearpay_Clearpay</em></code>
+</li>
+<li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
+   <li> Compile dependency injection: <code><em>php bin/magento setup:di:compile</em></code> </li>
+   <li> Deploy static view files (production mode only): <code><em>php bin/magento setup:static-content:deploy</em></code> </li>
+   <li> Flush Magento cache: <code><em>php bin/magento cache:flush</em></code></li>
+</ol>
+
