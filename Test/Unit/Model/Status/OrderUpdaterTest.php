@@ -7,8 +7,8 @@ use Clearpay\Clearpay\Model\PaymentStateInterface;
 
 class OrderUpdaterTest extends \PHPUnit\Framework\TestCase
 {
-    private \Clearpay\Clearpay\Model\Order\CreditMemo\OrderUpdater $orderUpdater;
-    private \Magento\Sales\Api\OrderRepositoryInterface $orderRepository;
+    private $orderUpdater;
+    private $orderRepository;
 
     public function setUp(): void
     {

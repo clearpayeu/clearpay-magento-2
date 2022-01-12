@@ -4,19 +4,18 @@ namespace Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset;
 
 class Payment extends \Magento\Config\Block\System\Config\Form\Fieldset
 {
-    private \Magento\Payment\Model\MethodInterface $clearpay;
-    private \Clearpay\Clearpay\Model\Config $config;
+    private $clearpay;
+    private $config;
 
     public function __construct(
         \Magento\Backend\Block\Context $context,
         \Magento\Backend\Model\Auth\Session $authSession,
         \Magento\Framework\View\Helper\Js $jsHelper,
-        \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer,
         \Magento\Payment\Model\MethodInterface $clearpay,
         \Clearpay\Clearpay\Model\Config $config,
         array $data = []
     ) {
-        parent::__construct($context, $authSession, $jsHelper, $data, $secureRenderer);
+        parent::__construct($context, $authSession, $jsHelper, $data);
         $this->clearpay = $clearpay;
         $this->config = $config;
     }

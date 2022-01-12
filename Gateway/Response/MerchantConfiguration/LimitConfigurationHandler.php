@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Gateway\Response\MerchantConfiguration;
 
 class LimitConfigurationHandler implements \Magento\Payment\Gateway\Response\HandlerInterface
 {
-    private \Clearpay\Clearpay\Model\Config  $config;
+    private $config;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Config $config

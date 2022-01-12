@@ -6,9 +6,9 @@ namespace Clearpay\Clearpay\Plugin\Checkout\Block\Cart;
 
 class Sidebar
 {
-    private \Clearpay\Clearpay\ViewModel\Container\Cta\Cta $ctaContainerViewModel;
-    private \Clearpay\Clearpay\Model\Config $config;
-    private \Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\ExpressCheckout $expressCheckoutViewModel;
+    private $ctaContainerViewModel;
+    private $config;
+    private $expressCheckoutViewModel;
 
     public function __construct(
         \Clearpay\Clearpay\ViewModel\Container\Cta\Cta $ctaContainerViewModel,

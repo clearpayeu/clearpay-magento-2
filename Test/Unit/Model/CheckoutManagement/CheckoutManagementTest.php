@@ -6,7 +6,7 @@ use Clearpay\Clearpay\Api\Data\CheckoutInterface;
 
 class CheckoutManagementTest extends \PHPUnit\Framework\TestCase
 {
-    private \Clearpay\Clearpay\Model\CheckoutManagement\CheckoutManagement $checkoutManagement;
+    private $checkoutManagement;
 
     /** @var \Magento\Quote\Model\MaskedQuoteIdToQuoteIdInterface|mixed|\PHPUnit\Framework\MockObject\MockObject */
     private $maskedQuiteIdToQuoteIdMock;

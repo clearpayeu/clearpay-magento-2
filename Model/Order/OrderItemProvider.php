@@ -9,7 +9,7 @@ class OrderItemProvider
     const ITEM_SHIPPED = 'shipped';
     const ITEM_REFUNDED = 'refunded';
 
-    private \Clearpay\Clearpay\Model\Order\OrderItemInterfaceFactory $orderItemFactory;
+    private $orderItemFactory;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\OrderItemInterfaceFactory $orderItemFactory

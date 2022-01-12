@@ -4,9 +4,9 @@ namespace Clearpay\Clearpay\Model\Url\UrlBuilder;
 
 class UrlFactory
 {
-    private \Clearpay\Clearpay\Model\Config $config;
-    private \Magento\Store\Model\StoreManagerInterface $storeManager;
-    private array $environments;
+    private $config;
+    private $storeManager;
+    private $environments;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Config $config,

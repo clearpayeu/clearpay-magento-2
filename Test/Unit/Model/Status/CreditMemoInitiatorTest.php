@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Test\Unit\Model\Status;
 
 class CreditMemoInitiatorTest extends \PHPUnit\Framework\TestCase
 {
-    private \Clearpay\Clearpay\Model\Order\CreditMemo\CreditMemoInitiator $creditMemoInitiator;
+    private $creditMemoInitiator;
     /**
      * @var \Magento\Sales\Model\Order\CreditmemoFactory|\PHPUnit\Framework\MockObject\MockObject
      */

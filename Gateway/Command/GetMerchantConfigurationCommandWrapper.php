@@ -9,11 +9,11 @@ class GetMerchantConfigurationCommandWrapper implements \Magento\Payment\Gateway
 {
     const DEFAULT_WEBSITE_ID = 0;
 
-    private \Magento\Payment\Gateway\CommandInterface $merchantConfigurationCommand;
-    private \Clearpay\Clearpay\Model\Config $clearpayConfig;
-    private \Magento\Framework\App\Config\ReinitableConfigInterface $appConfig;
-    private \Clearpay\Clearpay\Model\Log\Method\Logger $debugLogger;
-    private \Psr\Log\LoggerInterface $logger;
+    private $merchantConfigurationCommand;
+    private $clearpayConfig;
+    private $appConfig;
+    private $debugLogger;
+    private $logger;
 
     public function __construct(
         \Magento\Payment\Gateway\CommandInterface $merchantConfigurationCommand,

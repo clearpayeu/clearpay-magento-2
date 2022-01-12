@@ -6,9 +6,9 @@ class CreateShippingOption
 {
     use \Magento\Payment\Helper\Formatter;
 
-    private \Clearpay\Clearpay\Model\Config $config;
-    private \Magento\Checkout\Api\TotalsInformationManagementInterface $totalsInformationManagement;
-    private \Magento\Checkout\Api\Data\TotalsInformationInterfaceFactory $totalsInformationFactory;
+    private $config;
+    private $totalsInformationManagement;
+    private $totalsInformationFactory;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Config $config,

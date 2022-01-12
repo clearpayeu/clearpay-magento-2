@@ -7,13 +7,13 @@ use Clearpay\Clearpay\Api\Data\RedirectPathInterface;
 
 class CheckoutManagement implements \Clearpay\Clearpay\Api\CheckoutManagementInterface
 {
-    private \Magento\Payment\Gateway\CommandInterface $checkoutCommand;
-    private \Magento\Payment\Gateway\CommandInterface $expressCheckoutCommand;
-    private \Magento\Quote\Api\CartRepositoryInterface $cartRepository;
-    private \Magento\Quote\Model\MaskedQuoteIdToQuoteIdInterface $maskedQuoteIdToQuoteId;
-    private \Clearpay\Clearpay\Api\Data\CheckoutInterfaceFactory $checkoutFactory;
-    private ?\Clearpay\Clearpay\Model\Spi\CheckoutValidatorInterface $expressCheckoutValidator;
-    private ?\Clearpay\Clearpay\Model\Spi\CheckoutValidatorInterface $checkoutValidator;
+    private $checkoutCommand;
+    private $expressCheckoutCommand;
+    private $cartRepository;
+    private $maskedQuoteIdToQuoteId;
+    private $checkoutFactory;
+    private $expressCheckoutValidator;
+    private $checkoutValidator;
 
     public function __construct(
         \Magento\Payment\Gateway\CommandInterface $checkoutCommand,

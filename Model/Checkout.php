@@ -2,13 +2,15 @@
 
 namespace Clearpay\Clearpay\Model;
 
+ use Clearpay\Clearpay\Api\Data\CheckoutInterface;
+
 class Checkout implements \Clearpay\Clearpay\Api\Data\CheckoutInterface
 {
-    private string $clearpayToken;
-    private string $clearpayAuthTokenExpires;
-    private string $clearpayRedirectCheckoutUrl;
+    private $clearpayToken;
+    private $clearpayAuthTokenExpires;
+    private $clearpayRedirectCheckoutUrl;
 
-    public function setClearpayToken(string $token): self
+    public function setClearpayToken(string $token): CheckoutInterface
     {
         $this->clearpayToken = $token;
         return $this;
@@ -19,7 +21,7 @@ class Checkout implements \Clearpay\Clearpay\Api\Data\CheckoutInterface
         return $this->clearpayToken;
     }
 
-    public function setClearpayAuthTokenExpires(string $authTokenExpires): self
+    public function setClearpayAuthTokenExpires(string $authTokenExpires): CheckoutInterface
     {
         $this->clearpayAuthTokenExpires = $authTokenExpires;
         return $this;
@@ -30,7 +32,7 @@ class Checkout implements \Clearpay\Clearpay\Api\Data\CheckoutInterface
         return $this->clearpayAuthTokenExpires;
     }
 
-    public function setClearpayRedirectCheckoutUrl(string $redirectCheckoutUrl): self
+    public function setClearpayRedirectCheckoutUrl(string $redirectCheckoutUrl): CheckoutInterface
     {
         $this->clearpayRedirectCheckoutUrl = $redirectCheckoutUrl;
         return $this;

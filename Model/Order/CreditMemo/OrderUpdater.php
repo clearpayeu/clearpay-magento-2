@@ -7,7 +7,7 @@ use Clearpay\Clearpay\Model\PaymentStateInterface;
 
 class OrderUpdater
 {
-    private \Magento\Sales\Api\OrderRepositoryInterface $orderRepository;
+    private $orderRepository;
 
     public function __construct(
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository

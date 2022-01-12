@@ -9,9 +9,9 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 
 class CreateClearpayCheckout implements \Magento\Framework\GraphQl\Query\ResolverInterface
 {
-    private \Clearpay\Clearpay\Model\Config $config;
-    private \Clearpay\Clearpay\Api\CheckoutManagementInterface $clearpayCheckoutManagement;
-    private \Clearpay\Clearpay\Api\Data\RedirectPathInterfaceFactory $redirectPathFactory;
+    private $config;
+    private $clearpayCheckoutManagement;
+    private $redirectPathFactory;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Config $config,

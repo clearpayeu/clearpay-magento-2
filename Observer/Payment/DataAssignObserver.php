@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Observer\Payment;
 
 class DataAssignObserver extends \Magento\Payment\Observer\AbstractDataAssignObserver
 {
-    private array $additionalInformationList = [
+    private $additionalInformationList = [
         \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_TOKEN,
         \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_AUTH_TOKEN_EXPIRES,
         \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_REDIRECT_CHECKOUT_URL

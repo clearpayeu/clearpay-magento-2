@@ -6,12 +6,12 @@ use Clearpay\Clearpay\Api\Data\CheckoutInterface;
 
 class CreateCheckout implements \Magento\Framework\App\Action\HttpPostActionInterface
 {
-    private \Clearpay\Clearpay\Api\CheckoutManagementInterface $checkoutManagement;
-    private \Magento\Checkout\Model\Session $checkoutSession;
-    private \Magento\Framework\UrlInterface $url;
-    private \Magento\Framework\Controller\Result\JsonFactory $jsonResultFactory;
-    private \Magento\Framework\Message\ManagerInterface $messageManager;
-    private \Psr\Log\LoggerInterface $logger;
+    private $checkoutManagement;
+    private $checkoutSession;
+    private $url;
+    private $jsonResultFactory;
+    private $messageManager;
+    private $logger;
 
     public function __construct(
         \Clearpay\Clearpay\Api\CheckoutManagementInterface $checkoutManagement,

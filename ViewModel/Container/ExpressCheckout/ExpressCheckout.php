@@ -12,7 +12,7 @@ class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
         'GBP' => 'GB'
     ];
 
-    private \Magento\Store\Model\StoreManagerInterface $storeManager;
+    private $storeManager;
 
     public function __construct(
         \Magento\Framework\Serialize\SerializerInterface $serializer,

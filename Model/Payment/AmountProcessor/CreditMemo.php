@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Model\Payment\AmountProcessor;
 
 class CreditMemo
 {
-    private \Clearpay\Clearpay\Model\Order\OrderItemProvider $orderItemProvider;
+    private $orderItemProvider;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\OrderItemProvider $orderItemProvider

@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Model\CheckoutManagement;
 
 class ExpressCheckoutValidator implements \Clearpay\Clearpay\Model\Spi\CheckoutValidatorInterface
 {
-    private \Clearpay\Clearpay\Model\Config $config;
+    private $config;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Config $config

@@ -7,11 +7,11 @@ use Clearpay\Clearpay\Model\PaymentStateInterface;
 
 class CreditMemoProcessor
 {
-    private \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate $expiryDate;
-    private \Clearpay\Clearpay\Model\Order\CreditMemo\CreditMemoInitiator $creditMemoInitiator;
-    private \Magento\Sales\Api\CreditmemoManagementInterface $creditmemoManagement;
-    private OrderUpdater $orderUpdater;
-    private PaymentUpdater $paymentUpdater;
+    private $expiryDate;
+    private $creditMemoInitiator;
+    private $creditmemoManagement;
+    private $orderUpdater;
+    private $paymentUpdater;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate $expiryDate,

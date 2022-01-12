@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Test\Unit\Model\Url\UrlBuilder;
 
 class UrlFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    private \Clearpay\Clearpay\Model\Url\UrlBuilder\UrlFactory $urlFactory;
+    private $urlFactory;
 
     /** @var \Clearpay\Clearpay\Model\Config|\PHPUnit\Framework\MockObject\MockObject */
     private $configMock;

@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Gateway\Response;
 
 class PaymentDetailsHandler implements \Magento\Payment\Gateway\Response\HandlerInterface
 {
-    private \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate $authExpiryDate;
+    private $authExpiryDate;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate $authExpiryDate

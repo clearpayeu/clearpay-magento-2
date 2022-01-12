@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Gateway\Validator\Method;
 
 class NotAllowedProductsValidator extends \Magento\Payment\Gateway\Validator\AbstractValidator
 {
-    private \Clearpay\Clearpay\Model\ResourceModel\NotAllowedProductsProvider $notAllowedProductsProvider;
+    private $notAllowedProductsProvider;
 
     public function __construct(
         \Magento\Payment\Gateway\Validator\ResultInterfaceFactory $resultFactory,

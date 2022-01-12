@@ -4,8 +4,8 @@ namespace Clearpay\Clearpay\Model\Url\Lib;
 
 abstract class LibUrlProvider
 {
-    protected \Clearpay\Clearpay\Model\Url\UrlBuilder $urlBuilder;
-    protected bool $isLibGotten = false;
+    protected $urlBuilder;
+    protected $isLibGotten = false;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Url\UrlBuilder $urlBuilder

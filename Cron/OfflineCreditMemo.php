@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Cron;
 
 class OfflineCreditMemo
 {
-    private \Clearpay\Clearpay\Model\Order\CreditMemo\StatusChanger $statusChanger;
+    private $statusChanger;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\CreditMemo\StatusChanger $statusChanger

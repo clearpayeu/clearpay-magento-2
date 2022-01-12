@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Plugin\Block\Adminhtml\CustomerBalance\Order\Creditm
 
 class Controls
 {
-    private \Magento\Framework\Registry $registry;
+    private $registry;
 
     public function __construct(
         \Magento\Framework\Registry $registry

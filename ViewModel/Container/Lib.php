@@ -6,9 +6,9 @@ namespace Clearpay\Clearpay\ViewModel\Container;
 
 class Lib implements \Magento\Framework\View\Element\Block\ArgumentInterface
 {
-    protected \Clearpay\Clearpay\Model\Config $config;
-    private \Clearpay\Clearpay\Model\Url\Lib\LibUrlProvider $libUrlProvider;
-    private ?string $containerConfigPath;
+    protected $config;
+    private $libUrlProvider;
+    private $containerConfigPath;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Config $config,

@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Test\Unit\Gateway\Http\Client;
 
 class ClientTest extends \PHPUnit\Framework\TestCase
 {
-    private \Clearpay\Clearpay\Gateway\Http\Client\Client $client;
+    private $client;
 
     /** @var \Magento\Framework\HTTP\ClientInterface|\PHPUnit\Framework\MockObject\MockObject */
     private $httpClientMock;

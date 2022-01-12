@@ -4,10 +4,10 @@ namespace Clearpay\Clearpay\Model;
 
 class RedirectPath implements \Clearpay\Clearpay\Api\Data\RedirectPathInterface
 {
-    private string $confirmPath;
-    private string $cancelPath;
+    private $confirmPath;
+    private $cancelPath;
 
-    public function setConfirmPath(string $path): self
+    public function setConfirmPath(string $path): \Clearpay\Clearpay\Api\Data\RedirectPathInterface
     {
         $this->confirmPath = $path;
         return $this;
@@ -18,7 +18,7 @@ class RedirectPath implements \Clearpay\Clearpay\Api\Data\RedirectPathInterface
         return $this->confirmPath;
     }
 
-    public function setCancelPath(string $path): self
+    public function setCancelPath(string $path): \Clearpay\Clearpay\Api\Data\RedirectPathInterface
     {
         $this->cancelPath = $path;
         return $this;

@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Observer;
 
 class AuthCaptureBeforeShipment implements \Magento\Framework\Event\ObserverInterface
 {
-    private \Clearpay\Clearpay\Model\Order\Shipment\CaptureProcessor $shipmentCaptureProcessor;
+    private $shipmentCaptureProcessor;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\Shipment\CaptureProcessor $shipmentCaptureProcessor

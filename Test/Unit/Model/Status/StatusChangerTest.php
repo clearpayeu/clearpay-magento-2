@@ -7,7 +7,7 @@ use Clearpay\Clearpay\Model\PaymentStateInterface;
 
 class StatusChangerTest extends \PHPUnit\Framework\TestCase
 {
-    private \Clearpay\Clearpay\Model\Order\CreditMemo\CreditMemoProcessor $creditMemoProcessor;
+    private $creditMemoProcessor;
     /**
      * @var \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate|\PHPUnit\Framework\MockObject\MockObject
      */

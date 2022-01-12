@@ -7,10 +7,10 @@ use Clearpay\Clearpay\Model\PaymentStateInterface;
 
 class CaptureProcessor
 {
-    private \Magento\Payment\Gateway\CommandInterface $authCaptureCommand;
-    private \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory;
-    private \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate $authExpiryDate;
-    private \Clearpay\Clearpay\Model\Payment\AmountProcessor\Shipment $shipmentAmountProcessor;
+    private $authCaptureCommand;
+    private $paymentDataObjectFactory;
+    private $authExpiryDate;
+    private $shipmentAmountProcessor;
 
     public function __construct(
         \Magento\Payment\Gateway\CommandInterface $authCaptureCommand,

@@ -6,9 +6,9 @@ use Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface;
 
 class RefundAndVoidCommand implements \Magento\Payment\Gateway\CommandInterface
 {
-    private \Magento\Payment\Gateway\CommandInterface $refundCommand;
-    private \Magento\Payment\Gateway\CommandInterface $voidCommand;
-    private \Clearpay\Clearpay\Model\Payment\AmountProcessor\CreditMemo $creditMemoAmountProcessor;
+    private $refundCommand;
+    private $voidCommand;
+    private $creditMemoAmountProcessor;
 
     public function __construct(
         \Magento\Payment\Gateway\CommandInterface $refundCommand,

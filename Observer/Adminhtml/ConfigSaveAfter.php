@@ -4,8 +4,8 @@ namespace Clearpay\Clearpay\Observer\Adminhtml;
 
 class ConfigSaveAfter implements \Magento\Framework\Event\ObserverInterface
 {
-    private \Magento\Payment\Gateway\CommandInterface $merchantConfigurationCommand;
-    private \Magento\Framework\Message\ManagerInterface $messageManager;
+    private $merchantConfigurationCommand;
+    private $messageManager;
 
     const CLEARPAY_CONFIGS = [
         \Clearpay\Clearpay\Model\Config::XML_PATH_API_MODE,
@@ -40,18 +40,22 @@ class ConfigSaveAfter implements \Magento\Framework\Event\ObserverInterface
             if ($websiteId === '' && $store === '') {
                 $websiteId = 0;
             }
-            $messageAction = fn () => null;
+            $messageAction = function () { };
             if ($websiteId !== '') {
                 try {
                     $this->merchantConfigurationCommand->execute([
                         'websiteId' => (int)$observer->getData('website')
                     ]);
                 } catch (\Magento\Payment\Gateway\Command\CommandException $e) {
-                    $messageAction = fn () => $this->messageManager->addWarningMessage($e->getMessage());
+                    $messageAction = function () use ($e) {
+                        $this->messageManager->addWarningMessage($e->getMessage());
+                    };
                 } catch (\Exception $e) {
-                    $messageAction = fn () => $this->messageManager->addErrorMessage(
-                        (string)__('Clearpay merchant configuration fetching is failed. See logs.')
-                    );
+                    $messageAction = function () {
+                        $this->messageManager->addErrorMessage(
+                            (string)__('Clearpay merchant configuration fetching is failed. See logs.')
+                        );
+                    };
                 }
             }
             if ($isClearpayConfigChanged) {

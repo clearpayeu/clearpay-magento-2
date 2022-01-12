@@ -4,8 +4,8 @@ namespace Clearpay\Clearpay\Model\ResourceModel;
 
 class NotAllowedProductsProvider
 {
-    private \Clearpay\Clearpay\Model\Config $config;
-    private \Magento\Framework\DB\Adapter\AdapterInterface $connection;
+    private $config;
+    private $connection;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Config $config,

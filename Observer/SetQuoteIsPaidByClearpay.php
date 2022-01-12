@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Observer;
 
 class SetQuoteIsPaidByClearpay implements \Magento\Framework\Event\ObserverInterface
 {
-    private \Clearpay\Clearpay\Model\Order\Payment\QuotePaidStorage $quotePaidStorage;
+    private $quotePaidStorage;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\Payment\QuotePaidStorage $quotePaidStorage

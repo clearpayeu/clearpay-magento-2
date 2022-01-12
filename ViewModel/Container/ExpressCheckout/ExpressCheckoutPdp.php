@@ -4,8 +4,8 @@ namespace Clearpay\Clearpay\ViewModel\Container\ExpressCheckout;
 
 class ExpressCheckoutPdp extends ExpressCheckout
 {
-    private \Magento\Catalog\Helper\Data $catalogHelper;
-    private \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory;
+    private $catalogHelper;
+    private $productCollectionFactory;
 
     public function __construct(
         \Magento\Framework\Serialize\SerializerInterface $serializer,
