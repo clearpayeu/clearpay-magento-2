@@ -9,9 +9,9 @@
 
 | Magento version | Command to run                                              |
 |-----------------|-------------------------------------------------------------|
-| 2.4.*           | composer install clearpay-global/module-clearpay            |
-| 2.3.*           | composer install clearpay-global/module-clearpay:^4         |
-| < 2.3.0         | composer install clearpay-global/module-clearpay:dev-legacy-main |
+| 2.4.*           | composer require clearpay/module-clearpay:^5            |
+| 2.3.*           | composer require clearpay/module-clearpay:^4         |
+| < 2.3.0         | composer require clearpay/module-clearpay:^3 |
 </li>
 <li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
 <li> Compile dependency injection: <code><em>php bin/magento setup:di:compile</em></code> </li>
@@ -67,9 +67,9 @@ Complete the below steps to configure the merchant’s Clearpay Merchant Credent
 
 | Magento version | Command to run                                         |
 |-----------------|--------------------------------------------------------|
-| 2.4.*           | composer update clearpay-global/module-clearpay:latest |
-| 2.3.*           | composer update clearpay-global/module-clearpay:^4 |
-| < 2.3.0         | composer update clearpay-global/module-clearpay:dev-legacy-main |
+| 2.4.*           | composer require clearpay/module-clearpay:^5 |
+| 2.3.*           | composer require clearpay/module-clearpay:^4 |
+| < 2.3.0         | composer require clearpay/module-clearpay:^3 |
  </li>
 <li> Make sure that Composer finished the update without errors </li>
 <li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
