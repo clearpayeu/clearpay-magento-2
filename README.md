@@ -21,14 +21,14 @@
 
 ### Install manually
 <ol>
-	<li> Download the Clearpay module for Magento 2 - Available as a .zip or tar.gz file from the Clearpay GitHub directory. 
+	<li> Download the Clearpay module for Magento 2 - Available as a .zip or tar.gz file from the Clearpay GitHub directory.
    <br/>The right installation module is dependent on your Magento 2 version:
 
 | Magento version | Download                                          |
 |-----------------|--------------------------------------------------------|
-| 2.4.*           | [Clearpay](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/main.zip) |
-| 2.3.*           | [Clearpay:4.*](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
-| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
+| 2.4.*           | [Clearpay](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/main.zip) |
+| 2.3.*           | [Clearpay:4.*](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
+| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
 </li>
 <li> Unzip the file</li>
 <li> Create directory `Clearpay/Clearpay` in: <em>[MAGENTO]/app/code/ </em> </li>
@@ -86,15 +86,14 @@ The process of upgrading the Clearpay plugin version involves the complete remov
 
 <ol>
 	<li> Remove Files in: <em>[MAGENTO]/app/code/Clearpay/Clearpay</em></li>
-	<li> Download the Magento-Clearpay plugin - Available as a .zip or tar.gz file from the Clearpay GitHub directory. 
+	<li> Download the Magento-Clearpay plugin - Available as a .zip or tar.gz file from the Clearpay GitHub directory.
  <br/>The right Clearpay module upgradation is dependent on your Magento 2 version:
 
 | Magento version | Download                                          |
 |-----------------|--------------------------------------------------------|
-https://github.com/clearpay/magento-2/archive/refs/heads/2.3-main.zip
-| 2.4.*           | [Clearpay:latest](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/main.zip) |
-| 2.3.*           | [Clearpay:4.*](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
-| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
+| 2.4.*           | [Clearpay:latest](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/main.zip) |
+| 2.3.*           | [Clearpay:4.*](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
+| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
    </li>
 	<li> Unzip the file </li>
 	<li> Copy the files in folder to:  <em>[MAGENTO]/app/code/Clearpay/Clearpay</em> </li>
@@ -116,4 +115,3 @@ https://github.com/clearpay/magento-2/archive/refs/heads/2.3-main.zip
    <li> Deploy static view files (production mode only): <code><em>php bin/magento setup:static-content:deploy</em></code> </li>
    <li> Flush Magento cache: <code><em>php bin/magento cache:flush</em></code></li>
 </ol>
-
