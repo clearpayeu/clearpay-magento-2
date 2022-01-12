@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Magento 2 extensions for Clearpay Payment
- *
- * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.clearpay.co.uk
- */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-	<event name="view_block_abstract_to_html_before">
-        <observer name="clearpay_view_block_abstract_to_html_before" instance="Clearpay\Clearpay\Observer\BeforeCreditmemoLoad" />
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="admin_system_config_changed_section_payment">
+        <observer name="clearpay_update_configs_before_config_save_payment"
+                  instance="Clearpay\Clearpay\Observer\Adminhtml\ConfigSaveAfter"/>
+    </event>
+    <event name="admin_system_config_changed_section_general">
+        <observer name="clearpay_update_configs_before_config_save_default"
+                  instance="Clearpay\Clearpay\Observer\Adminhtml\ConfigSaveAfter"/>
+    </event>
+    <event name="admin_system_config_changed_section_currency">
+        <observer name="clearpay_update_configs_before_config_save_default"
+                  instance="Clearpay\Clearpay\Observer\Adminhtml\ConfigSaveAfter"/>
     </event>
 </config>

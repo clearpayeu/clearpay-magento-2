@@ -1,16 +1,8 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Magento 2 extensions for Clearpay Payment
- *
- * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.Clearpay.com
- */
--->
 <payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/payment.xsd">
     <methods>
-        <method name="clearpaypayovertime">
+        <method name="clearpay">
             <allow_multiple_address>0</allow_multiple_address>
         </method>
     </methods>

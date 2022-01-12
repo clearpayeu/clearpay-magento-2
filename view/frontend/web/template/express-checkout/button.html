@@ -1,0 +1,10 @@
+<!-- ko if: (isVisible)-->
+<button data-bind="
+        attr: {'data-afterpay-entry-point': entryPoint},
+        afterRender: initClearpay
+        "
+        class="clearpay primary express-button clearpay-express-button">
+    <img src="https://static.afterpay.com/button/checkout-with-clearpay/white-on-black.svg"
+         alt="Checkout with Clearpay"/>
+</button>
+<!-- /ko -->

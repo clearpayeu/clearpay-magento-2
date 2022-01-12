@@ -1,15 +1,23 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Magento 2 extensions for Clearpay Payment
- *
- * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.clearpay.co.uk
- */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Magento\Config\Model\Config">
-        <plugin name="updateOrderTotalLimitClearpay" type="Clearpay\Clearpay\Model\Config\Save\Plugin" />
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Clearpay\Clearpay\Block\Payment\Info">
+        <arguments>
+            <argument name="config" xsi:type="object">Clearpay\Clearpay\Gateway\Config\Config</argument>
+        </arguments>
     </type>
-	<preference for="Magento\Catalog\Helper\Category" type="Clearpay\Clearpay\Helper\Category" />
+    <type name="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\Payment">
+        <arguments>
+            <argument name="clearpay" xsi:type="object">Clearpay\Clearpay\Model\Method\MethodFacade</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Sales\Block\Adminhtml\Order\Creditmemo\Create\Items">
+        <plugin name="clearpay_remove_offline_refund_button" type="Clearpay\Clearpay\Plugin\Block\Adminhtml\Order\Creditmemo\Create\Items" />
+    </type>
+    <type name="Magento\CustomerBalance\Block\Adminhtml\Sales\Order\Creditmemo\Controls">
+        <plugin name="clearpay_remove_customer_balance_from_creditmemo" type="Clearpay\Clearpay\Plugin\Block\Adminhtml\CustomerBalance\Order\Creditmemo\Controls" />
+    </type>
+    <type name="Magento\Sales\Block\Adminhtml\Order\View">
+        <plugin name="clearpay_remove_creditmemo_button_from_order_view" type="Clearpay\Clearpay\Plugin\Block\Adminhtml\Order\View" />
+    </type>
 </config>

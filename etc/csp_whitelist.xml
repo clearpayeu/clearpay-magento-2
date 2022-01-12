@@ -5,36 +5,32 @@
             <values>
                 <value id="clearpay-sandbox-consumer-portal" type="host">https://portal.sandbox.clearpay.co.uk</value>
                 <value id="clearpay-production-consumer-portal" type="host">https://portal.clearpay.co.uk</value>
-                <value id="clearpay-cdn" type="host">https://static.afterpay.com</value>
-           		<value id="clearpay-sandbox-jslib" type="host">https://js.sandbox.afterpay.com</value>
-                <value id="clearpay-production-jslib" type="host">https://js.afterpay.com</value>
+                <value id="afterpay-sandbox-consumer-portal" type="host">https://portal.sandbox.afterpay.com</value>
+                <value id="afterpay-production-consumer-portal" type="host">https://portal.afterpay.com</value>
+                <value id="afterpay-cdn" type="host">https://static.afterpay.com</value>
+                <value id="afterpay-sandbox-jslib" type="host">https://js.sandbox.afterpay.com</value>
+                <value id="afterpay-production-jslib" type="host">https://js.afterpay.com</value>
             </values>
         </policy>
-        <policy id="connect-src">
+		<policy id="connect-src">
             <values>
-                <value id="clearpay-cdn-connect" type="host">static.afterpay.com</value>
-                <value id="clearpay-sandbox-cdn-connect" type="host">static.sandbox.afterpay.com</value>
-                <value id="clearpay-sandbox-jslib-connect" type="host">js.sandbox.afterpay.com</value>
-                <value id="clearpay-production-jslib-connect" type="host">js.afterpay.com</value>
-
+                <value id="afterpay-cdn-connect" type="host">static.afterpay.com</value>
+                <value id="afterpay-sandbox-cdn-connect" type="host">static.sandbox.afterpay.com</value>
+                <value id="afterpay-sandbox-jslib-connect" type="host">js.sandbox.afterpay.com</value>
+                <value id="afterpay-production-jslib-connect" type="host">js.afterpay.com</value>
             </values>
         </policy>
-		    <policy id="style-src">
+		<policy id="style-src">
         		<values>
-            		<value id="clearpay-cdn-style" type="host">static.afterpay.com/</value>
-        			<value id="clearpay-sandbox-jslib-style" type="host">js.sandbox.afterpay.com</value>
-                	<value id="clearpay-production-jslib-style" type="host">js.afterpay.com</value>
+            		<value id="afterpay-cdn-style" type="host">static.afterpay.com/</value>
+            		<value id="afterpay-sandbox-jslib-style" type="host">js.sandbox.afterpay.com</value>
+                	<value id="afterpay-production-jslib-style" type="host">js.afterpay.com</value>
         		</values>
-    	  </policy>
-		    <policy id="img-src">
+    	</policy>
+		<policy id="img-src">
             <values>
-                 <value id="clearpay--cdn-base" type="host">https://static.afterpay.com</value>
-                <value id="clearpay--assets" type="host">https://site-assets.afterpay.com/</value>
-            </values>
-        </policy>
-        <policy id="font-src">
-            <values>
-                <value id="data" type="host">data:</value>
+                <value id="afterpay-cdn-base" type="host">https://static.afterpay.com</value>
+                <value id="afterpay-assets" type="host">https://site-assets.afterpay.com/</value>
             </values>
         </policy>
     </policies>

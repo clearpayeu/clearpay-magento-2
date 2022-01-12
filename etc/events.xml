@@ -1,6 +1,15 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-	<event name="sales_order_shipment_save_before">
-        <observer name="clearpay_before_shipment" instance="Clearpay\Clearpay\Observer\BeforeShipment" />
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_payment_pay">
+        <observer name="clearpay_set_quote_is_paid_by_clearpay"
+                  instance="Clearpay\Clearpay\Observer\SetQuoteIsPaidByClearpay"/>
+    </event>
+    <event name="payment_method_assign_data_clearpay">
+        <observer name="clearpay_gateway_data_assign" instance="Clearpay\Clearpay\Observer\Payment\DataAssignObserver"/>
+    </event>
+    <event name="sales_order_shipment_save_before">
+        <observer name="clearpay_auth_capture_before_shipment"
+                  instance="Clearpay\Clearpay\Observer\AuthCaptureBeforeShipment"/>
     </event>
 </config>

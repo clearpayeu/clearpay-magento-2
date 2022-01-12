@@ -1,0 +1,27 @@
+type Mutation {
+    createClearpayCheckout(input: createClearpayCheckoutInput): createClearpayCheckoutOutput @resolver(class: "\\Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\CreateClearpayCheckout") @doc(description:"Creates an Clearpay Checkout.")
+}
+
+input createClearpayCheckoutInput {
+    cart_id: String!
+    redirect_path: ClearpayRedirectPathInput! @doc(description:"A set of relative URLs that Clearpay uses in response to various actions during the authorization process")
+}
+
+input ClearpayRedirectPathInput @doc(description:"A set of relative URLs that Clearpay will use in response to various actions during the authorization process. Magento prepends the base URL to this value to create a full URL. For example, if the full URL is https://www.example.com/path/to/page.html, the relative URL is path/to/page.html.") {
+    confirm_path: String! @doc(description:"The relative URL of the final confirmation page that Clearpay will redirect to upon payment success. If the full URL to this page is https://www.example.com/clearpay/payment/success, the relative URL is clearpay/payment/success.")
+    cancel_path: String! @doc(description:"The relative URL of the page that Clearpay will redirect to when the buyer cancels the transaction in order to choose a different payment method. If the full URL to this page is https://www.example.com/clearpay/payment/cancel, the relative URL is clearpay/payment/cancel.")
+}
+
+type createClearpayCheckoutOutput {
+    clearpay_token: String! @doc(description: "Clearpay checkout token to be used to complete payment.")
+    clearpay_expires: String! @doc(description: "The UTC timestamp of when the checkout token will expire, in ISO 8601 format.")
+    clearpay_redirectCheckoutUrl: String! @doc(description: "A URL that can be used to redirect the consumer to the Clearpay screenflow.")
+}
+
+input PaymentMethodInput {
+    clearpay: ClearpayInput @doc(description: "Required input for Clearpay payment")
+}
+
+input ClearpayInput {
+    clearpay_token: String! @doc(description:"Clearpay checkout token returned by the createClearpayCheckout mutation")
+}

@@ -1,0 +1,14 @@
+<?php
+/** @var Magento\Framework\View\Element\Template $block */
+/** @var Magento\Framework\Escaper $escaper */
+/** @var Clearpay\Clearpay\ViewModel\Container\Cta\Lib $viewModel */
+$viewModel = $block->getViewModel();
+?>
+
+<?php if ($viewModel->isContainerEnable() && !$viewModel->getIsLibLoadedAlready()): ?>
+    <script
+        src="<?= $escaper->escapeUrl($viewModel->getClearpayLib()) ?>"
+        data-min="<?= /* @noEscape */ $viewModel->getMinTotalValue() ?>"
+        data-max="<?= /* @noEscape */ $viewModel->getMaxTotalValue() ?>"
+        async></script>
+<?php endif; ?>

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Clearpay_Clearpay::css/clearpay-express-checkout.css"/>
+    </head>
+    <body>
+        <referenceBlock name="head.components">
+            <block name="clearpay.cta.mini.cart.lib" template="Clearpay_Clearpay::cta/lib.phtml" before="-" >
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\MiniCartLib</argument>
+                </arguments>
+            </block>
+            <block name="clearpay.express.checkout.mini.cart.lib" template="Clearpay_Clearpay::express-checkout/lib.phtml" before="-" >
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\MiniCartLib</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+        <referenceBlock name="minicart">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="minicart_content" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <item name="extra_info" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="clearpay.cta" xsi:type="array">
+                                            <item name="component" xsi:type="string">clearpayCta</item>
+                                            <item name="template" xsi:type="string">Clearpay_Clearpay/cta/cta</item>
+                                            <item name="sortOrder" xsi:type="string">0</item>
+                                            <item name="config" xsi:type="array">
+                                                <item name="id" xsi:type="string">clearpay-cta-mini-cart</item>
+                                                <item name="modelContainerId" xsi:type="string">clearpay-mini-cart-container</item>
+                                            </item>
+                                            <item name="children" xsi:type="array">
+                                                <item name="clearpay.cta.mini.cart.data.retriever" xsi:type="array">
+                                                    <item name="component" xsi:type="string">Clearpay_Clearpay/js/service/container/cart/mini-cart-data-retriever</item>
+                                                    <item name="config" xsi:type="array">
+                                                        <item name="modelContainerId" xsi:type="string">clearpay-mini-cart-container</item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                        <item name="clearpay.express.checkout" xsi:type="array">
+                                            <item name="component" xsi:type="string">clearpayExpressCheckoutButton</item>
+                                            <item name="template" xsi:type="string">Clearpay_Clearpay/express-checkout/button-minicart</item>
+                                            <item name="sortOrder" xsi:type="string">1</item>
+                                            <item name="config" xsi:type="array">
+                                                <item name="entryPoint" xsi:type="string">mini-cart</item>
+                                                <item name="modelContainerId" xsi:type="string">clearpay-mini-cart-container</item>
+                                            </item>
+                                            <item name="children" xsi:type="array">
+                                                <item name="clearpay.express.checkout.mini.cart.data.retriever" xsi:type="array">
+                                                    <item name="component" xsi:type="string">Clearpay_Clearpay/js/service/container/cart/mini-cart-data-retriever</item>
+                                                    <item name="config" xsi:type="array">
+                                                        <item name="modelContainerId" xsi:type="string">clearpay-mini-cart-container</item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

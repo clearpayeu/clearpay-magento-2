@@ -1,16 +1,9 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Magento 2 extensions for Clearpay Payment
- *
- * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.Clearpay.com
- */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="standard">
         <route id="clearpay" frontName="clearpay">
-            <module name="Clearpay_Clearpay" />
+            <module name="Clearpay_Clearpay"/>
         </route>
     </router>
 </config>

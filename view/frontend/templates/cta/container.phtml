@@ -1,0 +1,18 @@
+<?php
+/** @var Magento\Framework\View\Element\Template $block */
+/** @var Clearpay\Clearpay\ViewModel\Container\Cta\Cta $viewModel */
+$viewModel = $block->getViewModel();
+?>
+
+<?php if ($viewModel->isContainerEnable()): ?>
+<div class="clearpay-container" data-bind="scope: 'clearpay.cta'">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+</div>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": <?= /** @noEscape */ $viewModel->updateJsLayout($block->getJsLayout()) ?>
+        }
+    }
+</script>
+<?php endif; ?>

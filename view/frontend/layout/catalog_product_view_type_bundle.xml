@@ -1,14 +1,7 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Magento 2 extensions for Clearpay Payment
- *
- * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.Clearpay.com
- */
--->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-		<move element="clearpay.price.installments" destination="bundle.summary" after="product.info.addto.bundle"/>
+        <move element="clearpay.product.cta" destination="bundle.summary" before="clearpay.product.express.checkout" />
+        <move element="clearpay.product.express.checkout" destination="bundle.summary" />
     </body>
 </page>

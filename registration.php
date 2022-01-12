@@ -1,10 +1,5 @@
-<?php
-/**
- * Magento 2 extensions for Clearpay Payment
- *
- * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.clearpay.co.uk
- */
+<?php declare(strict_types=1);
+
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
     'Clearpay_Clearpay',

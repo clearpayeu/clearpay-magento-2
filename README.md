@@ -115,3 +115,7 @@ The process of upgrading the Clearpay plugin version involves the complete remov
    <li> Deploy static view files (production mode only): <code><em>php bin/magento setup:static-content:deploy</em></code> </li>
    <li> Flush Magento cache: <code><em>php bin/magento cache:flush</em></code></li>
 </ol>
+
+## Headless support
+
+Module supports GraphQL and REST API. See [GraphQL](Docs/GraphQL.md) and [Rest API](Docs/RestAPI.md)

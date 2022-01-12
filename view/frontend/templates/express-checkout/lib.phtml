@@ -1,0 +1,10 @@
+<?php
+/** @var Magento\Framework\Escaper $escaper */
+/** @var Magento\Framework\View\Element\Template $block */
+/** @var Clearpay\Clearpay\ViewModel\Container\Lib $viewModel */
+$viewModel = $block->getViewModel();
+?>
+
+<?php if ($viewModel->isContainerEnable() && !$viewModel->getIsLibLoadedAlready()): ?>
+        <script src="<?= $escaper->escapeUrl($viewModel->getClearpayLib()) ?>" async></script>
+<?php endif; ?>

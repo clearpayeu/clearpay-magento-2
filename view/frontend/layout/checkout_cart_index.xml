@@ -1,19 +1,72 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Magento 2 extensions for Clearpay Payment
- *
- * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.Clearpay.com
- */
--->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Clearpay_Clearpay::css/clearpay-express-checkout.css"/>
+    </head>
     <body>
-        <referenceContainer name="checkout.cart.methods">
-            <block class="Clearpay\Clearpay\Block\Cart\Button" name="clearpay.cart.buynow" after="checkout.cart.shortcut.buttons" template="Clearpay_Clearpay::clearpay/cart.phtml" />
-        </referenceContainer>
-        <referenceContainer name="content">
-            <block class="Magento\Framework\View\Element\Template" name="clearpay.modal.popup" after="-" template="Clearpay_Clearpay::clearpay/modal.phtml" />
+        <referenceBlock name="head.components">
+            <block name="clearpay.cta.cart.lib" template="Clearpay_Clearpay::cta/lib.phtml" before="-" >
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\CartLib</argument>
+                </arguments>
+            </block>
+            <block name="clearpay.express.checkout.cart.lib" template="Clearpay_Clearpay::express-checkout/lib.phtml" before="-" >
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\CartLib</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+        <referenceContainer name="checkout.cart.totals.container">
+            <block name="clearpay.cart.cta" template="Clearpay_Clearpay::cta/container.phtml" after="-" ifconfig="payment/clearpay/enable_cta_cart_page">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\Cta</argument>
+                    <argument name="jsLayout" xsi:type="array">
+                        <item name="components" xsi:type="array">
+                            <item name="clearpay.cta" xsi:type="array">
+                                <item name="component" xsi:type="string">clearpayCta</item>
+                                <item name="template" xsi:type="string">Clearpay_Clearpay/cta/cta</item>
+                                <item name="config" xsi:type="array">
+                                    <item name="id" xsi:type="string">clearpay-cta-cart</item>
+                                    <item name="modelContainerId" xsi:type="string">clearpay-cart-container</item>
+                                </item>
+                                <item name="children" xsi:type="array">
+                                    <item name="clearpay.cta.cart.data.retriever" xsi:type="array">
+                                        <item name="component" xsi:type="string">Clearpay_Clearpay/js/service/container/cart/cart-data-retriever</item>
+                                        <item name="config" xsi:type="array">
+                                            <item name="modelContainerId" xsi:type="string">clearpay-cart-container</item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </argument>
+                </arguments>
+            </block>
+            <block name="clearpay.cart.express.checkout" template="Clearpay_Clearpay::express-checkout/button.phtml" after="-" ifconfig="payment/clearpay/enable_express_checkout_cart_page">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\ExpressCheckout</argument>
+                    <argument name="jsLayout" xsi:type="array">
+                        <item name="components" xsi:type="array">
+                            <item name="clearpay.express.checkout" xsi:type="array">
+                                <item name="component" xsi:type="string">clearpayExpressCheckoutButton</item>
+                                <item name="template" xsi:type="string">Clearpay_Clearpay/express-checkout/button</item>
+                                <item name="config" xsi:type="array">
+                                    <item name="entryPoint" xsi:type="string">cart</item>
+                                    <item name="modelContainerId" xsi:type="string">clearpay-cart-container</item>
+                                </item>
+                                <item name="children" xsi:type="array">
+                                    <item name="clearpay.express.checkout.cart.data.retriever" xsi:type="array">
+                                        <item name="component" xsi:type="string">Clearpay_Clearpay/js/service/container/cart/cart-data-retriever</item>
+                                        <item name="config" xsi:type="array">
+                                            <item name="modelContainerId" xsi:type="string">clearpay-cart-container</item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </argument>
+                </arguments>
+            </block>
         </referenceContainer>
     </body>
 </page>

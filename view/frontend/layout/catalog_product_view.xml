@@ -1,16 +1,65 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Magento 2 extensions for Clearpay Payment
- *
- * @author Clearpay
- * @copyright 2016-2021 Clearpay https://www.clearpay.co.uk
- */
--->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Clearpay_Clearpay::css/clearpay-express-checkout.css"/>
+    </head>
     <body>
+        <referenceBlock name="head.components">
+            <block name="clearpay.cta.pdp.lib" template="Clearpay_Clearpay::cta/lib.phtml" before="-" >
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\PDPLib</argument>
+                </arguments>
+            </block>
+            <block name="clearpay.express.checkout.pdp.lib" template="Clearpay_Clearpay::express-checkout/lib.phtml" before="-" >
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\PDPLib</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
         <referenceContainer name="product.info.main">
-            <block class="Clearpay\Clearpay\Block\Catalog\Installments" name="clearpay.price.installments" after="product.info.price" template="Clearpay_Clearpay::clearpay/product.phtml" />
+            <block name="clearpay.product.express.checkout" template="Clearpay_Clearpay::express-checkout/button.phtml" after="product.info.price" ifconfig="payment/clearpay/enable_express_checkout_product_page">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\ExpressCheckoutPdp</argument>
+                    <argument name="jsLayout" xsi:type="array">
+                        <item name="components" xsi:type="array">
+                            <item name="clearpay.express.checkout" xsi:type="array">
+                                <item name="component" xsi:type="string">clearpayExpressCheckoutButtonPdp</item>
+                                <item name="template" xsi:type="string">Clearpay_Clearpay/express-checkout/button</item>
+                                <item name="config" xsi:type="array">
+                                    <item name="entryPoint" xsi:type="string">product-page</item>
+                                    <item name="modelContainerId" xsi:type="string">clearpay-pdp-container</item>
+                                    <item name="cartModelContainerId" xsi:type="string">clearpay-mini-cart-container</item>
+                                </item>
+                                <item name="children" xsi:type="array">
+                                    <item name="clearpay.express.checkout.mini.cart.data.retriever" xsi:type="array">
+                                        <item name="component" xsi:type="string">Clearpay_Clearpay/js/service/container/cart/mini-cart-data-retriever</item>
+                                        <item name="config" xsi:type="array">
+                                            <item name="modelContainerId" xsi:type="string">clearpay-mini-cart-container</item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </argument>
+                </arguments>
+            </block>
+            <block name="clearpay.product.cta" template="Clearpay_Clearpay::cta/container.phtml" before="clearpay.product.express.checkout" after="product.info.price" ifconfig="payment/clearpay/enable_cta_product_page">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\Cta</argument>
+                    <argument name="jsLayout" xsi:type="array">
+                        <item name="components" xsi:type="array">
+                            <item name="clearpay.cta" xsi:type="array">
+                                <item name="component" xsi:type="string">clearpayCta</item>
+                                <item name="template" xsi:type="string">Clearpay_Clearpay/cta/cta</item>
+                                <item name="config" xsi:type="array">
+                                    <item name="id" xsi:type="string">clearpay-cta-pdp</item>
+                                    <item name="modelContainerId" xsi:type="string">clearpay-pdp-container</item>
+                                </item>
+                            </item>
+                        </item>
+                    </argument>
+                </arguments>
+            </block>
         </referenceContainer>
     </body>
 </page>
