@@ -14,7 +14,7 @@ define([
             return $t('You will be redirected to the Clearpay website when you proceed to checkout.');
         },
         getTermsLink: function () {
-            return "https://www.clearpay.co.uk/en-GB/terms-of-service";
+            return $t("https://www.clearpay.co.uk/en-GB/terms-of-service");
         },
     });
 });

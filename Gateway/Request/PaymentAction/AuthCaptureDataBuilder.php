@@ -24,7 +24,7 @@ class AuthCaptureDataBuilder implements \Magento\Payment\Gateway\Request\Builder
             'orderId' => $clearpayOrderId,
             'amount' => [
                 'amount' => $this->formatPrice(SubjectReader::readAmount($buildSubject)),
-                'currency' => $payment->getOrder()->getOrderCurrencyCode()
+                'currency' => $payment->getOrder()->getBaseCurrencyCode()
             ]
         ];
     }

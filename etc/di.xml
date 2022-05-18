@@ -255,10 +255,11 @@
             </argument>
         </arguments>
     </type>
-    <type name="Magento\Payment\Model\Checks\SpecificationFactory">
-        <plugin name="clearpay_add_additional_checks" type="Clearpay\Clearpay\Plugin\Model\Checks\SpecificationFactory" />
+    <type name="Clearpay\Clearpay\Gateway\Validator\StockItemsValidator">
+        <arguments>
+            <argument name="sourceValidatorService" xsi:type="object">Clearpay\Clearpay\Model\SourceValidatorService</argument>
+        </arguments>
     </type>
-
     <virtualType name="Clearpay\Clearpay\Logger" type="Magento\Framework\Logger\Monolog">
         <arguments>
             <argument name="name" xsi:type="const">Clearpay\Clearpay\Gateway\Config\Config::CODE</argument>
@@ -283,6 +284,7 @@
     <type name="Clearpay\Clearpay\Model\Order\Shipment\CaptureProcessor">
         <arguments>
             <argument name="authCaptureCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\AuthCaptureCommand</argument>
+            <argument name="stockItemsValidator" xsi:type="object">Clearpay\Clearpay\Gateway\Validator\StockItemsValidator</argument>
         </arguments>
     </type>
     <type name="Clearpay\Clearpay\Model\CheckoutManagement\CheckoutManagement">
@@ -297,13 +299,13 @@
         <arguments>
             <argument name="environments" xsi:type="array">
                 <item name="sandbox" xsi:type="array">
-                    <item name="api_url" xsi:type="string">https://api.eu-sandbox.afterpay.com/</item>
-                    <item name="web_url" xsi:type="string">https://portal.sandbox.clearpay.co.uk/</item>
+                    <item name="api_url" xsi:type="string">https://global-api-sandbox.afterpay.com/</item>
+                    <item name="web_url" xsi:type="string">https://portal.sandbox.afterpay.com/</item>
                     <item name="js_lib_url" xsi:type="string">https://js.sandbox.afterpay.com/</item>
                 </item>
                 <item name="production" xsi:type="array">
-                    <item name="api_url" xsi:type="string">https://api.eu.afterpay.com/</item>
-                    <item name="web_url" xsi:type="string">https://portal.clearpay.co.uk/</item>
+                    <item name="api_url" xsi:type="string">https://global-api.afterpay.com/</item>
+                    <item name="web_url" xsi:type="string">https://portal.afterpay.com/</item>
                     <item name="js_lib_url" xsi:type="string">https://js.afterpay.com/</item>
                 </item>
             </argument>
