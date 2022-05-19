@@ -27,6 +27,11 @@
             <argument name="containerConfigPath" xsi:type="const">Clearpay\Clearpay\Model\Config::XML_PATH_ENABLE_EXPRESS_CHECKOUT_ACTION_PRODUCT</argument>
         </arguments>
     </virtualType>
+    <virtualType name="Clearpay\Clearpay\ViewModel\WidgetCheckout\Lib" type="Clearpay\Clearpay\ViewModel\Container\Lib">
+        <arguments>
+            <argument name="libUrlProvider" xsi:type="object">Clearpay\Clearpay\Model\Url\Lib\WidgetCheckoutLibUrlProvider</argument>
+        </arguments>
+    </virtualType>
     <virtualType name="Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\CartLib" type="Clearpay\Clearpay\ViewModel\Container\Lib">
         <arguments>
             <argument name="libUrlProvider" xsi:type="object">Clearpay\Clearpay\Model\Url\Lib\ExpressCheckoutLibUrlProvider</argument>
@@ -60,5 +65,12 @@
     </virtualType>
     <type name="Magento\Checkout\CustomerData\AbstractItem">
         <plugin name="clearpay_item_additional_attributes" type="Clearpay\Clearpay\Plugin\Checkout\CustomerData\Cart" />
+    </type>
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="clearpay_config_provider" xsi:type="object">Clearpay\Clearpay\Model\CheckoutConfigProvider</item>
+            </argument>
+        </arguments>
     </type>
 </config>

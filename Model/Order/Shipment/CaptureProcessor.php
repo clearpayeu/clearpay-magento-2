@@ -11,16 +11,19 @@ class CaptureProcessor
     private \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory;
     private \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate $authExpiryDate;
     private \Clearpay\Clearpay\Model\Payment\AmountProcessor\Shipment $shipmentAmountProcessor;
+    private \Clearpay\Clearpay\Model\Spi\StockItemsValidatorInterface $stockItemsValidator;
 
     public function __construct(
         \Magento\Payment\Gateway\CommandInterface $authCaptureCommand,
         \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory,
         \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate $authExpiryDate,
+        \Clearpay\Clearpay\Model\Spi\StockItemsValidatorInterface $stockItemsValidator,
         \Clearpay\Clearpay\Model\Payment\AmountProcessor\Shipment $shipmentAmountProcessor
     ) {
         $this->authCaptureCommand = $authCaptureCommand;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->authExpiryDate = $authExpiryDate;
+        $this->stockItemsValidator = $stockItemsValidator;
         $this->shipmentAmountProcessor = $shipmentAmountProcessor;
     }
 
@@ -43,7 +46,7 @@ class CaptureProcessor
 
         if ($amountToCaptureExists && $correctStateForAuthCapture) {
             $this->validateAuthExpiryDate($additionalInfo[AdditionalInformationInterface::CLEARPAY_AUTH_EXPIRY_DATE]);
-
+            $this->stockItemsValidator->validate($shipment);
             $amountToCapture = $this->shipmentAmountProcessor->process($shipment->getItemsCollection(), $payment);
 
             if ($amountToCapture > 0) {

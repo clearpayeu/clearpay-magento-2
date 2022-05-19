@@ -5,6 +5,15 @@
         <css src="Clearpay_Clearpay::css/clearpay-checkout.css"/>
     </head>
     <body>
+        <referenceBlock name="clearpay.express.checkout.mini.cart.lib" remove="true"/>
+        <referenceBlock name="clearpay.cta.mini.cart.lib" remove="true"/>
+        <referenceBlock name="head.components">
+            <block name="clearpay.widget.checkout.cart.lib" template="Clearpay_Clearpay::express-checkout/lib.phtml" before="-" >
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\WidgetCheckout\Lib</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
         <referenceBlock name="checkout.root">
             <arguments>
                 <argument name="jsLayout" xsi:type="array">
@@ -24,6 +33,15 @@
                                                                     <item name="displayArea" xsi:type="string">clearpay-checkout-notice</item>
                                                                     <item name="config" xsi:type="array">
                                                                         <item name="template" xsi:type="string">Clearpay_Clearpay/payment/info/checkout-note</item>
+                                                                    </item>
+                                                                    <item name="children" xsi:type="array">
+                                                                        <item name="clearpay-price-table" xsi:type="array">
+                                                                            <item name="component" xsi:type="string">Clearpay_Clearpay/js/view/payment/info/price-table</item>
+                                                                            <item name="displayArea" xsi:type="string">clearpay-price-table</item>
+                                                                            <item name="config" xsi:type="array">
+                                                                                <item name="template" xsi:type="string">Clearpay_Clearpay/payment/info/price-table</item>
+                                                                            </item>
+                                                                        </item>
                                                                     </item>
                                                                 </item>
                                                                 <item name="clearpay-terms-and-conditions" xsi:type="array">

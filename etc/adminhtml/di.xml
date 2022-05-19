@@ -6,11 +6,21 @@
             <argument name="config" xsi:type="object">Clearpay\Clearpay\Gateway\Config\Config</argument>
         </arguments>
     </type>
-    <type name="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\Payment">
+    <type name="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\AllowedByCountry">
         <arguments>
             <argument name="clearpay" xsi:type="object">Clearpay\Clearpay\Model\Method\MethodFacade</argument>
         </arguments>
     </type>
+    <virtualType name="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\Payment" type="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\AllowedByCountry">
+        <arguments>
+            <argument name="allowedCountriesConfigPath" xsi:type="string">allowed_merchant_countries</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\ExpressCheckout" type="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\AllowedByCountry">
+        <arguments>
+            <argument name="allowedCountriesConfigPath" xsi:type="string">expresscheckout/allowed_merchant_countries</argument>
+        </arguments>
+    </virtualType>
     <type name="Magento\Sales\Block\Adminhtml\Order\Creditmemo\Create\Items">
         <plugin name="clearpay_remove_offline_refund_button" type="Clearpay\Clearpay\Plugin\Block\Adminhtml\Order\Creditmemo\Create\Items" />
     </type>

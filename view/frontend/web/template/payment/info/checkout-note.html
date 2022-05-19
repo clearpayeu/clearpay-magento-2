@@ -1,32 +1,9 @@
-<div class="clearpay-checkout-note-header">
-    <h3>
-        <strong><span class="clearpay_checkout_text" data-bind="text: getCheckoutText()"></span></strong>
-        <strong><span class="clearpay_total_amount" data-bind="text: getClearpayTotalAmount()"></span></strong>
-    </h3>
+<!-- ko if: (isRenderedByWidget)-->
+<div id="clearpay-widget-container" data-bind="afterRender: initWidget">
 </div>
-<ul class="cost">
-    <li><span class="clearpay_instalments_amount" data-bind="text: getInstallmentAmount()"></span></li>
-    <li><span class="clearpay_instalments_amount" data-bind="text: getInstallmentAmount()"></span></li>
-    <li><span class="clearpay_instalments_amount" data-bind="text: getInstallmentAmount()"></span></li>
-    <li><span class="clearpay_instalments_amount_last" data-bind="text: getLastInstallmentAmount()"></span></li>
-</ul>
-<ul class="icon">
-    <li>
-        <span class="clearpay_checkout_steps clearpay_checkout_steps_1"></span>
-    </li>
-    <li>
-        <span class="clearpay_checkout_steps clearpay_checkout_steps_2"></span>
-    </li>
-    <li>
-        <span class="clearpay_checkout_steps clearpay_checkout_steps_3"></span>
-    </li>
-    <li>
-        <span class="clearpay_checkout_steps clearpay_checkout_steps_4"></span>
-    </li>
-</ul>
-<ul class="instalment">
-    <li data-bind="text: getFirstInstalmentText()"></li>
-    <li><!-- ko i18n: '2 weeks later' --><!-- /ko --></li>
-    <li><!-- ko i18n: '4 weeks later' --><!-- /ko --></li>
-    <li><!-- ko i18n: '6 weeks later' --><!-- /ko --></li>
-</ul>
+<!-- /ko -->
+<!-- ko if: (!isRenderedByWidget) -->
+<!-- ko foreach: getRegion('clearpay-price-table') -->
+<!-- ko template: getTemplate() --><!-- /ko -->
+<!--/ko-->
+<!-- /ko -->
