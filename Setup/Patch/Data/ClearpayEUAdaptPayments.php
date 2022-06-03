@@ -2,11 +2,11 @@
 
 namespace Clearpay\Clearpay\Setup\Patch\Data;
 
-class AdaptPayments implements \Magento\Framework\Setup\Patch\DataPatchInterface
+class ClearpayEUAdaptPayments implements \Magento\Framework\Setup\Patch\DataPatchInterface
 {
-    protected const METHOD_CODE = 'clearpaypayovertime';
+    protected const METHOD_CODE = 'clearpayeupayovertime';
 
-    private $salesSetup;
+    protected $salesSetup;
 
     public function __construct(
         \Magento\Sales\Setup\SalesSetup $salesSetup
@@ -32,7 +32,15 @@ class AdaptPayments implements \Magento\Framework\Setup\Patch\DataPatchInterface
                 [
                     'method' => \Clearpay\Clearpay\Gateway\Config\Config::CODE,
                     'additional_information' => new \Zend_Db_Expr(
-                        'replace(additional_information, "clearpay_payment_status", "clearpay_payment_state")'
+                        'replace(
+                            replace(
+                                additional_information,
+                                "clearpay_payment_status",
+                                "clearpay_payment_state"
+                                ),
+                            "APPROVED",
+                            "CAPTURED"
+                        )'
                     )
                 ],
                 ['method = ?' => static::METHOD_CODE]
