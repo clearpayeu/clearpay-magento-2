@@ -4,21 +4,16 @@ namespace Clearpay\Clearpay\Setup\Patch\Data;
 
 use Clearpay\Clearpay\Gateway\Config\Config;
 use Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface;
-use Clearpay\Clearpay\Model\PaymentStateInterface;
 
-// @codingStandardsIgnoreFile
-class AdaptCapturedDiscounts implements \Magento\Framework\Setup\Patch\DataPatchInterface
+class ClearpayEUAdaptDiscountFields implements \Magento\Framework\Setup\Patch\DataPatchInterface
 {
     private \Magento\Sales\Setup\SalesSetup $salesSetup;
     private \Magento\Framework\Serialize\Serializer\Json $json;
-    private \Magento\Framework\App\ProductMetadataInterface $productMetadata;
 
     public function __construct(
-        \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Sales\Setup\SalesSetup $salesSetup,
         \Magento\Framework\Serialize\Serializer\Json $json
     ) {
-        $this->productMetadata = $productMetadata;
         $this->salesSetup = $salesSetup;
         $this->json = $json;
     }
@@ -26,7 +21,8 @@ class AdaptCapturedDiscounts implements \Magento\Framework\Setup\Patch\DataPatch
     public static function getDependencies()
     {
         return [
-            \Clearpay\Clearpay\Setup\Patch\Data\AdaptPayments::class
+            \Clearpay\Clearpay\Setup\Patch\Data\ClearpayEUAdaptPayments::class,
+            \Clearpay\Clearpay\Setup\Patch\Data\ClearpayEUAdaptCapturedDiscounts::class
         ];
     }
 
@@ -37,10 +33,6 @@ class AdaptCapturedDiscounts implements \Magento\Framework\Setup\Patch\DataPatch
 
     public function apply()
     {
-        if ($this->productMetadata->getEdition() === 'Community') {
-            return;
-        }
-
         $payments = $this->getClearpayLegacyPaymentsInfo();
         $ordersAdditionalInfo = $this->getNewOrdersAdditionalInfo($payments);
         $this->saveOrdersAdditionalInfo($ordersAdditionalInfo);
@@ -64,12 +56,8 @@ class AdaptCapturedDiscounts implements \Magento\Framework\Setup\Patch\DataPatch
         foreach ($paymentsInfo as $payment) {
             /** @var array $additionalInfo */
             $additionalInfo = $this->json->unserialize($payment['additional_information']);
-            $totalDiscountAmount = ($payment['base_customer_balance_amount'] ?? 0) + ($payment['base_gift_cards_amount'] ?? 0);
-            $additionalInfo[AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT] = $totalDiscountAmount;
-            if ($additionalInfo[AdditionalInformationInterface::CLEARPAY_PAYMENT_STATE] != PaymentStateInterface::CAPTURED) {
-                $additionalInfo[AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT] -=
-                    $additionalInfo[AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT] ?? 0;
-            }
+            $additionalInfo[AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT] = $additionalInfo[AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT] ?? 0;
+            $additionalInfo[AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT] = $additionalInfo[AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT] ?? 0;
             $ordersAdditionalInfo[$payment['order_id']] = $additionalInfo;
         }
         return $ordersAdditionalInfo;
@@ -81,14 +69,13 @@ class AdaptCapturedDiscounts implements \Magento\Framework\Setup\Patch\DataPatch
         $select = $connection->select()
             ->from(
                 ['si' => $connection->getTableName('sales_invoice')],
-                ['si.order_id', 'si.base_customer_balance_amount', 'si.base_gift_cards_amount']
+                ['si.order_id']
             )->joinInner(
                 ['sop' => $connection->getTableName('sales_order_payment')],
                 'si.order_id = sop.parent_id AND sop.method = "' . Config::CODE . '"'
-                . ' AND sop.additional_information NOT LIKE "%' . AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT . '%"',
+                . ' AND (sop.additional_information NOT LIKE "%' . AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT . '%"'
+                . 'OR sop.additional_information NOT LIKE "%' . AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT . '%")',
                 ['sop.additional_information']
-            )->where(
-                'si.base_customer_balance_amount IS NOT NULL OR si.base_gift_cards_amount IS NOT NULL'
             );
         return $connection->fetchAll($select);
     }
