@@ -6,7 +6,7 @@ class AdaptPayments implements \Magento\Framework\Setup\Patch\DataPatchInterface
 {
     protected const METHOD_CODE = 'clearpaypayovertime';
 
-    private $salesSetup;
+    protected $salesSetup;
 
     public function __construct(
         \Magento\Sales\Setup\SalesSetup $salesSetup
