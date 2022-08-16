@@ -5,17 +5,26 @@ namespace Clearpay\Clearpay\Gateway\Validator;
 class StockItemsValidator implements \Clearpay\Clearpay\Model\Spi\StockItemsValidatorInterface
 {
     private \Magento\InventoryCatalogApi\Model\IsSingleSourceModeInterface $isSingleSourceMode;
-    private \Magento\InventorySourceDeductionApi\Model\SourceDeductionServiceInterface $sourceValidatorService;
+    private \Clearpay\Clearpay\Model\Spi\SourceValidatorServiceInterface $sourceValidatorService;
     private \Magento\InventoryShipping\Model\SourceDeductionRequestFromShipmentFactory $sourceDeductionRequestFromShipmentFactory;
     private \Magento\InventoryShipping\Model\GetItemsToDeductFromShipment $getItemsToDeductFromShipment;
     private \Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface $defaultSourceProvider;
 
+    /**
+     * We avoid strict types in constructor for create instances dynamically look at
+     * \Clearpay\Clearpay\Model\StockItemsValidator\StockItemsValidatorProxy
+     * @param \Magento\InventoryCatalogApi\Model\IsSingleSourceModeInterface $isSingleSourceMode
+     * @param \Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface $defaultSourceProvider
+     * @param \Magento\InventoryShipping\Model\GetItemsToDeductFromShipment $getItemsToDeductFromShipment
+     * @param \Magento\InventoryShipping\Model\SourceDeductionRequestFromShipmentFactory $sourceDeductionRequestFromShipmentFactory
+     * @param \Clearpay\Clearpay\Model\Spi\SourceValidatorServiceInterface $sourceValidatorService
+     */
     public function __construct(
-        \Magento\InventoryCatalogApi\Model\IsSingleSourceModeInterface $isSingleSourceMode,
-        \Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface $defaultSourceProvider,
-        \Magento\InventoryShipping\Model\GetItemsToDeductFromShipment $getItemsToDeductFromShipment,
-        \Magento\InventoryShipping\Model\SourceDeductionRequestFromShipmentFactory $sourceDeductionRequestFromShipmentFactory,
-        \Magento\InventorySourceDeductionApi\Model\SourceDeductionServiceInterface $sourceValidatorService
+        $isSingleSourceMode,
+        $defaultSourceProvider,
+        $getItemsToDeductFromShipment,
+        $sourceDeductionRequestFromShipmentFactory,
+        $sourceValidatorService
     ) {
         $this->isSingleSourceMode = $isSingleSourceMode;
         $this->defaultSourceProvider = $defaultSourceProvider;

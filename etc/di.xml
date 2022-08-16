@@ -161,6 +161,7 @@
     <type name="Clearpay\Clearpay\Gateway\Http\Client\Client">
         <arguments>
             <argument name="debugLogger" xsi:type="object">ClearpayDebugLogger</argument>
+            <argument name="client" xsi:type="object" shared="false">\Magento\Framework\HTTP\ClientInterface</argument>
         </arguments>
     </type>
 
@@ -254,11 +255,6 @@
             </argument>
         </arguments>
     </type>
-    <type name="Clearpay\Clearpay\Gateway\Validator\StockItemsValidator">
-        <arguments>
-            <argument name="sourceValidatorService" xsi:type="object">Clearpay\Clearpay\Model\SourceValidatorService</argument>
-        </arguments>
-    </type>
     <virtualType name="Clearpay\Clearpay\Logger" type="Magento\Framework\Logger\Monolog">
         <arguments>
             <argument name="name" xsi:type="const">Clearpay\Clearpay\Gateway\Config\Config::CODE</argument>
@@ -283,7 +279,7 @@
     <type name="Clearpay\Clearpay\Model\Order\Shipment\CaptureProcessor">
         <arguments>
             <argument name="authCaptureCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\AuthCaptureCommand</argument>
-            <argument name="stockItemsValidator" xsi:type="object">Clearpay\Clearpay\Gateway\Validator\StockItemsValidator</argument>
+            <argument name="stockItemsValidator" xsi:type="object">Clearpay\Clearpay\Model\StockItemsValidator\StockItemsValidatorProxy</argument>
         </arguments>
     </type>
     <type name="Clearpay\Clearpay\Model\CheckoutManagement\CheckoutManagement">
