@@ -1,8 +1,12 @@
 # Clearpay Magento 2 Extension Changelog
 
+## Version 3.3.0-eu2
+
+This entire "Clearpay EU" project is erased. Only warning message about deprecation of this module is left. Please go <a href="https://github.com/clearpayeu/clearpay-magento-2">here</a> to download the correct version of the "Clearpay" module based on your Magento version (EU support is now bundled with the standard module).
+
 ## Version 3.3.0-eu1
 
-_Tue 04 May 2021_
+_Fri 30 April 2021_
 
 ### Supported Editions & Versions
 
