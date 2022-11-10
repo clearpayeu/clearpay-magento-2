@@ -15,6 +15,14 @@ class AuthCaptureDataBuilder implements \Magento\Payment\Gateway\Request\Builder
         /** @var \Magento\Sales\Model\Order\Payment $payment */
         $payment = $paymentDO->getPayment();
 
+        $isCBTCurrency = (bool) $payment->getAdditionalInformation(
+            \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY
+        );
+        $cbtCurrency = $payment->getAdditionalInformation(
+            \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_CBT_CURRENCY
+        );
+        $currencyCode = ($isCBTCurrency && $cbtCurrency) ? $cbtCurrency : $paymentDO->getOrder()->getCurrencyCode();
+
         $clearpayOrderId = $payment->getAdditionalInformation(
             \Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ORDER_ID
         );
@@ -24,7 +32,7 @@ class AuthCaptureDataBuilder implements \Magento\Payment\Gateway\Request\Builder
             'orderId' => $clearpayOrderId,
             'amount' => [
                 'amount' => $this->formatPrice(SubjectReader::readAmount($buildSubject)),
-                'currency' => $payment->getOrder()->getBaseCurrencyCode()
+                'currency' => $currencyCode
             ]
         ];
     }

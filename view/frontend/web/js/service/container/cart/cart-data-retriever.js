@@ -7,7 +7,7 @@ define([
             isVisible: false,
             dataAmount: "0",
             modelWithPrice: totalsModel.totals,
-            priceKey: "base_grand_total"
+            priceKey: (checkoutConfig.payment.clearpay.isCBTCurrency === true ) ? "grand_total" : "base_grand_total"
         },
     });
 });

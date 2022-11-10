@@ -1,15 +1,19 @@
 define([
     'uiComponent',
+    'jquery',
     'Magento_Checkout/js/model/quote',
     'Magento_Catalog/js/price-utils',
     'Magento_Checkout/js/model/totals',
+    'Magento_Checkout/js/checkout-data',
     'mage/translate',
     'ko'
 ], function (
     Component,
+    $,
     quote,
     priceUtils,
-    totals
+    totals,
+    checkoutData
 ) {
     'use strict';
 
@@ -31,12 +35,36 @@ define([
                     })
                 }
             });
+            if (checkoutData.getSelectedPaymentMethod() == 'clearpay'
+                && checkoutConfig.payment.clearpay.isCBTCurrency === true) {
+                this._hideBaseCurrencyChargeInfo();
+            }
+            quote.paymentMethod.subscribe(function (value) {
+                if (value && value.method == 'clearpay' && checkoutConfig.payment.clearpay.isCBTCurrency === true) {
+                    this._hideBaseCurrencyChargeInfo();
+                } else {
+                    this._showBaseCurrencyChargeInfo();
+                }
+            }, this);
         },
         _getWidgetAmount: function (totals) {
+            let amount = window.checkoutConfig.payment.clearpay.isCBTCurrency
+                ? totals.grand_total + totals.tax_amount
+                : totals.base_grand_total;
+            let currency = window.checkoutConfig.payment.clearpay.isCBTCurrency
+                ? totals.quote_currency_code
+                : totals.base_currency_code;
+
             return {
-                amount: parseFloat(totals.base_grand_total).toFixed(2),
-                currency: totals.base_currency_code
+                amount: parseFloat(amount).toFixed(2),
+                currency: currency
             }
-        }
+        },
+        _hideBaseCurrencyChargeInfo: function () {
+            $('.opc-block-summary .totals.charge').hide();
+        },
+        _showBaseCurrencyChargeInfo: function () {
+            $('.opc-block-summary .totals.charge').show();
+        },
     });
 });

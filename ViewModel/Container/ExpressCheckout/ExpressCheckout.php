@@ -12,16 +12,13 @@ class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
         'GBP' => 'GB'
     ];
 
-    private \Magento\Store\Model\StoreManagerInterface $storeManager;
-
     public function __construct(
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         \Clearpay\Clearpay\Model\Config $config,
         \Clearpay\Clearpay\Model\ResourceModel\NotAllowedProductsProvider $notAllowedProductsProvider,
         \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
-        parent::__construct($serializer, $config, $notAllowedProductsProvider);
-        $this->storeManager = $storeManager;
+        parent::__construct($serializer, $config, $notAllowedProductsProvider, $storeManager);
     }
 
     public function updateJsLayout(

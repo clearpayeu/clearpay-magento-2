@@ -5,6 +5,7 @@
     <preference for="Clearpay\Clearpay\Api\Data\RedirectPathInterface" type="Clearpay\Clearpay\Model\RedirectPath"/>
     <preference for="Clearpay\Clearpay\Api\Data\CheckoutInterface" type="Clearpay\Clearpay\Model\Checkout"/>
     <preference for="Clearpay\Clearpay\Model\Order\OrderItemInterface" type="Clearpay\Clearpay\Model\Order\OrderItem"/>
+    <preference for="Clearpay\Clearpay\Model\CBT\CheckCBTCurrencyAvailabilityInterface" type="Clearpay\Clearpay\Model\Checks\IsCBTAvailable"/>
 
     <virtualType name="Clearpay\Clearpay\Model\Method\MethodFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
@@ -154,6 +155,7 @@
             <argument name="handlers" xsi:type="array">
                 <item name="limits" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\LimitConfigurationHandler</item>
                 <item name="specific_countries" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\SpecificCountriesConfigurationHandler</item>
+                <item name="cbt_available_currencies" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\CBTAvailableCurrenciesConfigurationHandler</item>
             </argument>
         </arguments>
     </virtualType>
@@ -237,6 +239,7 @@
             <argument name="validators" xsi:type="array">
                 <item name="country" xsi:type="string">Clearpay\Clearpay\Gateway\Validator\Method\CountryValidator</item>
                 <item name="quote_items" xsi:type="string">Clearpay\Clearpay\Gateway\Validator\Method\NotAllowedProductsValidator</item>
+                <item name="currency" xsi:type="string">Clearpay\Clearpay\Gateway\Validator\Method\CurrencyValidator</item>
             </argument>
         </arguments>
     </virtualType>
@@ -280,6 +283,11 @@
         <arguments>
             <argument name="authCaptureCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\AuthCaptureCommand</argument>
             <argument name="stockItemsValidator" xsi:type="object">Clearpay\Clearpay\Model\StockItemsValidator\StockItemsValidatorProxy</argument>
+        </arguments>
+    </type>
+    <type name="Clearpay\Clearpay\Model\Order\CreditMemo\CaptureProcessor">
+        <arguments>
+            <argument name="authCaptureCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\AuthCaptureCommand</argument>
         </arguments>
     </type>
     <type name="Clearpay\Clearpay\Model\CheckoutManagement\CheckoutManagement">
@@ -332,5 +340,14 @@
         <arguments>
             <argument name="merchantConfigurationCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\GetMerchantConfigurationCommandWrapper</argument>
         </arguments>
+    </type>
+    <type name="Clearpay\Clearpay\Plugin\Model\Order\Payment\Operations\ProcessInvoiceOperation">
+        <arguments>
+            <argument name="stateCommand" xsi:type="object">Magento\Sales\Model\Order\Payment\State\CaptureCommand</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Sales\Model\Order\Payment\Operations\ProcessInvoiceOperation">
+        <plugin name="clearpay_replace_invoice_amount_for_cbt"
+                type="Clearpay\Clearpay\Plugin\Model\Order\Payment\Operations\ProcessInvoiceOperation"/>
     </type>
 </config>
