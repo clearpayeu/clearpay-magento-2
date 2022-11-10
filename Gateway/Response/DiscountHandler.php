@@ -39,6 +39,14 @@ class DiscountHandler implements \Magento\Payment\Gateway\Response\HandlerInterf
 
     protected function getOrderDiscountAmount(\Magento\Sales\Model\Order $order): float
     {
-        return (float)($order->getBaseGiftCardsAmount() + $order->getBaseCustomerBalanceAmount());
+        $isCBTCurrency = (bool) $order->getPayment()->getAdditionalInformation(
+            \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY
+        );
+
+        if ($isCBTCurrency) {
+            return (float)($order->getGiftCardsAmount() + $order->getCustomerBalanceAmount());
+        } else {
+            return (float)($order->getBaseGiftCardsAmount() + $order->getBaseCustomerBalanceAmount());
+        }
     }
 }

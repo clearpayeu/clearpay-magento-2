@@ -14,6 +14,8 @@ interface CheckoutInterface
     const CLEARPAY_TOKEN = 'clearpay_token';
     const CLEARPAY_AUTH_TOKEN_EXPIRES = 'clearpay_expires';
     const CLEARPAY_REDIRECT_CHECKOUT_URL = 'clearpay_redirectCheckoutUrl';
+    const CLEARPAY_IS_CBT_CURRENCY = 'clearpay_is_cbt_currency';
+    const CLEARPAY_CBT_CURRENCY = 'clearpay_cbt_currency';
     /**#@-*/
 
     /**

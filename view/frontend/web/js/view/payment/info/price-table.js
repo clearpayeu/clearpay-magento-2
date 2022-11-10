@@ -18,8 +18,14 @@ define([
     return Component.extend({
         defaults: {
             dataLocale: window.checkoutConfig.payment.clearpay.locale,
-            dataCurrency: ko.computed(() => totals.totals().base_currency_code),
-            dataAmount: ko.computed(() => totals.totals().base_grand_total),
+            dataCurrency: ko.computed(() => checkoutConfig.payment.clearpay.isCBTCurrency === true
+                ? totals.totals().quote_currency_code
+                : totals.totals().base_currency_code
+            ),
+            dataAmount: ko.computed(() => checkoutConfig.payment.clearpay.isCBTCurrency === true
+                ? totals.totals().grand_total
+                : totals.totals().base_grand_total
+            ),
         },
         getPriceTable: function() {
             return ko.computed(() =>
@@ -51,6 +57,9 @@ define([
                 case 'USD':
                 case 'CAD':
                     amount = totals.totals().base_grand_total / 4;
+            }
+            if (checkoutConfig.payment.clearpay.isCBTCurrency === true) {
+                amount = totals.totals().grand_total / 4;
             }
             return priceUtils.formatPrice(Number(amount).toFixed(2), quote.getPriceFormat());
         },

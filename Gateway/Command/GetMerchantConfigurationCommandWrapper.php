@@ -67,7 +67,8 @@ class GetMerchantConfigurationCommandWrapper implements \Magento\Payment\Gateway
     {
         $this->clearpayConfig
             ->deleteMaxOrderTotal($websiteId, $websiteHasOwnConfig)
-            ->deleteMinOrderTotal($websiteId, $websiteHasOwnConfig);
+            ->deleteMinOrderTotal($websiteId, $websiteHasOwnConfig)
+            ->deleteCbtCurrencyLimits($websiteId, $websiteHasOwnConfig);
         $this->clearpayConfig->deleteSpecificCountries($websiteId, $websiteHasOwnConfig);
     }
 
@@ -95,7 +96,6 @@ class GetMerchantConfigurationCommandWrapper implements \Magento\Payment\Gateway
      */
     private function checkCurrency(string $scope, int $websiteId): void
     {
-
         $merchantCurrency = $this->clearpayConfig->getMerchantCurrency(
             $scope,
             $websiteId

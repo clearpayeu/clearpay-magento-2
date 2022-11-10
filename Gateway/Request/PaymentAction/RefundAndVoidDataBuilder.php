@@ -16,6 +16,15 @@ class RefundAndVoidDataBuilder implements \Magento\Payment\Gateway\Request\Build
             \Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ORDER_ID
         );
 
+        $isCBTCurrency = (bool) $paymentDO->getPayment()->getAdditionalInformation(
+            \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY
+        );
+        $CBTCurrency = $paymentDO->getPayment()->getAdditionalInformation(
+            \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_CBT_CURRENCY
+        );
+        $currencyCode = ($isCBTCurrency && $CBTCurrency) ? $CBTCurrency : $paymentDO->getOrder()->getCurrencyCode();
+
+
         $data = [
             'storeId' => $paymentDO->getOrder()->getStoreId(),
             'orderId' => $clearpayOrderId
@@ -24,7 +33,7 @@ class RefundAndVoidDataBuilder implements \Magento\Payment\Gateway\Request\Build
             return array_merge($data, [
                 'amount' => [
                     'amount' => $this->formatPrice(SubjectReader::readAmount($buildSubject)),
-                    'currency' => $paymentDO->getOrder()->getCurrencyCode()
+                    'currency' => $currencyCode
                 ]
             ]);
         } catch (\InvalidArgumentException $e) {

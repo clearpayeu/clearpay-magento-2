@@ -12,6 +12,7 @@ class PlaceOrderProcessor
     private $cancelOrderProcessor;
     private $quotePaidStorage;
     private $paymentDataObjectFactory;
+    private $checkCBTCurrencyAvailability;
     private $logger;
 
     public function __construct(
@@ -19,12 +20,14 @@ class PlaceOrderProcessor
         \Clearpay\Clearpay\Model\Payment\Capture\CancelOrderProcessor $cancelOrderProcessor,
         \Clearpay\Clearpay\Model\Order\Payment\QuotePaidStorage $quotePaidStorage,
         \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory,
+        \Clearpay\Clearpay\Model\CBT\CheckCBTCurrencyAvailabilityInterface  $checkCBTCurrencyAvailability,
         \Psr\Log\LoggerInterface $logger
     ) {
         $this->cartManagement = $cartManagement;
         $this->cancelOrderProcessor = $cancelOrderProcessor;
         $this->quotePaidStorage = $quotePaidStorage;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
+        $this->checkCBTCurrencyAvailability = $checkCBTCurrencyAvailability;
         $this->logger = $logger;
     }
 
@@ -34,6 +37,16 @@ class PlaceOrderProcessor
             $quote->getPayment()->setAdditionalInformation(
                 \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_TOKEN,
                 $clearpayOrderToken
+            );
+
+            $isCBTCurrencyAvailable = $this->checkCBTCurrencyAvailability->checkByQuote($quote);
+            $quote->getPayment()->setAdditionalInformation(
+                \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY,
+                $isCBTCurrencyAvailable
+            );
+            $quote->getPayment()->setAdditionalInformation(
+                \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_CBT_CURRENCY,
+                $quote->getQuoteCurrencyCode()
             );
 
             if (!$quote->getCustomerId()) {
@@ -52,7 +65,8 @@ class PlaceOrderProcessor
                 $this->cancelOrderProcessor->execute($clearpayPayment);
                 throw new \Magento\Framework\Exception\LocalizedException(
                     __(
-                        'There was a problem placing your order. Your Clearpay order %1 is refunded.',
+                        'There was a problem placing your order. Your %1 order %2 is refunded.',
+                        $quote->getPayment()->getMethodInstance()->getTitle(),
                         $clearpayPayment->getAdditionalInformation(AdditionalInformationInterface::CLEARPAY_ORDER_ID)
                     )
                 );

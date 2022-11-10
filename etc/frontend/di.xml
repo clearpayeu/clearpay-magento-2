@@ -16,6 +16,9 @@
             <argument name="validateCheckoutDataCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\ValidateCheckoutDataCommand</argument>
         </arguments>
     </type>
+    <type name="Magento\Sales\Block\Order\Totals">
+        <plugin name="clearpay_order_total_remove_base_grand_total_for_cbt" type="Clearpay\Clearpay\Plugin\Block\Order\Totals"/>
+    </type>
 
     <type name="Magento\Checkout\Block\Cart\Sidebar">
         <plugin name="clearpay_sidebar_update" type="Clearpay\Clearpay\Plugin\Checkout\Block\Cart\Sidebar"/>
