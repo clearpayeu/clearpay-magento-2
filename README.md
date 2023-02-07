@@ -9,9 +9,9 @@
 
 | Magento version | Command to run                                              |
 |-----------------|-------------------------------------------------------------|
-| 2.4.*           | composer require clearpay/module-clearpay:^5            |
+| 2.4.*           | composer require clearpay/module-clearpay:^5         |
 | 2.3.*           | composer require clearpay/module-clearpay:^4         |
-| < 2.3.0         | composer require clearpay/module-clearpay:^3 |
+| < 2.3.0         | composer require clearpay/module-clearpay:^3         |
 </li>
 <li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
 <li> Compile dependency injection: <code><em>php bin/magento setup:di:compile</em></code> </li>
@@ -26,9 +26,9 @@
 
 | Magento version | Download                                          |
 |-----------------|--------------------------------------------------------|
-| 2.4.*           | [Clearpay](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/main.zip) |
-| 2.3.*           | [Clearpay:4.*](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
-| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
+| 2.4.*           | [Clearpay](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/main.zip) |
+| 2.3.*           | [Clearpay:4.*](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
+| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
 </li>
 <li> Unzip the file</li>
 <li> Create directory `Clearpay/Clearpay` in: <em>[MAGENTO]/app/code/ </em> </li>
@@ -67,9 +67,9 @@ Complete the below steps to configure the merchant’s Clearpay Merchant Credent
 
 | Magento version | Command to run                                              |
 |-----------------|-------------------------------------------------------------|
-| 2.4.*           | composer require clearpay/module-clearpay:^5            |
+| 2.4.*           | composer require clearpay/module-clearpay:^5         |
 | 2.3.*           | composer require clearpay/module-clearpay:^4         |
-| < 2.3.0         | composer require clearpay/module-clearpay:^3 |
+| < 2.3.0         | composer require clearpay/module-clearpay:^3         |
  </li>
 <li> Make sure that Composer finished the update without errors </li>
 <li> Run Magento install/upgrade scripts: <code><em>php bin/magento setup:upgrade</em></code> </li>
@@ -91,9 +91,9 @@ The process of upgrading the Clearpay plugin version involves the complete remov
 
 | Magento version | Download                                          |
 |-----------------|--------------------------------------------------------|
-| 2.4.*           | [Clearpay:latest](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/main.zip) |
-| 2.3.*           | [Clearpay:4.*](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
-| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpayeu/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
+| 2.4.*           | [Clearpay:latest](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/main.zip) |
+| 2.3.*           | [Clearpay:4.*](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/2.3-main.zip)  |
+| < 2.3.0         | [Clearpay:legacy](https://github.com/clearpay/clearpay-magento-2/archive/refs/heads/legacy-main.zip) |
    </li>
 	<li> Unzip the file </li>
 	<li> Copy the files in folder to:  <em>[MAGENTO]/app/code/Clearpay/Clearpay</em> </li>

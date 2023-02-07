@@ -155,6 +155,8 @@
 
             <group id="clearpaypayovertime_expresscheckout" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label><![CDATA[Express Checkout Settings]]></label>
+                <comment><![CDATA[<p>Express Checkout is currently only available for UK merchants. For more information <a href="https://developers.clearpay.co.uk/clearpay-online/docs/express-checkout" target="_blank">click here</a></p>]]></comment>
+                <frontend_model>Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\ExpressCheckout</frontend_model>
                 <!-- Enabled for product page  -->
                 <field id="express_checkout_product_page" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Enabled for Product Page</label>

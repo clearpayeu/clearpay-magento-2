@@ -54,16 +54,17 @@ class BeforeShipment implements ObserverInterface
 			$totalDiscountAmount = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT); 
 			$rolloverAmount      = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_AMOUNT); 
 			$rolloverRefund      = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_REFUND); 
-			
-			if($order->getShippingInclTax() > 0 && $order->getShipmentsCollection()->count()==0){
-				$shippingAmount = $order->getShippingInclTax();
+
+			if($order->getBaseShippingInclTax() > 0 && $order->getShipmentsCollection()->count()==0){
+				$shippingAmount = $order->getBaseShippingInclTax();
 				
-				if($order->getShippingRefunded() > 0)
+				if($order->getBaseShippingRefunded() > 0)
 				{
-					$shippingAmount = $shippingAmount - ($order->getShippingRefunded() + $order->getShippingTaxRefunded());
+					$shippingAmount = $shippingAmount - ($order->getBaseShippingRefunded() + $order->getBaseShippingTaxRefunded());
 				}
 				$totalCaptureAmount = $totalCaptureAmount +  $shippingAmount;
 			}
+
 
 			if($rolloverAmount > 0){
 				$totalCaptureAmount = $totalCaptureAmount + $rolloverAmount; 
@@ -86,7 +87,6 @@ class BeforeShipment implements ObserverInterface
 
 			if($totalDiscountAmount!=0){
 				if($totalCaptureAmount >= $totalDiscountAmount){
-					$this->_helper->debug("totalDiscountAmount :  ".$totalDiscountAmount);
 					$totalCaptureAmount = $totalCaptureAmount - $totalDiscountAmount;
 					$totalDiscountAmount = 0.00;
 				}
@@ -96,12 +96,11 @@ class BeforeShipment implements ObserverInterface
 				}
 				$payment->setAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ROLLOVER_DISCOUNT, number_format($totalDiscountAmount, 2, '.', ''));
 			}
-		
 			
 			if($totalCaptureAmount > 1){
 				$clearpay_order_id = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
 				$merchant_order_id = $order->getIncrementId();
-				$currencyCode      = $order->getOrderCurrencyCode();
+				$currencyCode      = $order->getBaseCurrencyCode();
 				$override = ["website_id" => $payment->getOrder()->getStore()->getWebsiteId()];
 				
 				$totalAmount= [

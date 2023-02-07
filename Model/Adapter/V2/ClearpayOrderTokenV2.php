@@ -307,7 +307,6 @@ class ClearpayOrderTokenV2
 				'postcode'      => (string)$shippingAddress->getPostcode(),
 				'region'         => (string)$shippingAddress->getRegion(),
 				'countryCode'   => (string)$shippingAddress->getCountryId(),
-				// 'countryCode'   => 'GB',
 				'phoneNumber'   => (string)$shippingAddress->getTelephone(),
 			];
 		}
@@ -320,13 +319,14 @@ class ClearpayOrderTokenV2
             'postcode'      => (string)$billingAddress->getPostcode(),
             'region'         => (string)$billingAddress->getRegion(),
             'countryCode'   => (string)$billingAddress->getCountryId(),
-            // 'countryCode'   => 'GB',
             'phoneNumber'   => (string)$billingAddress->getTelephone(),
         ];
         $params['amount'] = [
             'amount'   => round((float)$object->getBaseGrandTotal(), $precision),
             'currency' => (string)$data['store_currency_code'],
         ];
+
+        $params['purchaseCountry'] = $this->_clearpayConfig->getCurrentCountryCode();
 
         return $params;
     }

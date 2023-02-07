@@ -5,14 +5,14 @@ define([
 
     return {
         canDisplayOnMinicart: function () {
-            return !this._isCartEmpty() && !this._isCartVirtual();
+            return !this._isCartEmpty() && (this.countryCode || !this._isCartVirtual());
         },
 
         canDisplayOnPDP: function (isProductVirtual) {
             if (this._isCartEmpty()) {
                 return !isProductVirtual;
             }
-            return (!isProductVirtual || !this._isCartVirtual()) && !this._doesCartHaveRestricted()  ;
+            return (this.countryCode && !isProductVirtual || !this._isCartVirtual()) && !this._doesCartHaveRestricted()  ;
         },
 
         _isCartEmpty: function () {

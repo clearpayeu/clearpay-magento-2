@@ -24,15 +24,16 @@ class ConfigProvider implements ConfigProviderInterface
      * @var Payovertime
      */
     protected $clearpayPayovertime;
-
+    private $localeResolver;
     /**
      * ConfigProvider constructor.
      * @param Config\Payovertime $config
      */
-    public function __construct(\Clearpay\Clearpay\Model\Config\Payovertime $config,\Clearpay\Clearpay\Model\Payovertime $clearpayPayovertime)
+    public function __construct(\Clearpay\Clearpay\Model\Config\Payovertime $config,\Clearpay\Clearpay\Model\Payovertime $clearpayPayovertime,\Magento\Framework\Locale\Resolver $localeResolver)
     {
         $this->clearpayConfig = $config;
         $this->clearpayPayovertime = $clearpayPayovertime;
+        $this->localeResolver = $localeResolver;
     }
 
     /**
@@ -51,12 +52,14 @@ class ConfigProvider implements ConfigProviderInterface
         $config = array_merge_recursive($config, [
             'payment' => [
                 'clearpay' => [
-                    'clearpayJs'        => $this->clearpayConfig->getWebUrl('afterpay.js'),
+                    'clearpayJs'        => $this->clearpayConfig->getWebUrl(),
                     'clearpayReturnUrl' => 'clearpay/payment/response',
                     'paymentAction'     => $this->clearpayConfig->getPaymentAction(),
-                    'termsConditionUrl' => self::TERMS_CONDITION_LINK,
+                    'termsConditionUrl' => $this->clearpayConfig->getTermsAndConditionLink(),
+                    'countryCode' => $this->clearpayConfig->getCurrentCountryCode(),
                     'currencyCode'     => $this->clearpayConfig->getCurrencyCode(),
                     'baseCurrencyCode'     => $this->clearpayPayovertime->getStoreCurrencyCode(),
+                    'storeLocale' =>$this->localeResolver->getLocale()
                 ],
             ],
         ]);

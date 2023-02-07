@@ -10,10 +10,17 @@ define(['jquery'],
  function($) {
     'use strict';
     return  {
-        redirectToClearpay: function (data) {
-          AfterPay.redirect({
-				token: data.token
-			});
+        redirectToClearpay: function (data,countryCode) {
+            if(countryCode === 'GB') {
+                AfterPay.redirect({
+                    token: data.token
+                });
+            } else {
+                Clearpay.redirect({
+                    token: data.token
+                });
+            }
+            
         }
     }
 

@@ -407,8 +407,8 @@ class Response extends \Magento\Framework\App\Action\Action
 
 		foreach($order->getAllItems() as $items) {
 			if($items->getIsVirtual()) {
-				$itemPrice = ($items->getQtyOrdered() * $items->getPrice())+$items->getBaseTaxAmount();
-				$totalCaptureAmount = $totalCaptureAmount + ($itemPrice - $items->getDiscountAmount());
+                $itemPrice = ($items->getQtyOrdered() * $items->getBasePrice())+$items->getBaseTaxAmount();
+			    $totalCaptureAmount = $totalCaptureAmount + ($itemPrice - $items->getBaseDiscountAmount());
 			}
 		}
 
@@ -430,7 +430,7 @@ class Response extends \Magento\Framework\App\Action\Action
 		if($totalCaptureAmount >= 1){
 			$clearpay_order_id = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payovertime::ADDITIONAL_INFORMATION_KEY_ORDERID);
 			$merchant_order_id = $order->getIncrementId();
-			$currencyCode      = $order->getOrderCurrencyCode();
+			$currencyCode      = $order->getBaseCurrencyCode();
 
 			$totalAmount= [
                         'amount'   => number_format($totalCaptureAmount, 2, '.', ''),

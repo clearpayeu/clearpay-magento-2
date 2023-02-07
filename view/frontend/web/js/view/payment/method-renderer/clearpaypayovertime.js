@@ -19,9 +19,12 @@ define(
         'Magento_Customer/js/customer-data',
         'Magento_Customer/js/section-config',
 		'Magento_Checkout/js/action/set-billing-address',
-        'Clearpay_Clearpay/js/view/payment/method-renderer/clearpayredirect'
+        'Clearpay_Clearpay/js/view/payment/method-renderer/clearpayredirect',
+        'mage/translate',
+        'Magento_Checkout/js/model/totals',
+        'ko'
     ],
-    function ($, Component, quote, resourceUrlManager, storage, mageUrl, additionalValidators, globalMessageList, customerData, sectionConfig, setBillingAddressAction, clearpayRedirect) {
+    function ($, Component, quote, resourceUrlManager, storage, mageUrl, additionalValidators, globalMessageList, customerData, sectionConfig, setBillingAddressAction, clearpayRedirect,$t,totals,ko) {
         'use strict';
 
         return Component.extend({
@@ -29,9 +32,55 @@ define(
             redirectAfterPlaceOrder: false,
             defaults: {
                 template: 'Clearpay_Clearpay/payment/clearpaypayovertime',
-                billingAgreement: ''
+                billingAgreement: '',
+                isRenderCheckoutWidget:window.checkoutConfig.payment.clearpay.storeLocale==="en_GB"
             },
-
+            /**
+             * Initialize Checkout Widget
+             *
+             */
+            initWidget: function () {
+                var clearpay = window.checkoutConfig.payment.clearpay;
+                var storeLocale=clearpay.storeLocale.replace('_', '-');
+                window.clearpayWidget = new AfterPay.Widgets.PaymentSchedule({
+                    target: '#clearpay-widget-container',
+                    locale: storeLocale,
+                    amount: this._getOrderAmount(totals.totals()),
+                    onError: function (event) {
+                        console.log(event.data.error);
+                    },
+                });
+                totals.totals.subscribe((totals) => {
+                    if (clearpayWidget) {
+                        clearpayWidget.update({
+                            amount: this._getOrderAmount(totals),
+                        })
+                    }
+                });
+            },
+            /**
+             * Get Order Amount
+             * @returns {*}
+             */
+            _getOrderAmount: function (totals) {
+                return {
+                    amount: parseFloat(totals.grand_total).toFixed(2),
+                    currency: totals.quote_currency_code
+                }
+            },
+            /**
+             * Initialize Checkout Price Table
+             *
+             */
+            getPriceTable: function() {
+                return ko.computed(() =>
+                    '<afterpay-placement ' +
+                    'data-amount="' + parseFloat(totals.totals().base_grand_total).toFixed(2) +
+                    '" data-locale="' + window.checkoutConfig.payment.clearpay.storeLocale +
+                    '" data-currency="' + totals.totals().base_currency_code +
+                    '" data-type="price-table">' +
+                    '</afterpay-placement>');
+            },
             /**
              * Terms and condition link
              * @returns {*}
@@ -41,91 +90,24 @@ define(
             },
 
             /**
-             * Get Grand Total of the current cart
-             * @returns {*}
-             */
-            getGrandTotal: function () {
-
-                var total = quote.getCalculatedTotal();
-                var format = window.checkoutConfig.priceFormat.pattern
-				var clearpay = window.checkoutConfig.payment.clearpay;
-
-                storage.get(resourceUrlManager.getUrlForCartTotals(quote), false)
-                .done(
-                    function (response) {
-
-                        var amount = response.base_grand_total;
-                        var installmentFee = response.base_grand_total / 4;
-                        var installmentFeeLast = amount - installmentFee.toFixed(window.checkoutConfig.priceFormat.precision) * 3;
-
-                        $(".clearpay_instalments_amount").text(format.replace(/%s/g, installmentFee.toFixed(window.checkoutConfig.priceFormat.precision)));
-                        $(".clearpay_instalments_amount_last").text(format.replace(/%s/g, installmentFeeLast.toFixed(window.checkoutConfig.priceFormat.precision)));
-						$(".clearpay_total_amount").text(format.replace(/%s/g, amount.toFixed(window.checkoutConfig.priceFormat.precision)));
-						return format.replace(/%s/g, amount);
-
-                    }
-                )
-                .fail(
-                    function (response) {
-                       //do your error handling
-
-                    return 'Error';
-                    }
-                );
-            },
-
-            /**
              * Get Checkout Message based on the currency
-             * @returns {*}
              */
             getCheckoutText: function () {
-
-                var clearpay = window.checkoutConfig.payment.clearpay;
-                var clearpayCheckoutText = 'Four interest-free payments totalling';
-
-                return clearpayCheckoutText;
-            },
-			getFirstInstalmentText: function () {
-
-                var clearpay = window.checkoutConfig.payment.clearpay;
-                var clearpayFirstInstalmentText = '';
-               	clearpayFirstInstalmentText = 'First instalment';
-
-                return clearpayFirstInstalmentText;
-            },
-			getTermsText: function () {
-
-                var clearpay = window.checkoutConfig.payment.clearpay;
-                var clearpayTermsText = '';
-
-				clearpayTermsText = 'You will be redirected to the Clearpay website when you proceed to checkout.';
-
-                return clearpayTermsText;
-
+                return ko.computed(() =>
+                    '<afterpay-placement ' +
+                    'data-amount="' + parseFloat(totals.totals().base_grand_total).toFixed(2) +
+                    '" data-locale="' + window.checkoutConfig.payment.clearpay.storeLocale +
+                    '" data-currency="' + totals.totals().base_currency_code +
+                    '" data-is-eligible="true"' +
+                    '" data-intro-text="false"' + 
+                    '" data-badge-theme="black-on-mint">' +
+                    '</afterpay-placement>');
             },
 
 			getTermsLink: function () {
 
-                var clearpay = window.checkoutConfig.payment.clearpay;
-                var clearpayCheckoutTermsLink = "https://www.clearpay.co.uk/terms";
+                return window.checkoutConfig.payment.clearpay.termsConditionUrl;
 
-                return clearpayCheckoutTermsLink;
-
-            },
-
-            /**
-             * Returns the installment fee of the payment */
-            getClearpayInstallmentFee: function () {
-                // Checking and making sure checkoutConfig data exist and not total 0 dollar
-                if (typeof window.checkoutConfig !== 'undefined' &&
-                    quote.getCalculatedTotal() > 0) {
-                    // Set installment fee from grand total and check format price to be output
-                    var installmentFee = quote.getCalculatedTotal() / 4;
-                    var format = window.checkoutConfig.priceFormat.pattern;
-
-                    // return with the currency code ($) and decimal setting (default: 2)
-                    return format.replace(/%s/g, installmentFee.toFixed(window.checkoutConfig.priceFormat.precision));
-                }
             },
 
             /**
@@ -143,7 +125,10 @@ define(
                     var ajaxRedirected = false;
                     //CountryCode Object to pass in initialize function.
 
-                    var countryCode = {countryCode: "GB"};
+                   //CountryCode Object to pass in initialize function.
+                   // var countryCurrencyMapping ={GBP:"GB"};
+                    var countryCode = {countryCode: clearpay.countryCode};
+
 
                     //Update billing address of the quote
                     const setBillingAddressActionResult = setBillingAddressAction(globalMessageList);
@@ -171,8 +156,10 @@ define(
                             if (data.success && (typeof data.token !== 'undefined' && data.token !== null && data.token.length) ) {
                                 //Init or Initialize Clearpay
                                 //Pass countryCode to Initialize function
-                                if (typeof AfterPay.initialize === "function") {
+                                if (typeof AfterPay !== "undefined") {
                                     AfterPay.initialize(countryCode);
+                                } else if (typeof Clearpay !== "undefined") {
+                                    Clearpay.initialize(countryCode);
                                 } else {
                                     AfterPay.init();
                                 }
@@ -180,12 +167,12 @@ define(
                                 //Waiting for all AJAX calls to resolve to avoid error messages upon redirection
                                 $("body").ajaxStop(function () {
 									ajaxRedirected = true;
-                                    clearpayRedirect.redirectToClearpay(data);
+                                    clearpayRedirect.redirectToClearpay(data,clearpay.countryCode);
                                 });
 								setTimeout(
 									function(){
 										if(!ajaxRedirected){
-											clearpayRedirect.redirectToClearpay(data);
+											clearpayRedirect.redirectToClearpay(data,clearpay.countryCode);
 										}
 									}
 								,5000);
@@ -246,7 +233,7 @@ define(
                             });
                         }
 
-                        clearpayRedirect.redirectToClearpay(data);
+                        clearpayRedirect.redirectToClearpay(data,clearpay.countryCode);
                     }
                 });
             }

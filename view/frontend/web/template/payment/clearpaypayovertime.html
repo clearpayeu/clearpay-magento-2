@@ -33,43 +33,20 @@
 			<!--/ko-->
 		<div>
         <div class="payment-method-note clearpay-checkout-note">
-            <div style="">
-
-                <h3>
-                    <strong><span class="clearpay_checkout_text" data-bind="text: getCheckoutText()"></span></strong>
-                    <strong><span class="clearpay_total_amount" data-bind="text: getGrandTotal()"></span></strong>
-                </h3>
-                <ul class="cost">
-                    <li><span class="clearpay_instalments_amount"></span></li>
-                    <li><span class="clearpay_instalments_amount"></span></li>
-                    <li><span class="clearpay_instalments_amount"></span></li>
-                    <li><span class="clearpay_instalments_amount_last"></span></li>
-                </ul>
-                <ul class="icon">
-                    <li>
-                        <span class="clearpay_checkout_steps clearpay_checkout_steps_1"></span>
-                    </li>
-                    <li>
-                        <span class="clearpay_checkout_steps clearpay_checkout_steps_2"></span>
-                    </li>
-                    <li>
-                        <span class="clearpay_checkout_steps clearpay_checkout_steps_3"></span>
-                    </li>
-                    <li>
-                        <span class="clearpay_checkout_steps clearpay_checkout_steps_4"></span>
-                    </li>
-                </ul>
-                <ul class="instalment">
-                    <li><!-- ko i18n: 'First instalment' --><!-- /ko --></li>
-                    <li><!-- ko i18n: '2 weeks later' --><!-- /ko --></li>
-                    <li><!-- ko i18n: '4 weeks later' --><!-- /ko --></li>
-                    <li><!-- ko i18n: '6 weeks later' --><!-- /ko --></li>
-                </ul>
+            <!-- ko if: (isRenderCheckoutWidget)-->
+            <div id="clearpay-widget-container" data-bind="afterRender: initWidget">
             </div>
+            <!-- /ko -->
+            <!-- ko ifnot: (isRenderCheckoutWidget)-->
+            <div style="">
+                <div id="clearpay_checkout_text" data-bind="html: getCheckoutText()"></div>
+                <div id="price-table" data-bind="html: getPriceTable()"></div>
+            </div>
+            <!-- /ko -->
         </div>
         <div class="payment-method-content clearpay-checkout-redirect">
             <div class="instalment-footer">
-                <!-- ko i18n: 'You will be redirected to the Clearpay website when you proceed to checkout. ' --><!-- /ko -->
+                <!-- ko i18n: 'You will be redirected to the Clearpay website when you proceed to checkout.' --><!-- /ko -->
                     <a data-bind="attr:{href: getTermsLink()}" target="_blank" style="display:inline;"><!-- ko i18n: 'Terms & Conditions' --><!-- /ko --></a>
             </div>
             <div class="actions-toolbar">

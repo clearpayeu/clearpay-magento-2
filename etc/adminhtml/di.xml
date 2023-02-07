@@ -11,5 +11,15 @@
     <type name="Magento\Config\Model\Config">
         <plugin name="updateOrderTotalLimitClearpay" type="Clearpay\Clearpay\Model\Config\Save\Plugin" />
     </type>
+    <type name="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\AllowedByCountry">
+        <arguments>
+            <argument name="clearpay" xsi:type="object">Clearpay\Clearpay\Model\Payovertime</argument>
+        </arguments>
+    </type>
+    <virtualType name="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\ExpressCheckout" type="Clearpay\Clearpay\Block\Adminhtml\System\Config\Fieldset\AllowedByCountry">
+        <arguments>
+            <argument name="allowedCountriesConfigPath" xsi:type="string">expresscheckout/allowed_merchant_countries</argument>
+        </arguments>
+    </virtualType>
 	<preference for="Magento\Catalog\Helper\Category" type="Clearpay\Clearpay\Helper\Category" />
 </config>

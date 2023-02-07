@@ -84,8 +84,7 @@ class Installments extends JsConfig
 
         if ($this->_getPaymentIsActive() &&
             $this->clearpayConfig->getCurrencyCode() &&
-            $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode() &&
-                $product->isSalable())
+            $this->clearpayPayovertime->canUseForCurrency($this->clearpayConfig->getCurrencyCode())
         ) {
             $excluded_categories = $this->clearpayConfig->getExcludedCategories();
             if ($excluded_categories != "") {
@@ -167,5 +166,13 @@ class Installments extends JsConfig
         }
 
         return $isVirtual;
+    }
+    /**
+     * @retrun boolean
+     */
+    public function isProductOutOfStock(){
+
+        $product = $this->registry->registry('product');
+        return $product && !$product->isSalable();
     }
 }

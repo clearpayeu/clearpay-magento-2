@@ -19,8 +19,8 @@ define(
                 var clearpayData = config.clearpayConfig;
 
                 //CountryCode Object to pass in initialize function.
-                var countryCurrencyMapping ={GBP:"GB"};
-                var countryCode = (clearpayData.baseCurrencyCode in countryCurrencyMapping)? countryCurrencyMapping[clearpayData.baseCurrencyCode]:'';
+                var countryCurrencyMapping = {GBP:"GB"};
+                var countryCode = (clearpayData.baseCurrencyCode in countryCurrencyMapping)?countryCurrencyMapping[clearpayData.baseCurrencyCode]:'';
 
                 if( $(".express-button").length && countryCode!=""){
                     AfterPay.initializeForPopup({

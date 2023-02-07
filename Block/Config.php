@@ -18,7 +18,7 @@ class Config extends Template
      * @var Data $_dataHelper
      */
     protected $_dataHelper;
-
+    private $localeResolver;
     /**
      * Config constructor.
      *
@@ -31,13 +31,14 @@ class Config extends Template
         Data $dataHelper,
         Template\Context $context,
         ClearpayPayovertime $clearpayPayovertime,
-        array $data
+        array $data,
+        \Magento\Framework\Locale\Resolver $localeResolver
     ) {
     
         $this->_payOverTime = $payovertime;
         $this->_dataHelper = $dataHelper;
         $this->clearpayPayovertime = $clearpayPayovertime;
-
+        $this->localeResolver = $localeResolver;
         parent::__construct($context, $data);
     }
 
@@ -55,7 +56,7 @@ class Config extends Template
      */
     public function getClearpayJsUrl()
     {
-        return $this->_payOverTime->getWebUrl('afterpay.js');
+        return $this->_payOverTime->getWebUrl();
     }
 	/**
      * @return bool
@@ -64,5 +65,21 @@ class Config extends Template
     {
         return $this->clearpayPayovertime->canUseForCurrency($this->_payOverTime->getCurrencyCode()) && $this->_payOverTime->isActive();
 		
+    }
+    /**
+     * Get Store Locale
+     */
+    public function getStoreLocale()
+    {
+        return $this->localeResolver->getLocale();
+    }
+    /**
+     * Get URL to afterpay.js
+     *
+     * @return bool|string
+     */
+    public function getClearpayJsLibUrl()
+    {
+        return $this->_payOverTime->getJSLibUrl('afterpay-1.x.js');
     }
 }

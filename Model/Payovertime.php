@@ -55,6 +55,8 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
      * For dependency injection
      */
     protected $supportedContryCurrencyCodes = array('GB'=>'GBP','AU'=>'AUD','NZ'=>'NZD','CA'=>'CAD');
+    protected $supportedEuropeContryCurrencyCodes = array('IT'=>'EUR','FR'=>'EUR','ES'=>'EUR');
+
     protected $clearpayPaymentTypeCode = self::CLEARPAY_PAYMENT_TYPE_CODE;
 
     protected $logger;
@@ -328,22 +330,28 @@ class Payovertime extends \Magento\Payment\Model\Method\AbstractMethod
     {
         $canUseForCurrency= false;
         $storeCurrencyCode=$this->getStoreCurrencyCode();
-        if (in_array($currencyCode, $this->supportedContryCurrencyCodes) ) {
+        if(strtoupper($storeCurrencyCode)=='EUR' && (in_array($currencyCode, $this->supportedEuropeContryCurrencyCodes)) ){
 
-            if ($currencyCode==$storeCurrencyCode ) {
                 $canUseForCurrency=parent::canUseForCurrency($currencyCode);
-				}else if(!empty($this->getConfigData('enable_cbt')) && !empty($this->getConfigData('cbt_country'))){
-                //Currency Check for Cross Border trade
-                $specifiedCountires=explode(",",$this->getConfigData('cbt_country'));
-                foreach($specifiedCountires AS $country){
-                    if(isset($this->supportedContryCurrencyCodes[$country]) && ($currencyCode==$this->supportedContryCurrencyCodes[$country])){
-                        $canUseForCurrency=parent::canUseForCurrency($currencyCode);
-                        break;
+
+        }else {
+            if (in_array($currencyCode, $this->supportedContryCurrencyCodes)) {
+
+                if ($currencyCode == $storeCurrencyCode) {
+                    $canUseForCurrency = parent::canUseForCurrency($currencyCode);
+                } else if (!empty($this->getConfigData('enable_cbt')) && !empty($this->getConfigData('cbt_country'))) {
+                    //Currency Check for Cross Border trade
+                    $specifiedCountires = explode(",", $this->getConfigData('cbt_country'));
+                    foreach ($specifiedCountires as $country) {
+                        if (isset($this->supportedContryCurrencyCodes[$country]) && ($currencyCode == $this->supportedContryCurrencyCodes[$country])) {
+                            $canUseForCurrency = parent::canUseForCurrency($currencyCode);
+                            break;
+                        }
                     }
+
                 }
 
             }
-
         }
         return $canUseForCurrency;
     }

@@ -2,9 +2,10 @@
 /** @var Clearpay\Clearpay\Block\Config $this */
 if($this->checkCurrency()){
 ?>
-
-<script src="<?php echo $this->getClearpayJsUrl() ?>"></script>
-<script>
-    window.Clearpay = window.Clearpay || {};
-</script>
+<script src="<?php echo $this->getClearpayJsUrl() ?>" async></script>
+    <?php
+    if($this->getStoreLocale()!="en_GB"){
+    ?>
+        <script src="<?php echo $this->getClearpayJsLibUrl() ?>"></script>
+    <?php } ?>
 <?php }?>

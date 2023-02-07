@@ -68,7 +68,7 @@ if ($block->isPaymentMethodActive() && $product_type != "grouped" && $block->can
         }
     </script>
 
-   <?php if ($block->isDisplayEConProductPage() && $clearpay_eligible != "false") { ?>
+   <?php if ($block->isDisplayEConProductPage() && $clearpay_eligible != "false" && !$block->isProductOutOfStock()) { ?>
         <script type="text/x-magento-init">
         {
             "*": {

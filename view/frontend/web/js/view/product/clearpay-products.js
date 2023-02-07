@@ -50,9 +50,9 @@ define(
 
 
                     // Show Express Checkout button
-
                     var newPrice=price_raw.match(/[\d\.\,]+/g);
                     var price =price_to_number(newPrice[0],config.productPriceFormat.decimalSymbol,config.productPriceFormat.groupSymbol);
+
                     if(config.isDisplay==1) {
                         const epsilon = Number.EPSILON ||  Math.pow(2, -52);
                         $('afterpay-placement').attr('data-amount', (Math.round((parseFloat(price) + epsilon) * 100) / 100).toFixed(2));
@@ -68,7 +68,7 @@ define(
             //Function to convert currency to number
             function price_to_number(amount,decimalSymbol,groupSymbol){
                 if(!amount){return 0;}
-                if(decimalSymbol=="," && groupSymbol=="."){
+                if(decimalSymbol==","){
                     //Eg. 10.000.500,61 => price_to_number => 10000500.61
                     amount=amount.split('.').join('');
                     amount=amount.split(',').join('.');

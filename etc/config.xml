@@ -18,15 +18,17 @@
                 <payment_action>authorize_capture</payment_action>
                 <merchant_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <allowspecific>1</allowspecific>
-                <specificcountry>GB</specificcountry>
+                <specificcountry>GB,IT,ES,FR</specificcountry>
                 <http_header_support>0</http_header_support>
                 <enable_for_product_page>1</enable_for_product_page>
                 <enable_for_cart_page>1</enable_for_cart_page>
                 <express_checkout_product_page>0</express_checkout_product_page>
                 <express_checkout_cart_page>0</express_checkout_cart_page>
                 <express_checkout_minicart_page>0</express_checkout_minicart_page>
+                <expresscheckout>
+                    <allowed_merchant_countries>GB,IT,ES,FR</allowed_merchant_countries>
+                </expresscheckout>
             </clearpaypayovertime>
-
         </payment>
     </default>
 </config>

@@ -175,7 +175,7 @@ class JsConfig extends Template
      */
     public function getClearpayECJsUrl()
     {
-         return $this->_configPayovertime->getWebUrl('afterpay.js',array("merchant_key"=>"magento2"));
+         return $this->_configPayovertime->getWebUrl('',array("merchant_key"=>"magento2"));
     }
 
     /**

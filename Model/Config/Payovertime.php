@@ -9,6 +9,7 @@ namespace Clearpay\Clearpay\Model\Config;
 
 use Clearpay\Clearpay\Model\Adapter\ApiMode;
 use Magento\Framework\App\Config\ScopeConfigInterface as ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface as StoreManagerInterface;
 use Magento\Framework\App\Request\Http as Request;
 use Magento\Framework\App\State as State;
@@ -43,6 +44,7 @@ class Payovertime
     const EXPRESS_CHECKOUT_CART_PAGE   = "express_checkout_cart_page";
     const EXPRESS_CHECKOUT_MINICART_PAGE   = "express_checkout_minicart_page";
     const EXPRESS_CHECKOUT_KEY   =  "express_checkout_key";
+    const XML_PATH_PAYPAL_MERCHANT_COUNTRY  = 'paypal/general/merchant_country';
 
     /**
      * @var ApiMode
@@ -180,40 +182,25 @@ class Payovertime
         $currency = $store->getCurrentCurrencyCode();
 
         $url ="";
-        if ($type=='api_url') {
-            if ($apiMode == 'Sandbox') {
-                $url = 'https://api.eu-sandbox.afterpay.com/';
-            } elseif ($apiMode == 'Production') {
-                $url = 'https://api.eu.afterpay.com/';
-            }
-        }
+        switch($type){
+          case "api_url":
+               $url=($apiMode == 'Production')?"https://global-api.afterpay.com/" : "https://global-api-sandbox.afterpay.com/" ;
+               break;
+          case "web_url":
+               if($currency === 'EUR'){
+                    $url=($apiMode == 'Production')?"https://merchant-tools.clearpay.com/clearpay.js" : "https://merchant-tools.sandbox.clearpay.com/clearpay.js" ;
+                } else {
+                    $url=($apiMode == 'Production')?"https://portal.clearpay.co.uk/afterpay.js" : "https://portal.sandbox.clearpay.co.uk/afterpay.js" ;
+                }
+                break;
+          case "js_lib_url":
+              // get JS Library URL
+              $url=($apiMode == 'Production')?"https://js.afterpay.com/" : "https://js.sandbox.afterpay.com/" ;
+              break;
 
-        if ($type=='web_url') {
-            if ($apiMode == 'Sandbox') {
-                $url = 'https://portal.sandbox.clearpay.co.uk/';
-            } elseif ($apiMode == 'Production') {
-                $url = 'https://portal.clearpay.co.uk/';
-            }
-        }
+      }
 
-        // get JS Library URL
-        if ($type=='js_lib_url') {
-            if ($apiMode == 'Sandbox') {
-                $url = 'https://js.sandbox.afterpay.com/';
-            } elseif ($apiMode == 'Production') {
-                $url = 'https://js.afterpay.com/';
-            }
-        }
-
-        // get JS Library URL
-        if ($type=='js_lib_url') {
-            if ($apiMode == 'Sandbox') {
-                $url = 'https://js.sandbox.afterpay.com/';
-            } elseif ($apiMode == 'Production') {
-                $url = 'https://js.afterpay.com/';
-            }
-        }
-        return $url;
+       return $url;
     }
 
 
@@ -317,6 +304,32 @@ class Payovertime
     public function getMerchantKey($override = [])
     {
         return $this->_cleanup_string($this->_getConfigData(self::MERCHANT_KEY_XML_NODE, $override));
+    }
+
+    /**
+     * @param string $scope
+     * @param int|null $scopeCode
+     * @return string|null
+     */
+    public function getMerchantCountry(
+        $scope = ScopeInterface::SCOPE_WEBSITES,
+        $scopeCode = null
+    ) {
+        if ($countryCode = $this->scopeConfig->getValue(
+            self::XML_PATH_PAYPAL_MERCHANT_COUNTRY,
+            $scope,
+            $scopeCode
+        )) {
+            return $countryCode;
+        }
+        if ($countryCode = $this->scopeConfig->getValue(
+            \Magento\Directory\Helper\Data::XML_PATH_DEFAULT_COUNTRY,
+            $scope,
+            $scopeCode
+        )) {
+            return $countryCode;
+        }
+        return null;
     }
 
     /**
@@ -464,6 +477,29 @@ class Payovertime
     public function getStoreId()
     {
         return $this->storeManager->getStore()->getId();
+    }
+    /**
+     * @retrun text
+     */
+    public function getTermsAndConditionLink(){
+        $countryCode=$this->getCurrentCountryCode();
+        $linkUrl="";
+        switch($countryCode){
+            case "GB":
+                $linkUrl="https://www.clearpay.co.uk/terms-of-service";
+                break;
+            case "ES":
+                $linkUrl="https://www.clearpay.com/es/terms";
+                break;
+            case "FR":
+                $linkUrl= "https://www.clearpay.com/fr/terms";
+                break;
+            case "IT":
+                $linkUrl="https://www.clearpay.com/it/terms";
+                break;
+        }
+        return $linkUrl;
+
     }
 
 }
