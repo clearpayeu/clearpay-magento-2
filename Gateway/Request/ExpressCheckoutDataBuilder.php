@@ -4,6 +4,22 @@ namespace Clearpay\Clearpay\Gateway\Request;
 
 class ExpressCheckoutDataBuilder extends \Clearpay\Clearpay\Gateway\Request\Checkout\CheckoutDataBuilder
 {
+    /**
+     * @var \Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface
+     */
+    private $extendedShippingInformation;
+
+    public function __construct(
+        \Magento\Framework\UrlInterface $url,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
+        \Clearpay\Clearpay\Model\CBT\CheckCBTCurrencyAvailabilityInterface $checkCBTCurrencyAvailability,
+        \Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface $extendedShippingInformation
+    ) {
+        parent::__construct($url, $productRepository, $searchCriteriaBuilder, $checkCBTCurrencyAvailability);
+        $this->extendedShippingInformation = $extendedShippingInformation;
+    }
+
     public function build(array $buildSubject): array
     {
         /** @var \Magento\Quote\Model\Quote $quote */
@@ -13,6 +29,10 @@ class ExpressCheckoutDataBuilder extends \Clearpay\Clearpay\Gateway\Request\Chec
         $isCBTCurrencyAvailable = $this->checkCBTCurrencyAvailability->checkByQuote($quote);
         $amount = $isCBTCurrencyAvailable ? $quote->getGrandTotal() : $quote->getBaseGrandTotal();
         $currencyCode = $isCBTCurrencyAvailable ? $currentCurrencyCode : $quote->getBaseCurrencyCode();
+        $lastSelectedShippingRate = $this->extendedShippingInformation->getParam(
+            $quote,
+            \Afterpay\Afterpay\Api\Data\Quote\ExtendedShippingInformationInterface::LAST_SELECTED_SHIPPING_RATE
+        );
 
         $data = [
             'mode' => 'express',
@@ -25,7 +45,8 @@ class ExpressCheckoutDataBuilder extends \Clearpay\Clearpay\Gateway\Request\Chec
                 'popupOriginUrl' => $popupOriginUrl
             ],
             'items' => $this->getItems($quote),
-            'merchantReference' => $quote->getReservedOrderId()
+            'merchantReference' => $quote->getReservedOrderId(),
+            'shippingOptionIdentifier' => $lastSelectedShippingRate
         ];
 
         if ($discounts = $this->getDiscounts($quote)) {

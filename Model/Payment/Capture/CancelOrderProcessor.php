@@ -7,34 +7,60 @@ use Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface;
 class CancelOrderProcessor
 {
     private \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory;
-    private \Magento\Payment\Gateway\CommandInterface $refundCommand;
     private \Magento\Payment\Gateway\CommandInterface $voidCommand;
+    private \Magento\Payment\Gateway\CommandInterface $reversalCommand;
+    private \Magento\Store\Model\StoreManagerInterface $storeManager;
+    private \Clearpay\Clearpay\Model\Config $config;
+    private \Clearpay\Clearpay\Model\Order\Payment\QuotePaidStorage $quotePaidStorage;
 
     public function __construct(
         \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory,
-        \Magento\Payment\Gateway\CommandInterface $refundCommand,
-        \Magento\Payment\Gateway\CommandInterface $voidCommand
-    ) {
+        \Magento\Payment\Gateway\CommandInterface                       $voidCommand,
+        \Magento\Payment\Gateway\CommandInterface                       $reversalCommand,
+        \Magento\Store\Model\StoreManagerInterface                      $storeManager,
+        \Clearpay\Clearpay\Model\Config                                 $config,
+        \Clearpay\Clearpay\Model\Order\Payment\QuotePaidStorage         $quotePaidStorage
+    )
+    {
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
-        $this->refundCommand = $refundCommand;
         $this->voidCommand = $voidCommand;
+        $this->reversalCommand = $reversalCommand;
+        $this->storeManager = $storeManager;
+        $this->config = $config;
+        $this->quotePaidStorage = $quotePaidStorage;
     }
 
     /**
      * @throws \Magento\Payment\Gateway\Command\CommandException
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function execute(\Magento\Sales\Model\Order\Payment $payment): void
+    public function execute(\Magento\Quote\Model\Quote\Payment $payment, int $quoteId): void
     {
         $commandSubject = ['payment' => $this->paymentDataObjectFactory->create($payment)];
-        $paymentState = $payment->getAdditionalInformation(AdditionalInformationInterface::CLEARPAY_PAYMENT_STATE);
 
-        if ($paymentState == \Clearpay\Clearpay\Model\PaymentStateInterface::AUTH_APPROVED) {
-            $this->voidCommand->execute($commandSubject);
-        } else {
-            $isCBTCurrency = $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY);
-            $this->refundCommand->execute(array_merge($commandSubject, [
-                'amount' => $isCBTCurrency ? $payment->getAmountOrdered() : $payment->getBaseAmountOrdered()
-            ]));
+        if (!$this->isDeferredPaymentFlow()) {
+            $this->reversalCommand->execute($commandSubject);
+
+            return;
         }
+
+        $clearpayPayment = $this->quotePaidStorage->getClearpayPaymentIfQuoteIsPaid($quoteId);
+        if (!$clearpayPayment) {
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __(
+                    'Clearpay payment is declined. Please select an alternative payment method.'
+                )
+            );
+        }
+
+        $commandSubject = ['payment' => $this->paymentDataObjectFactory->create($clearpayPayment)];
+        $this->voidCommand->execute($commandSubject);
+    }
+        private function isDeferredPaymentFlow(): bool
+    {
+        $websiteId = (int)$this->storeManager->getStore()->getWebsiteId();
+        $paymentFlow = $this->config->getPaymentFlow($websiteId);
+
+        return $paymentFlow === \Clearpay\Clearpay\Model\Config\Source\PaymentFlow::DEFERRED;
     }
 }

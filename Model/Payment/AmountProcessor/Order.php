@@ -4,6 +4,14 @@ namespace Clearpay\Clearpay\Model\Payment\AmountProcessor;
 
 class Order
 {
+    private \Magento\Weee\Block\Item\Price\Renderer $priceRenderer;
+
+    public function __construct(
+        \Magento\Weee\Block\Item\Price\Renderer $priceRenderer
+    ) {
+        $this->priceRenderer = $priceRenderer;
+    }
+
     /**
      * @param \Magento\Sales\Model\Order\Item[] $items
      */
@@ -23,17 +31,15 @@ class Order
     protected function calculateItemPrice(
         \Magento\Sales\Model\Order\Payment $payment,
         \Magento\Sales\Model\Order\Item $item,
-        float $qty): float
-    {
+        float $qty
+    ): float {
         $isCBTCurrency = $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY);
-        $discountAmount = $isCBTCurrency ? $item->getDiscountAmount() : $item->getBaseDiscountAmount();
-        $rowTotal = $isCBTCurrency ? $item->getRowTotal() : $item->getBaseRowTotal();
-        $taxAmount = $isCBTCurrency ? $item->getTaxAmount() : $item->getBaseTaxAmount();
-        $discountPerItem = $discountAmount / $item->getQtyOrdered();
-        $pricePerItem =  ($rowTotal + $taxAmount) / $item->getQtyOrdered();
+        $rowTotal = $isCBTCurrency ? $this->priceRenderer->getTotalAmount($item) : $this->priceRenderer->getBaseTotalAmount($item);
+        $pricePerItem = $rowTotal / $item->getQtyOrdered();
 
-        return $qty * ($pricePerItem - $discountPerItem);
+        return $qty * $pricePerItem;
     }
+
 
     protected function getShippingAmount(\Magento\Sales\Model\Order $order): float
     {

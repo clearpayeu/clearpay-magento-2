@@ -27,3 +27,4 @@
 Update limit configuration and specific countries from Clearpay API.,Update limit configuration and specific countries from Clearpay API.
 "https://www.clearpay.co.uk/en-GB/terms-of-service","https://www.clearpay.co.uk/en-GB/terms-of-service"
 "Terms & Conditions","Terms & Conditions"
+"Clearpay response error: Code: %1, Id: %2","Clearpay response error: Code: %1, Id: %2"

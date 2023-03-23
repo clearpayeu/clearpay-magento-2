@@ -3,14 +3,15 @@
     "license": "Apache-2.0",
     "type": "magento2-module",
     "description": "Magento 2 Clearpay Payment Module",
-    "version": "5.0.4-beta.1",
+    "version": "5.0.5",
     "require": {
         "php": "~7.4.0||~8.1.0",
         "magento/framework": "^103.0",
         "magento/module-checkout": "100.4.*",
         "magento/module-payment": "100.4.*",
         "magento/module-quote-graph-ql": "100.4.*",
-        "magento/module-sales": "103.0.*"
+        "magento/module-sales": "103.0.*",
+        "magento/module-weee": "100.4.*"
     },
     "authors": [
         {
