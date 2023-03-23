@@ -52,7 +52,7 @@ class PlaceOrder implements \Magento\Framework\App\Action\HttpPostActionInterfac
         } catch (\Throwable $e) {
             $errorMessage = $e instanceof \Magento\Framework\Exception\LocalizedException
                 ? $e->getMessage()
-                : (string)__('Payment is failed');
+                : (string)__('Clearpay payment is declined. Please select an alternative payment method.');
             $this->messageManager->addErrorMessage($errorMessage);
             return $jsonResult->setData(['redirectUrl' => $this->url->getUrl(
                     'checkout/cart',

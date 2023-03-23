@@ -6,6 +6,7 @@
     <preference for="Clearpay\Clearpay\Api\Data\CheckoutInterface" type="Clearpay\Clearpay\Model\Checkout"/>
     <preference for="Clearpay\Clearpay\Model\Order\OrderItemInterface" type="Clearpay\Clearpay\Model\Order\OrderItem"/>
     <preference for="Clearpay\Clearpay\Model\CBT\CheckCBTCurrencyAvailabilityInterface" type="Clearpay\Clearpay\Model\Checks\IsCBTAvailable"/>
+    <preference for="Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface" type="Clearpay\Clearpay\Model\Quote\ExtendedShippingInformation"/>
 
     <virtualType name="Clearpay\Clearpay\Model\Method\MethodFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
@@ -75,6 +76,14 @@
             <argument name="transferFactory" xsi:type="object">Clearpay\Clearpay\Gateway\Http\RefundTransferFactory</argument>
             <argument name="client" xsi:type="object">Clearpay\Clearpay\Gateway\Http\Client\Client</argument>
             <argument name="validator" xsi:type="object">Clearpay\Clearpay\Gateway\Validator\RefundResponseValidator</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Clearpay\Clearpay\Gateway\Command\ReversalCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Clearpay\Clearpay\Gateway\Request\PaymentAction\ReversalDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">Clearpay\Clearpay\Gateway\Http\ReversalTransferFactory</argument>
+            <argument name="client" xsi:type="object">Clearpay\Clearpay\Gateway\Http\Client\Client</argument>
+            <argument name="validator" xsi:type="object">Clearpay\Clearpay\Gateway\Validator\ReversalResponseValidator</argument>
         </arguments>
     </virtualType>
     <virtualType name="Clearpay\Clearpay\Gateway\Command\VoidCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
@@ -148,6 +157,7 @@
     <type name="Clearpay\Clearpay\Gateway\Response\CaptureVirtualProductsHandler">
         <arguments>
             <argument name="authCaptureCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\AuthCaptureCommand</argument>
+            <argument name="voidCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\VoidCommand</argument>
         </arguments>
     </type>
     <virtualType name="Clearpay\Clearpay\Gateway\Response\MerchantConfigurationHandlerChain" type="Magento\Payment\Gateway\Response\HandlerChain">
@@ -190,6 +200,11 @@
     <virtualType name="Clearpay\Clearpay\Gateway\Http\RefundTransferFactory" type="Clearpay\Clearpay\Gateway\Http\TransferFactory">
         <arguments>
             <argument name="uriPath" xsi:type="string">v2/payments/{orderId}/refund</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Clearpay\Clearpay\Gateway\Http\ReversalTransferFactory" type="Clearpay\Clearpay\Gateway\Http\TransferFactory">
+        <arguments>
+            <argument name="uriPath" xsi:type="string">v2/payments/token:{clearpayToken}/reversal</argument>
         </arguments>
     </virtualType>
     <virtualType name="Clearpay\Clearpay\Gateway\Http\VoidTransferFactory" type="Clearpay\Clearpay\Gateway\Http\TransferFactory">
@@ -280,8 +295,8 @@
 
     <type name="Clearpay\Clearpay\Model\Payment\Capture\CancelOrderProcessor">
         <arguments>
-            <argument name="refundCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\RefundCommand</argument>
             <argument name="voidCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\VoidCommand</argument>
+            <argument name="reversalCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\ReversalCommand</argument>
         </arguments>
     </type>
     <type name="Clearpay\Clearpay\Model\Order\Shipment\CaptureProcessor">
@@ -354,5 +369,9 @@
     <type name="Magento\Sales\Model\Order\Payment\Operations\CaptureOperation">
         <plugin name="clearpay_replace_invoice_amount_for_cbt"
                 type="Clearpay\Clearpay\Plugin\Model\Order\Payment\Operations\CaptureOperation"/>
+    </type>
+    <type name="Magento\Sales\Api\CreditmemoManagementInterface">
+        <plugin name="clearpay_replace_adjustment amount_validation"
+                type="Clearpay\Clearpay\Plugin\Sales\Model\Service\CreditmemoService\AdjustmentAmountValidation"/>
     </type>
 </config>

@@ -7,15 +7,19 @@ class CaptureVirtualProductsHandler implements \Magento\Payment\Gateway\Response
     private $authCaptureCommand;
     private $paymentDataObjectFactory;
     private $orderAmountProcessor;
+    private $voidCommand;
 
     public function __construct(
-        \Magento\Payment\Gateway\CommandInterface $authCaptureCommand,
+        \Magento\Payment\Gateway\CommandInterface                       $authCaptureCommand,
         \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory,
-        \Clearpay\Clearpay\Model\Payment\AmountProcessor\Order $orderAmountProcessor
-    ) {
+        \Clearpay\Clearpay\Model\Payment\AmountProcessor\Order          $orderAmountProcessor,
+        \Magento\Payment\Gateway\CommandInterface                       $voidCommand
+    )
+    {
         $this->authCaptureCommand = $authCaptureCommand;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->orderAmountProcessor = $orderAmountProcessor;
+        $this->voidCommand = $voidCommand;
     }
 
     /**
@@ -43,6 +47,18 @@ class CaptureVirtualProductsHandler implements \Magento\Payment\Gateway\Response
                     'payment' => $this->paymentDataObjectFactory->create($payment),
                     'amount' => $amountToCapture
                 ]);
+                try {
+                    $this->authCaptureCommand->execute([
+                        'payment' => $this->paymentDataObjectFactory->create($payment),
+                        'amount' => $amountToCapture
+                    ]);
+
+                } catch (\Throwable $e) {
+                    $commandSubject = ['payment' => $paymentDO];
+                    $this->voidCommand->execute($commandSubject);
+
+                    throw $e;
+                }
             }
         }
     }
