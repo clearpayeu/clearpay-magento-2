@@ -30,7 +30,7 @@ class ExpressCheckoutDataBuilder extends \Clearpay\Clearpay\Gateway\Request\Chec
         $popupOriginUrl = $buildSubject['popup_origin_url'];
         $lastSelectedShippingRate = $this->extendedShippingInformation->getParam(
             $quote,
-            \Afterpay\Afterpay\Api\Data\Quote\ExtendedShippingInformationInterface::LAST_SELECTED_SHIPPING_RATE
+            \Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface::LAST_SELECTED_SHIPPING_RATE
         );
 
         $data = [

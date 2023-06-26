@@ -2,8 +2,6 @@
 
 namespace Clearpay\Clearpay\Model\Payment\Capture;
 
-use Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface;
-
 class CancelOrderProcessor
 {
     private $paymentDataObjectFactory;
@@ -20,8 +18,7 @@ class CancelOrderProcessor
         \Magento\Store\Model\StoreManagerInterface                      $storeManager,
         \Clearpay\Clearpay\Model\Config                                 $config,
         \Clearpay\Clearpay\Model\Order\Payment\QuotePaidStorage         $quotePaidStorage
-    )
-    {
+    ) {
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->reversalCommand = $reversalCommand;
         $this->voidCommand = $voidCommand;
@@ -30,18 +27,23 @@ class CancelOrderProcessor
         $this->quotePaidStorage = $quotePaidStorage;
     }
 
-    /**
-     * @throws \Magento\Payment\Gateway\Command\CommandException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
     public function execute(\Magento\Quote\Model\Quote\Payment $payment, int $quoteId): void
     {
+        if (!$this->config->getIsReversalEnabled()) {
+            return;
+        }
+
         $commandSubject = ['payment' => $this->paymentDataObjectFactory->create($payment)];
 
         if (!$this->isDeferredPaymentFlow()) {
             $this->reversalCommand->execute($commandSubject);
 
-            return;
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __(
+                    'There was a problem placing your order. Your Clearpay order %1 is refunded.',
+                    $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ORDER_ID)
+                )
+            );
         }
 
         $clearpayPayment = $this->quotePaidStorage->getClearpayPaymentIfQuoteIsPaid($quoteId);

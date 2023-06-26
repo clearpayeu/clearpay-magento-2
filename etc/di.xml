@@ -351,6 +351,11 @@
             <argument name="merchantConfigurationCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\GetMerchantConfigurationCommandWrapper</argument>
         </arguments>
     </type>
+    <type name="Clearpay\Clearpay\Setup\Patch\Data\UpdateCbtInfoPatch">
+        <arguments>
+            <argument name="merchantConfigurationCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\GetMerchantConfigurationCommandWrapper</argument>
+        </arguments>
+    </type>
     <type name="Clearpay\Clearpay\Controller\Adminhtml\MerchantConfiguration\Update">
         <arguments>
             <argument name="merchantConfigurationCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\GetMerchantConfigurationCommandWrapper</argument>
@@ -373,5 +378,8 @@
     <type name="Magento\Sales\Api\CreditmemoManagementInterface">
         <plugin name="clearpay_replace_adjustment amount_validation"
                 type="Clearpay\Clearpay\Plugin\Sales\Model\Service\CreditmemoService\AdjustmentAmountValidation"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Payment\State\CaptureCommand">
+        <plugin name="clearpay_change_captured_comment" type="Clearpay\Clearpay\Plugin\Order\Payment\State\CaptureCommand"/>
     </type>
 </config>

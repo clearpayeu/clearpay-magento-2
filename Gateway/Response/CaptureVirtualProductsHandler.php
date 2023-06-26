@@ -43,10 +43,6 @@ class CaptureVirtualProductsHandler implements \Magento\Payment\Gateway\Response
         if (count($itemsToCapture)) {
             $amountToCapture = $this->orderAmountProcessor->process($itemsToCapture, $payment);
             if ($amountToCapture > 0) {
-                $this->authCaptureCommand->execute([
-                    'payment' => $this->paymentDataObjectFactory->create($payment),
-                    'amount' => $amountToCapture
-                ]);
                 try {
                     $this->authCaptureCommand->execute([
                         'payment' => $this->paymentDataObjectFactory->create($payment),
