@@ -31,7 +31,7 @@ class ExpressCheckoutDataBuilder extends \Clearpay\Clearpay\Gateway\Request\Chec
         $currencyCode = $isCBTCurrencyAvailable ? $currentCurrencyCode : $quote->getBaseCurrencyCode();
         $lastSelectedShippingRate = $this->extendedShippingInformation->getParam(
             $quote,
-            \Afterpay\Afterpay\Api\Data\Quote\ExtendedShippingInformationInterface::LAST_SELECTED_SHIPPING_RATE
+            \Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface::LAST_SELECTED_SHIPPING_RATE
         );
 
         $data = [

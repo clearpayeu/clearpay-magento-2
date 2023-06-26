@@ -30,4 +30,7 @@
     <type name="Magento\Sales\Block\Adminhtml\Order\View">
         <plugin name="clearpay_remove_creditmemo_button_from_order_view" type="Clearpay\Clearpay\Plugin\Block\Adminhtml\Order\View" />
     </type>
+    <type name="Magento\Catalog\Model\ResourceModel\Category\Tree">
+        <plugin name="clearpay_show_not_icluded_in_menu_categories" type="Clearpay\Clearpay\Plugin\Catalog\Model\ResourceModel\Category\Tree" />
+    </type>
 </config>

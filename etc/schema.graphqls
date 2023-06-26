@@ -25,3 +25,14 @@ input PaymentMethodInput {
 input ClearpayInput {
     clearpay_token: String! @doc(description:"Clearpay checkout token returned by the createClearpayCheckout mutation")
 }
+
+type Query {
+    clearpayConfig: clearpayConfigOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfig") @doc(description:"return Clearpay config")
+}
+
+type clearpayConfigOutput {
+    max_amount: String
+    min_amount: String
+    allowed_currencies: [String]
+    is_enabled: Boolean
+}

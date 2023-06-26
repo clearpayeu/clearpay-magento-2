@@ -38,10 +38,13 @@ define([
             return this._super();
         },
         _getOnCommenceCheckoutClearpayMethod: function () {
+            let isBundle = $('#product_addtocart_form').find('#bundleSummary').length;
             const parentOnCommenceCheckoutClearpayMethod = this._super();
-            return  (actions) => {
-                const productSubmitForm = $('#product_addtocart_form');
-                productSubmitForm.submit();
+            return (actions) => {
+                if (!isBundle) {
+                    const productSubmitForm = $('#product_addtocart_form');
+                    productSubmitForm.submit();
+                }
                 this.onCartUpdated = $.Deferred();
                 this.onCartUpdated.done(() => parentOnCommenceCheckoutClearpayMethod(actions))
                     .fail(() => this._fail(actions, AfterPay.constants.SERVICE_UNAVAILABLE));

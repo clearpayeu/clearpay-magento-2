@@ -2,8 +2,6 @@
 
 namespace Clearpay\Clearpay\Model\Payment\Capture;
 
-use Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface;
-
 class CancelOrderProcessor
 {
     private \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory;
@@ -20,8 +18,7 @@ class CancelOrderProcessor
         \Magento\Store\Model\StoreManagerInterface                      $storeManager,
         \Clearpay\Clearpay\Model\Config                                 $config,
         \Clearpay\Clearpay\Model\Order\Payment\QuotePaidStorage         $quotePaidStorage
-    )
-    {
+    ) {
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->voidCommand = $voidCommand;
         $this->reversalCommand = $reversalCommand;
@@ -36,12 +33,21 @@ class CancelOrderProcessor
      */
     public function execute(\Magento\Quote\Model\Quote\Payment $payment, int $quoteId): void
     {
+        if (!$this->config->getIsReversalEnabled()) {
+            return;
+        }
+
         $commandSubject = ['payment' => $this->paymentDataObjectFactory->create($payment)];
 
         if (!$this->isDeferredPaymentFlow()) {
             $this->reversalCommand->execute($commandSubject);
 
-            return;
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __(
+                    'There was a problem placing your order. Your Clearpay order %1 is refunded.',
+                    $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ORDER_ID)
+                )
+            );
         }
 
         $clearpayPayment = $this->quotePaidStorage->getClearpayPaymentIfQuoteIsPaid($quoteId);
@@ -56,7 +62,8 @@ class CancelOrderProcessor
         $commandSubject = ['payment' => $this->paymentDataObjectFactory->create($clearpayPayment)];
         $this->voidCommand->execute($commandSubject);
     }
-        private function isDeferredPaymentFlow(): bool
+
+    private function isDeferredPaymentFlow(): bool
     {
         $websiteId = (int)$this->storeManager->getStore()->getWebsiteId();
         $paymentFlow = $this->config->getPaymentFlow($websiteId);

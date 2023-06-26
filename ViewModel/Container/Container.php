@@ -17,10 +17,10 @@ class Container implements \Magento\Framework\View\Element\Block\ArgumentInterfa
     protected \Magento\Store\Model\StoreManagerInterface $storeManager;
 
     public function __construct(
-        \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \Clearpay\Clearpay\Model\Config $config,
+        \Magento\Framework\Serialize\SerializerInterface                  $serializer,
+        \Clearpay\Clearpay\Model\Config                                   $config,
         \Clearpay\Clearpay\Model\ResourceModel\NotAllowedProductsProvider $notAllowedProductsProvider,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface                        $storeManager
     ) {
         $this->serializer = $serializer;
         $this->config = $config;
@@ -39,9 +39,9 @@ class Container implements \Magento\Framework\View\Element\Block\ArgumentInterfa
 
     public function updateJsLayout(
         string $jsLayoutJson,
-        bool $remove = false,
+        bool   $remove = false,
         string $containerNodeName = 'clearpay.container',
-        array $config = []
+        array  $config = []
     ): string {
         /** @var array $jsLayout */
         $jsLayout = $this->serializer->unserialize($jsLayoutJson);
@@ -84,10 +84,15 @@ class Container implements \Magento\Framework\View\Element\Block\ArgumentInterfa
 
     private function isCurrentCurrencyAvailable(): bool
     {
-        $currentCurrencyCode = $this->storeManager->getStore()->getCurrentCurrency();
+        $currentCurrencyCode = $this->storeManager->getStore()->getCurrentCurrencyCode();
+        $baseCurrencyCode = $this->storeManager->getStore()->getBaseCurrencyCode();
         $allowedCurrencies = $this->config->getAllowedCurrencies();
-        $cbtCurrencies = array_keys($this->config->getCbtCurrencyLimits());
+        $validCurrencies = array_keys($this->config->getCbtCurrencyLimits());
 
-        return in_array($currentCurrencyCode->getCode(), array_merge($allowedCurrencies, $cbtCurrencies));
+        if (in_array($baseCurrencyCode, $allowedCurrencies)) {
+            $validCurrencies[] = $baseCurrencyCode;
+        }
+
+        return in_array($currentCurrencyCode, $validCurrencies);
     }
 }

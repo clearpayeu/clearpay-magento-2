@@ -7,15 +7,19 @@ class CaptureVirtualProductsHandler implements \Magento\Payment\Gateway\Response
     private \Magento\Payment\Gateway\CommandInterface $authCaptureCommand;
     private \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory;
     private \Clearpay\Clearpay\Model\Payment\AmountProcessor\Order $orderAmountProcessor;
+    private \Magento\Payment\Gateway\CommandInterface $voidCommand;
 
     public function __construct(
-        \Magento\Payment\Gateway\CommandInterface $authCaptureCommand,
+        \Magento\Payment\Gateway\CommandInterface                       $authCaptureCommand,
         \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory,
-        \Clearpay\Clearpay\Model\Payment\AmountProcessor\Order $orderAmountProcessor
-    ) {
+        \Clearpay\Clearpay\Model\Payment\AmountProcessor\Order          $orderAmountProcessor,
+        \Magento\Payment\Gateway\CommandInterface                       $voidCommand
+    )
+    {
         $this->authCaptureCommand = $authCaptureCommand;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->orderAmountProcessor = $orderAmountProcessor;
+        $this->voidCommand = $voidCommand;
     }
 
     /**
@@ -31,16 +35,24 @@ class CaptureVirtualProductsHandler implements \Magento\Payment\Gateway\Response
 
         $itemsToCapture = array_filter(
             $payment->getOrder()->getAllItems(),
-            static fn ($item) => !$item->getParentItem() && $item->getIsVirtual()
+            static fn($item) => !$item->getParentItem() && $item->getIsVirtual()
         );
 
         if (count($itemsToCapture)) {
             $amountToCapture = $this->orderAmountProcessor->process($itemsToCapture, $payment);
             if ($amountToCapture > 0) {
-                $this->authCaptureCommand->execute([
-                    'payment' => $this->paymentDataObjectFactory->create($payment),
-                    'amount' => $amountToCapture
-                ]);
+                try {
+                    $this->authCaptureCommand->execute([
+                        'payment' => $this->paymentDataObjectFactory->create($payment),
+                        'amount' => $amountToCapture
+                    ]);
+
+                } catch (\Throwable $e) {
+                    $commandSubject = ['payment' => $paymentDO];
+                    $this->voidCommand->execute($commandSubject);
+
+                    throw $e;
+                }
             }
         }
     }
