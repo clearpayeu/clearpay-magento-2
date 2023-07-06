@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Clearpay\Clearpay\Model\GraphQl\Resolver;
 
@@ -35,12 +35,19 @@ class ClearpayConfig implements ResolverInterface
         $allowedCurrencies = $this->config->getAllowedCurrencies((int)$websiteId);
         $cbtCurrencies = array_keys($this->config->getCbtCurrencyLimits((int)$websiteId));
         $isEnabled = $this->config->getIsPaymentActive((int)$websiteId);
+        $isEnabledCtaProductPage = $this->config->getIsEnableCtaProductPage((int)$websiteId);
+        $isEnabledCtaMinicart = $this->config->getIsEnableCtaMiniCart((int)$websiteId);
+        $isEnabledCtaCheckout = $this->config->getIsEnableCtaCartPage((int)$websiteId);
 
         return [
-            "max_amount" => $maxAmount,
-            "min_amount" => $minAmount,
-            "allowed_currencies" => array_merge($allowedCurrencies, $cbtCurrencies),
-            "is_enabled" => $isEnabled
+            'max_amount'              => $maxAmount,
+            'min_amount'              => $minAmount,
+            'allowed_currencies'      => array_merge($allowedCurrencies, $cbtCurrencies),
+            'is_enabled'              => $isEnabled,
+            'is_enabled_cta_pdp'      => $isEnabledCtaProductPage,
+            'is_enabled_cta_minicart' => $isEnabledCtaMinicart,
+            'is_enabled_cta_checkout' => $isEnabledCtaCheckout,
+
         ];
     }
 }
