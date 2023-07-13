@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Clearpay\Clearpay\Plugin\Payment\Checks;
 
@@ -10,7 +10,7 @@ class CanUseForCountryPlugin
 {
     public function afterIsApplicable(CanUseForCountry $subject, $result, MethodInterface $paymentMethod, Quote $quote)
     {
-        if ($paymentMethod->getCode() !== 'clearpay') {
+        if ($paymentMethod->getCode() !== \Clearpay\Clearpay\Gateway\Config\Config::CODE) {
             return $result;
         }
 

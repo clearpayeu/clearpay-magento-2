@@ -34,10 +34,10 @@ class PlaceOrderProcessor
         $this->tokenValidator = $tokenValidator;
     }
 
-    public function execute(Quote $quote, CommandInterface $checkoutDataCommand, string $clearpayOrderToken): void
+    public function execute(Quote $quote, CommandInterface $checkoutDataCommand, string $clearpayOrderToken): int
     {
         if ($this->tokenValidator->checkIsUsed($clearpayOrderToken)) {
-            return;
+            return 0;
         }
 
         $payment = $quote->getPayment();
@@ -54,9 +54,9 @@ class PlaceOrderProcessor
             }
 
             $checkoutDataCommand->execute(['payment' => $this->paymentDataObjectFactory->create($payment)]);
-            $this->cartManagement->placeOrder($quote->getId());
+            return (int)$this->cartManagement->placeOrder($quote->getId());
         } catch (\Throwable $e) {
-            $this->paymentErrorProcessor->execute($quote, $e, $payment);
+            return $this->paymentErrorProcessor->execute($quote, $e, $payment);
         }
     }
 }

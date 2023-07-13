@@ -1,52 +1,41 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Clearpay\Clearpay\Plugin\QuoteGraphQl\Cart;
 
-use Clearpay\Clearpay\Model\CBT\CheckCBTCurrencyAvailabilityInterface;
-use Clearpay\Clearpay\Model\Payment\PaymentErrorProcessor;
+use Clearpay\Clearpay\Api\Data\CheckoutInterface;
+use Clearpay\Clearpay\Gateway\Config\Config;
+use Clearpay\Clearpay\Model\Payment\Capture\PlaceOrderProcessor;
+use Magento\Payment\Gateway\CommandInterface;
+use Magento\Quote\Model\Quote;
 use Magento\QuoteGraphQl\Model\Cart\PlaceOrder as PlaceOrderModel;
 
 class PlaceOrderPlugin
 {
-    private PaymentErrorProcessor $paymentErrorProcessor;
-    private CheckCBTCurrencyAvailabilityInterface $checkCBTCurrencyAvailability;
+    private PlaceOrderProcessor $placeOrderProcessor;
+    private CommandInterface $validateCheckoutDataCommand;
 
     public function __construct(
-        CheckCBTCurrencyAvailabilityInterface $checkCBTCurrencyAvailability,
-        PaymentErrorProcessor                 $paymentErrorProcessor
+        PlaceOrderProcessor   $placeOrderProcessor,
+        CommandInterface      $validateCheckoutDataCommand
     ) {
-        $this->paymentErrorProcessor = $paymentErrorProcessor;
-        $this->checkCBTCurrencyAvailability = $checkCBTCurrencyAvailability;
+        $this->placeOrderProcessor = $placeOrderProcessor;
+        $this->validateCheckoutDataCommand = $validateCheckoutDataCommand;
     }
 
     public function aroundExecute(
         PlaceOrderModel $subject,
         callable        $proceed,
-                        $cart,
-                        $maskedCartId,
-                        $userId
-    ) {
-        try {
-            $payment = $cart->getPayment();
-            if ($payment->getMethod() === 'clearpay') {
-                $isCBTCurrencyAvailable = $this->checkCBTCurrencyAvailability->checkByQuote($cart);
-                $payment->setAdditionalInformation(
-                    \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY,
-                    $isCBTCurrencyAvailable
-                );
-                $payment->setAdditionalInformation(
-                    \Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_CBT_CURRENCY,
-                    $cart->getQuoteCurrencyCode()
-                );
-            }
+        Quote           $cart,
+        string          $maskedCartId,
+        int             $userId
+    ): int {
+        $payment = $cart->getPayment();
+        if ($payment->getMethod() === Config::CODE) {
+            $clearpayOrderToken = $payment->getAdditionalInformation(CheckoutInterface::CLEARPAY_TOKEN);
 
-            return $proceed($cart, $maskedCartId, $userId);
-        } catch (\Throwable $e) {
-            if ($payment->getMethod() === 'clearpay') {
-                return (int)$this->paymentErrorProcessor->execute($cart, $e, $payment);
-            }
-
-            throw $e;
+            return $this->placeOrderProcessor->execute($cart, $this->validateCheckoutDataCommand, $clearpayOrderToken);
         }
+
+        return $proceed($cart, $maskedCartId, $userId);
     }
 }

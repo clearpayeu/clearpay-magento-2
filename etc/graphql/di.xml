@@ -16,4 +16,9 @@
         <plugin name="clearpay_qraphql_country_validator"
                 type="Clearpay\Clearpay\Plugin\Payment\Checks\CanUseForCountryPlugin"/>
     </type>
+    <type name="Clearpay\Clearpay\Plugin\QuoteGraphQl\Cart\PlaceOrderPlugin">
+        <arguments>
+            <argument name="validateCheckoutDataCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\ValidateCheckoutDataCommand</argument>
+        </arguments>
+    </type>
 </config>
