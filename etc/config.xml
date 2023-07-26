@@ -15,8 +15,8 @@
                 <payment_action>authorize_capture</payment_action>
                 <paymentInfoKeys>clearpay_token,clearpay_order_id,clearpay_payment_state,clearpay_open_to_capture_amount,clearpay_rollover_discount,clearpay_captured_discount,clearpay_auth_expiry_date</paymentInfoKeys>
                 <merchant_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <allowed_merchant_countries>GB,IT,FR,ES</allowed_merchant_countries>
-                <allowed_merchant_currencies>GBP,EUR</allowed_merchant_currencies>
+                <allowed_merchant_countries>GB</allowed_merchant_countries>
+                <allowed_merchant_currencies>GBP</allowed_merchant_currencies>
                 <allowspecific>1</allowspecific>
                 <payment_flow>immediate</payment_flow>
                 <debugReplaceKeys>shipping,billing,consumer</debugReplaceKeys>
