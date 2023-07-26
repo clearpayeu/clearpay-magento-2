@@ -49,6 +49,7 @@
             <argument name="client" xsi:type="object">Clearpay\Clearpay\Gateway\Http\Client\Client</argument>
             <argument name="handler" xsi:type="object">Clearpay\Clearpay\Gateway\Response\CaptureHandler</argument>
             <argument name="validator" xsi:type="object">Clearpay\Clearpay\Gateway\Validator\CaptureResponseValidator</argument>
+            <argument name="errorMessageMapper" xsi:type="object">Clearpay\Clearpay\Gateway\ErrorMessageMapper\CaptureErrorMessageMapper</argument>
         </arguments>
     </virtualType>
     <virtualType name="Clearpay\Clearpay\Gateway\Command\AuthCommand" type="Clearpay\Clearpay\Gateway\Command\CaptureCommand">
