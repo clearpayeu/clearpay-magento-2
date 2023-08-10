@@ -32,6 +32,7 @@ class Config
     const XML_PATH_ALLOWED_MERCHANT_CURRENCIES = 'payment/clearpay/allowed_merchant_currencies';
     const XML_PATH_PAYPAL_MERCHANT_COUNTRY = 'paypal/general/merchant_country';
     const XML_PATH_ENABLE_REVERSAL = 'payment/clearpay/enable_reversal';
+    const XML_PATH_MPID = 'payment/clearpay/public_id';
 
     private ScopeConfigInterface $scopeConfig;
     private WriterInterface $writer;
@@ -439,4 +440,33 @@ class Config
         );
         return $this;
     }
+
+
+    public function setPublicId(string $value, int $scopeId = 0): self
+    {
+        if ($scopeId) {
+            $this->writer->save(
+                self::XML_PATH_MPID,
+                $value,
+                ScopeInterface::SCOPE_WEBSITES,
+                $scopeId
+            );
+            return $this;
+        }
+        $this->writer->save(
+            self::XML_PATH_MPID,
+            $value
+        );
+        return $this;
+    }
+
+    public function getPublicId(?int $scopeCode = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_MPID,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeCode
+        );
+    }
+    
 }
