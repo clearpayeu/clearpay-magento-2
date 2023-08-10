@@ -167,6 +167,7 @@
                 <item name="limits" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\LimitConfigurationHandler</item>
                 <item name="specific_countries" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\SpecificCountriesConfigurationHandler</item>
                 <item name="cbt_available_currencies" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\CBTAvailableCurrenciesConfigurationHandler</item>
+                <item name="mpid" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\MpidConfigurationHandler</item>
             </argument>
         </arguments>
     </virtualType>
@@ -227,7 +228,7 @@
     </virtualType>
     <virtualType name="Clearpay\Clearpay\Gateway\Http\ConfigTransferFactory" type="Clearpay\Clearpay\Gateway\Http\TransferFactory">
         <arguments>
-            <argument name="uriPath" xsi:type="string">v2/configuration?include=cbt</argument>
+            <argument name="uriPath" xsi:type="string">v2/configuration?include=cbt&amp;include=publicId&amp;include=channels</argument>
             <argument name="method" xsi:type="const">Clearpay\Clearpay\Gateway\Http\TransferFactory::METHOD_GET</argument>
         </arguments>
     </virtualType>
@@ -353,6 +354,11 @@
         </arguments>
     </type>
     <type name="Clearpay\Clearpay\Setup\Patch\Data\UpdateCbtInfoPatch">
+        <arguments>
+            <argument name="merchantConfigurationCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\GetMerchantConfigurationCommandWrapper</argument>
+        </arguments>
+    </type>
+    <type name="Clearpay\Clearpay\Setup\Patch\Data\UpdateMPIDInfoPatch">
         <arguments>
             <argument name="merchantConfigurationCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\GetMerchantConfigurationCommandWrapper</argument>
         </arguments>
