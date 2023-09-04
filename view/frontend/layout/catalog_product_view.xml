@@ -28,6 +28,7 @@
                                 <item name="config" xsi:type="array">
                                     <item name="entryPoint" xsi:type="string">product-page</item>
                                     <item name="modelContainerId" xsi:type="string">clearpay-pdp-container</item>
+                                    <item name="pageType" xsi:type="string">product</item>
                                     <item name="cartModelContainerId" xsi:type="string">clearpay-mini-cart-container</item>
                                 </item>
                                 <item name="children" xsi:type="array">

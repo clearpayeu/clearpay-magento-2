@@ -38,6 +38,7 @@ class ClearpayConfig implements ResolverInterface
         $isEnabledCtaProductPage = $this->config->getIsEnableCtaProductPage((int)$websiteId);
         $isEnabledCtaMinicart = $this->config->getIsEnableCtaMiniCart((int)$websiteId);
         $isEnabledCtaCheckout = $this->config->getIsEnableCtaCartPage((int)$websiteId);
+        $publicId = $this->config->getPublicId((int)$websiteId);
 
         return [
             'max_amount'              => $maxAmount,
@@ -47,7 +48,7 @@ class ClearpayConfig implements ResolverInterface
             'is_enabled_cta_pdp'      => $isEnabledCtaProductPage,
             'is_enabled_cta_minicart' => $isEnabledCtaMinicart,
             'is_enabled_cta_checkout' => $isEnabledCtaCheckout,
-
+            'mpid' => $publicId,
         ];
     }
 }

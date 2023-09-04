@@ -33,7 +33,8 @@ class UserAgentProvider
         $magentoVersion = $this->productMetadata->getVersion();
         $phpVersion = $this->util->getTrimmedPhpVersion();
         $clearpayMerchantId = $this->config->getMerchantId($websiteId);
-        $clearpayMPId = $this->config->getPublicId($websiteId);
+        $publicId = $this->config->getPublicId($websiteId);
+        $clearpayMPId=$publicId??"null";
         $websiteDomain = $this->store->getBaseUrl();
 
         return "ClearpayMagento2Plugin $moduleVersion ($magentoProductName $magentoProductEdition $magentoVersion) " .
