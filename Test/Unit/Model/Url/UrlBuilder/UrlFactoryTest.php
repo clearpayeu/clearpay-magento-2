@@ -23,7 +23,7 @@ class UrlFactoryTest extends \PHPUnit\Framework\TestCase
                     'CAD' => 'https://api.us-sandbox.clearpay.com/',
                     'default' => 'https://api-sandbox.clearpay.com/',
                 ],
-                'js_lib_url' => 'https://js.sandbox.clearpay.com/'
+                'js_lib_url' => 'https://js.sandbox.squarecdn.com/'
             ],
             'production' => [
                 'api_url' => [
@@ -31,7 +31,7 @@ class UrlFactoryTest extends \PHPUnit\Framework\TestCase
                     'CAD' => 'https://api.us.clearpay.com/',
                     'default' => 'https://api.clearpay.com/',
                 ],
-                'js_lib_url' => 'https://js.clearpay.com/'
+                'js_lib_url' => 'https://js.squarecdn.com/'
             ]
         ];
 
@@ -69,8 +69,8 @@ class UrlFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return [
             ['production', 'api_url', 'https://api.us.clearpay.com/', 'USD'],
-            ['sandbox', 'js_lib_url', 'https://js.sandbox.clearpay.com/'],
-            ['production', 'js_lib_url', 'https://js.clearpay.com/'],
+            ['sandbox', 'js_lib_url', 'https://js.sandbox.squarecdn.com/'],
+            ['production', 'js_lib_url', 'https://js.squarecdn.com/'],
             ['sandbox', 'api_url', 'https://api-sandbox.clearpay.com/', 'UAH'],
             ['production', 'api_url', 'https://api.clearpay.com/', 'AUD']
         ];

@@ -53,6 +53,7 @@
                                 <item name="template" xsi:type="string">Clearpay_Clearpay/cta/cta</item>
                                 <item name="config" xsi:type="array">
                                     <item name="id" xsi:type="string">clearpay-cta-pdp</item>
+                                    <item name="pageType" xsi:type="string">product</item>
                                     <item name="modelContainerId" xsi:type="string">clearpay-pdp-container</item>
                                 </item>
                             </item>

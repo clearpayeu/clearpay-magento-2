@@ -326,12 +326,12 @@
                 <item name="sandbox" xsi:type="array">
                     <item name="api_url" xsi:type="string">https://global-api-sandbox.afterpay.com/</item>
                     <item name="web_url" xsi:type="string">https://portal.sandbox.afterpay.com/</item>
-                    <item name="js_lib_url" xsi:type="string">https://js.sandbox.afterpay.com/</item>
+                    <item name="js_lib_url" xsi:type="string">https://js-sandbox.squarecdn.com/</item>
                 </item>
                 <item name="production" xsi:type="array">
                     <item name="api_url" xsi:type="string">https://global-api.afterpay.com/</item>
                     <item name="web_url" xsi:type="string">https://portal.afterpay.com/</item>
-                    <item name="js_lib_url" xsi:type="string">https://js.afterpay.com/</item>
+                    <item name="js_lib_url" xsi:type="string">https://js.squarecdn.com/</item>
                 </item>
             </argument>
         </arguments>
