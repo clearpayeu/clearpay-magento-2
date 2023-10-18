@@ -404,7 +404,7 @@ class Config
             return true;
         }
         $connection = $this->resourceConnection->getConnection();
-        $coreConfigData = $connection->getTableName('core_config_data');
+        $coreConfigData = $this->resourceConnection->getTableName('core_config_data');
         $configsExistToCheck = array_merge(
             \Clearpay\Clearpay\Observer\Adminhtml\ConfigSaveAfter::CLEARPAY_CONFIGS,
             \Clearpay\Clearpay\Observer\Adminhtml\ConfigSaveAfter::CONFIGS_PATHS_TO_TRACK
