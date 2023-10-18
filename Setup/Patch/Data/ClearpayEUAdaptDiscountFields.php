@@ -43,7 +43,7 @@ class ClearpayEUAdaptDiscountFields implements \Magento\Framework\Setup\Patch\Da
     {
         foreach ($ordersAdditionalInfo as $orderId => $additionalInfo) {
             $this->salesSetup->getConnection()->update(
-                $this->salesSetup->getConnection()->getTableName('sales_order_payment'),
+                $this->salesSetup->getTable('sales_order_payment'),
                 ['additional_information' => $this->json->serialize($additionalInfo)],
                 ['parent_id = ?' => $orderId]
             );
@@ -68,10 +68,10 @@ class ClearpayEUAdaptDiscountFields implements \Magento\Framework\Setup\Patch\Da
         $connection = $this->salesSetup->getConnection();
         $select = $connection->select()
             ->from(
-                ['si' => $connection->getTableName('sales_invoice')],
+                ['si' => $this->salesSetup->getTable('sales_invoice')],
                 ['si.order_id']
             )->joinInner(
-                ['sop' => $connection->getTableName('sales_order_payment')],
+                ['sop' => $this->salesSetup->getTable('sales_order_payment')],
                 'si.order_id = sop.parent_id AND sop.method = "' . Config::CODE . '"'
                 . ' AND (sop.additional_information NOT LIKE "%' . AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT . '%"'
                 . 'OR sop.additional_information NOT LIKE "%' . AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT . '%")',

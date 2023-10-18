@@ -7,6 +7,7 @@
     <preference for="Clearpay\Clearpay\Model\Order\OrderItemInterface" type="Clearpay\Clearpay\Model\Order\OrderItem"/>
     <preference for="Clearpay\Clearpay\Model\CBT\CheckCBTCurrencyAvailabilityInterface" type="Clearpay\Clearpay\Model\Checks\IsCBTAvailable"/>
     <preference for="Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface" type="Clearpay\Clearpay\Model\Quote\ExtendedShippingInformation"/>
+    <preference for="Clearpay\Clearpay\Api\Data\TokenInterface" type="Clearpay\Clearpay\Model\Token"/>
 
     <virtualType name="Clearpay\Clearpay\Model\Method\MethodFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
@@ -388,5 +389,13 @@
     </type>
     <type name="Magento\Sales\Model\Order\Payment\State\CaptureCommand">
         <plugin name="clearpay_change_captured_comment" type="Clearpay\Clearpay\Plugin\Order\Payment\State\CaptureCommand"/>
+    </type>
+    <type name="Clearpay\Clearpay\Model\Payment\PaymentErrorProcessor">
+        <arguments>
+            <argument name="logger" xsi:type="object">Clearpay\Clearpay\Logger</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Quote\Api\CartManagementInterface">
+        <plugin name="clearpay_check_is_redirect" type="Clearpay\Clearpay\Plugin\Quote\CheckoutManagement"/>
     </type>
 </config>

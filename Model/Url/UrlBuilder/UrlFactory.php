@@ -24,7 +24,7 @@ class UrlFactory
         $item = $this->environments[$apiMode][$type] ?? false;
 
         if (!$item) {
-            throw new \InvalidArgumentException('Afterpay environment url config is not found');
+            throw new \InvalidArgumentException('Clearpay environment url config is not found');
         }
         if (is_string($item)) {
             return $item;
