@@ -23,7 +23,7 @@ class UrlFactoryTest extends \PHPUnit\Framework\TestCase
                     'CAD' => 'https://api.us-sandbox.clearpay.com/',
                     'default' => 'https://api-sandbox.clearpay.com/',
                 ],
-                'js_lib_url' => 'https://js-sandbox.squarecdn.com/'
+                'js_lib_url' => 'https://js.sandbox.squarecdn.com/'
             ],
             'production' => [
                 'api_url' => [

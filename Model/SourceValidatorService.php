@@ -31,7 +31,7 @@ class SourceValidatorService implements \Clearpay\Clearpay\Model\Spi\SourceValid
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @throws \Magento\InventoryConfigurationApi\Exception\SkuIsNotAssignedToStockException
      */
-    public function execute(\Magento\InventorySourceDeductionApi\Model\SourceDeductionRequestInterface $sourceDeductionRequest): void
+    public function execute(\Magento\InventorySourceDeductionApi\Model\SourceDeductionRequestInterface $sourceDeductionRequest): void  // @codingStandardsIgnoreLine
     {
         $sourceCode = $sourceDeductionRequest->getSourceCode();
         $salesChannel = $sourceDeductionRequest->getSalesChannel();

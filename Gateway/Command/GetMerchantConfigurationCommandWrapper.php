@@ -7,7 +7,7 @@ use Magento\Store\Model\ScopeInterface;
 
 class GetMerchantConfigurationCommandWrapper implements \Magento\Payment\Gateway\CommandInterface
 {
-    const DEFAULT_WEBSITE_ID = 0;
+    public const DEFAULT_WEBSITE_ID = 0;
 
     private \Magento\Payment\Gateway\CommandInterface $merchantConfigurationCommand;
     private \Clearpay\Clearpay\Model\Config $clearpayConfig;

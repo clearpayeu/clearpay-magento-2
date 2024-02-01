@@ -10,8 +10,9 @@ class CreditMemo
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\OrderItemProvider $orderItemProvider,
-        \Magento\Weee\Block\Item\Price\Renderer $priceRenderer
-    ) {
+        \Magento\Weee\Block\Item\Price\Renderer          $priceRenderer
+    )
+    {
         $this->orderItemProvider = $orderItemProvider;
         $this->priceRenderer = $priceRenderer;
     }
@@ -19,12 +20,14 @@ class CreditMemo
     public function process(\Magento\Sales\Model\Order\Payment $payment): array
     {
         $amountToRefund = $amountToVoid = 0;
+
         $creditmemo = $payment->getCreditmemo();
         foreach ($creditmemo->getAllItems() as $creditmemoItem) {
             $orderItem = $creditmemoItem->getOrderItem();
 
             if (!$creditmemoItem->getBaseRowTotalInclTax()) {
                 continue;
+
             }
 
             if ($orderItem->getIsVirtual()) {
@@ -57,11 +60,11 @@ class CreditMemo
 
     private function processAdjustmentAmount(
         \Magento\Sales\Model\Order\Payment $payment,
-        float &$amountToVoid,
-        float &$amountToRefund): void
+        float                              &$amountToVoid,
+        float                              &$amountToRefund): void
     {
         $additionalInfo = $payment->getAdditionalInformation();
-        $paymentState = $additionalInfo[\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_PAYMENT_STATE] ?? '';
+        $paymentState = $additionalInfo[\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_PAYMENT_STATE] ?? '';// @codingStandardsIgnoreLine
         $creditmemo = $payment->getCreditmemo();
 
         if ($paymentState === \Clearpay\Clearpay\Model\PaymentStateInterface::AUTH_APPROVED) {
@@ -71,19 +74,20 @@ class CreditMemo
         }
 
         if ($paymentState === \Clearpay\Clearpay\Model\PaymentStateInterface::CAPTURED
-        || $paymentState === \Clearpay\Clearpay\Model\PaymentStateInterface::PARTIALLY_CAPTURED) {
+            || $paymentState === \Clearpay\Clearpay\Model\PaymentStateInterface::PARTIALLY_CAPTURED) {
             $amountToRefund += $creditmemo->getAdjustmentPositive();
             $amountToRefund -= $creditmemo->getAdjustmentNegative();
         }
     }
 
     private function processForCapturedButNotRefunded(
-        \Magento\Sales\Model\Order\Payment $payment,
-        \Magento\Sales\Model\Order\Item $orderItem,
+        \Magento\Sales\Model\Order\Payment         $payment,
+        \Magento\Sales\Model\Order\Item            $orderItem,
         \Magento\Sales\Model\Order\Creditmemo\Item $creditmemoItem,
-        float &$amountToRefund,
-        float &$amountToVoid
-    ): void {
+        float                                      &$amountToRefund,
+        float                                      &$amountToVoid
+    ): void
+    {
         $itemCapturedQty = $this->getItemCapturedQty($orderItem);
         if ($itemCapturedQty >= $creditmemoItem->getQty()) {
             $amountToRefund += $this->calculateItemPrice($payment, $creditmemoItem, (float)$creditmemoItem->getQty());
@@ -98,12 +102,13 @@ class CreditMemo
     }
 
     private function processForCapturedAndRefunded(
-        \Magento\Sales\Model\Order\Payment $payment,
-        \Magento\Sales\Model\Order\Item $orderItem,
+        \Magento\Sales\Model\Order\Payment         $payment,
+        \Magento\Sales\Model\Order\Item            $orderItem,
         \Magento\Sales\Model\Order\Creditmemo\Item $creditmemoItem,
-        float &$amountToRefund,
-        float &$amountToVoid
-    ): void {
+        float                                      &$amountToRefund,
+        float                                      &$amountToVoid
+    ): void
+    {
         $clearpayOrderItemHistory = $this->orderItemProvider->provide($orderItem);
         $itemCapturedQty = $this->getItemCapturedQty($orderItem);
         $allowedToRefundQty = $itemCapturedQty - $clearpayOrderItemHistory->getClearpayRefundedQty();
@@ -124,11 +129,12 @@ class CreditMemo
     }
 
     private function processShipmentAmount(
-        \Magento\Sales\Model\Order\Payment $payment,
+        \Magento\Sales\Model\Order\Payment    $payment,
         \Magento\Sales\Model\Order\Creditmemo $creditmemo,
-        float &$amountToRefund,
-        float &$amountToVoid
-    ): void {
+        float                                 &$amountToRefund,
+        float                                 &$amountToVoid
+    ): void
+    {
         $paymentState = $payment->getAdditionalInformation(
             \Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_PAYMENT_STATE
         );
@@ -146,8 +152,9 @@ class CreditMemo
 
     private function processCapturedDiscountForRefundAmount(
         \Magento\Sales\Model\Order\Payment $payment,
-        float &$amountToRefund
-    ): void {
+        float                              &$amountToRefund
+    ): void
+    {
         $capturedDiscount = $payment->getAdditionalInformation(
             \Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT
         );
@@ -168,8 +175,9 @@ class CreditMemo
 
     private function processRolloverDiscountForVoidAmount(
         \Magento\Sales\Model\Order\Payment $payment,
-        float &$amountToVoid
-    ): void {
+        float                              &$amountToVoid
+    ): void
+    {
         $rolloverDiscount = $payment->getAdditionalInformation(
             \Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT
         );
@@ -189,12 +197,13 @@ class CreditMemo
     }
 
     private function calculateItemPrice(
-        \Magento\Sales\Model\Order\Payment $payment,
+        \Magento\Sales\Model\Order\Payment         $payment,
         \Magento\Sales\Model\Order\Creditmemo\Item $item,
-        float $qty
-    ): float {
-        $isCBTCurrency = $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY);
-        $rowTotal = $isCBTCurrency ? $this->priceRenderer->getTotalAmount($item) : $this->priceRenderer->getBaseTotalAmount($item);
+        float                                      $qty
+    ): float
+    {
+        $isCBTCurrency = $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY);// @codingStandardsIgnoreLine
+        $rowTotal = $isCBTCurrency ? $this->priceRenderer->getTotalAmount($item) : $this->priceRenderer->getBaseTotalAmount($item);// @codingStandardsIgnoreLine
         $pricePerItem = $rowTotal / $item->getQty();
 
         return $qty * $pricePerItem;

@@ -16,8 +16,7 @@ class Client implements \Magento\Payment\Gateway\Http\ClientInterface
         \Psr\Log\LoggerInterface                         $logger,
         \Magento\Payment\Model\Method\Logger             $debugLogger,
         \Magento\Framework\App\RequestInterface          $request
-    )
-    {
+    ) {
         $this->client = $client;
         $this->serializer = $serializer;
         $this->logger = $logger;

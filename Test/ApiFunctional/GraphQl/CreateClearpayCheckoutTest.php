@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Clearpay\Clearpay\Test\ApiFunctional\Model\GraphQl;
+namespace Clearpay\Clearpay\Test\ApiFunctional\GraphQl;
 
 use Clearpay\Clearpay\Api\Data\CheckoutInterface;
 
@@ -18,12 +18,12 @@ class CreateClearpayCheckoutTest extends \Magento\TestFramework\TestCase\GraphQl
     }
 
     /**
-     * @magentoApiDataFixture Magento/Checkout/_files/quote_with_items_saved.php
+     * @magentoApiDataFixture Magento/Sales/_files/guest_quote_with_addresses.php
      * @magentoConfigFixture default/payment/clearpay/active 1
      */
     public function testCreateClearpayCheckoutReturnData()
     {
-        $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('test_order_item_with_items');
+        $maskedQuoteId = $this->getMaskedQuoteIdByReservedOrderId->execute('guest_quote');
 
         $mutation = $this->createClearpayCheckoutMutation($maskedQuoteId);
         $response = $this->graphQlMutation($mutation);

@@ -11,9 +11,10 @@ class CaptureErrorMessageMapper implements ErrorMessageMapperInterface
 
     public function getMessage(string $code)
     {
+        $message = (string)self::STATUS_DECLINED_ERROR_MESSAGE;
         switch ($code) {
             case CaptureResponseValidator::STATUS_DECLINED:
-                return __(self::STATUS_DECLINED_ERROR_MESSAGE);
+                return __($message);
             default:
                 return null;
         }

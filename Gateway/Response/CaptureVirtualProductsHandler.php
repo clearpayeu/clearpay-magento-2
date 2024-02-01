@@ -14,8 +14,7 @@ class CaptureVirtualProductsHandler implements \Magento\Payment\Gateway\Response
         \Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface $paymentDataObjectFactory,
         \Clearpay\Clearpay\Model\Payment\AmountProcessor\Order          $orderAmountProcessor,
         \Magento\Payment\Gateway\CommandInterface                       $voidCommand
-    )
-    {
+    ) {
         $this->authCaptureCommand = $authCaptureCommand;
         $this->paymentDataObjectFactory = $paymentDataObjectFactory;
         $this->orderAmountProcessor = $orderAmountProcessor;

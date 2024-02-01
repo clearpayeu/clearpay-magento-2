@@ -2,21 +2,27 @@
 
 namespace Clearpay\Clearpay\Model\GraphQl\Resolver;
 
+use Clearpay\Clearpay\Api\CheckoutManagementInterface;
 use Clearpay\Clearpay\Api\Data\CheckoutInterface;
+use Clearpay\Clearpay\Api\Data\RedirectPathInterfaceFactory;
+use Clearpay\Clearpay\Model\Config;
+use GraphQL\Error\Error;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
+use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 
-class CreateClearpayCheckout implements \Magento\Framework\GraphQl\Query\ResolverInterface
+class CreateClearpayCheckout implements ResolverInterface
 {
-    private \Clearpay\Clearpay\Model\Config $config;
-    private \Clearpay\Clearpay\Api\CheckoutManagementInterface $clearpayCheckoutManagement;
-    private \Clearpay\Clearpay\Api\Data\RedirectPathInterfaceFactory $redirectPathFactory;
+    private Config $config;
+    private CheckoutManagementInterface $clearpayCheckoutManagement;
+    private RedirectPathInterfaceFactory $redirectPathFactory;
 
     public function __construct(
-        \Clearpay\Clearpay\Model\Config $config,
-        \Clearpay\Clearpay\Api\CheckoutManagementInterface $clearpayCheckoutManagement,
-        \Clearpay\Clearpay\Api\Data\RedirectPathInterfaceFactory $redirectPathFactory
+        Config                       $config,
+        CheckoutManagementInterface  $clearpayCheckoutManagement,
+        RedirectPathInterfaceFactory $redirectPathFactory
     ) {
         $this->config = $config;
         $this->clearpayCheckoutManagement = $clearpayCheckoutManagement;
@@ -28,8 +34,9 @@ class CreateClearpayCheckout implements \Magento\Framework\GraphQl\Query\Resolve
      */
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null): array
     {
-        /** @phpstan-ignore-next-line */
-        $storeId = $context->getExtensionAttributes()->getStore()->getId();
+        try {
+            /** @phpstan-ignore-next-line */
+            $storeId = $context->getExtensionAttributes()->getStore()->getId();
 
         if (!$this->config->getIsPaymentActive((int)$storeId)) {
             throw new GraphQlInputException(__('Clearpay payment method is not active'));
@@ -53,5 +60,8 @@ class CreateClearpayCheckout implements \Magento\Framework\GraphQl\Query\Resolve
             CheckoutInterface::CLEARPAY_AUTH_TOKEN_EXPIRES => $checkoutResult->getClearpayAuthTokenExpires(),
             CheckoutInterface::CLEARPAY_REDIRECT_CHECKOUT_URL => $checkoutResult->getClearpayRedirectCheckoutUrl()
         ];
+        } catch (LocalizedException $exception) {
+            throw new Error($exception->getMessage());
+        }
     }
 }

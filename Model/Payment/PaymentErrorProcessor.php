@@ -48,6 +48,7 @@ class PaymentErrorProcessor
 
                 return (int)$order->getEntityId();
             } catch (NoSuchEntityException $e) {
+                throw $e;
             }
         }
         if ($e instanceof CommandException && $e->getMessage() === CaptureErrorMessageMapper::STATUS_DECLINED_ERROR_MESSAGE) {
