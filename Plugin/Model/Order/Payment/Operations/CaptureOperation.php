@@ -49,7 +49,7 @@ class CaptureOperation
         $invoice
     ) {
         if ($payment->getMethod() == \Clearpay\Clearpay\Gateway\Config\Config::CODE
-            && $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY)) {
+            && $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY)) {// @codingStandardsIgnoreLine
             /**
              * @var $payment Payment
              */

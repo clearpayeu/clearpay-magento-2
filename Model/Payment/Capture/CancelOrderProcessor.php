@@ -41,7 +41,7 @@ class CancelOrderProcessor
             throw new \Magento\Framework\Exception\LocalizedException(
                 __(
                     'There was a problem placing your order. Your Clearpay order %1 is refunded.',
-                    $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ORDER_ID)
+                    $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ORDER_ID)// @codingStandardsIgnoreLine
                 )
             );
         }

@@ -61,7 +61,7 @@ class CreditMemo
         float &$amountToRefund): void
     {
         $additionalInfo = $payment->getAdditionalInformation();
-        $paymentState = $additionalInfo[\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_PAYMENT_STATE] ?? '';
+        $paymentState = $additionalInfo[\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_PAYMENT_STATE] ?? '';// @codingStandardsIgnoreLine
         $creditmemo = $payment->getCreditmemo();
 
         if ($paymentState === \Clearpay\Clearpay\Model\PaymentStateInterface::AUTH_APPROVED) {
@@ -116,7 +116,7 @@ class CreditMemo
                     (float)($creditmemoItem->getQty() - $allowedToRefundQty)
                 );
             } else {
-                $amountToRefund += $this->calculateItemPrice($payment, $creditmemoItem, (float)$creditmemoItem->getQty());
+                $amountToRefund += $this->calculateItemPrice($payment, $creditmemoItem, (float)$creditmemoItem->getQty());// @codingStandardsIgnoreLine
             }
         } else {
             $amountToVoid += $this->calculateItemPrice($payment, $creditmemoItem, (float)$creditmemoItem->getQty());
@@ -193,8 +193,8 @@ class CreditMemo
         \Magento\Sales\Model\Order\Creditmemo\Item $item,
         float $qty
     ): float {
-        $isCBTCurrency = $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY);
-        $rowTotal = $isCBTCurrency ? $this->priceRenderer->getTotalAmount($item) : $this->priceRenderer->getBaseTotalAmount($item);
+        $isCBTCurrency = $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY);// @codingStandardsIgnoreLine
+        $rowTotal = $isCBTCurrency ? $this->priceRenderer->getTotalAmount($item) : $this->priceRenderer->getBaseTotalAmount($item);// @codingStandardsIgnoreLine
         $pricePerItem = $rowTotal / $item->getQty();
 
         return $qty * $pricePerItem;

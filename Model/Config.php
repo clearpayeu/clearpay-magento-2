@@ -10,29 +10,29 @@ use Magento\Framework\Serialize\SerializerInterface;
 
 class Config
 {
-    const XML_PATH_PAYMENT_ACTIVE = 'payment/clearpay/active';
-    const XML_PATH_API_MODE = 'payment/clearpay/api_mode';
-    const XML_PATH_DEBUG = 'payment/clearpay/debug';
-    const XML_PATH_ENABLE_CTA_PRODUCT = 'payment/clearpay/enable_cta_product_page';
-    const XML_PATH_ENABLE_CTA_MINI_CART = 'payment/clearpay/enable_cta_mini_cart';
-    const XML_PATH_ENABLE_CTA_CART_PAGE = 'payment/clearpay/enable_cta_cart_page';
-    const XML_PATH_ENABLE_EXPRESS_CHECKOUT_ACTION_PRODUCT = 'payment/clearpay/enable_express_checkout_product_page';
-    const XML_PATH_ENABLE_EXPRESS_CHECKOUT_ACTION_MINI_CART = 'payment/clearpay/enable_express_checkout_mini_cart';
-    const XML_PATH_ENABLE_EXPRESS_CHECKOUT_ACTION_CART_PAGE = 'payment/clearpay/enable_express_checkout_cart_page';
-    const XML_PATH_MERCHANT_ID = 'payment/clearpay/merchant_id';
-    const XML_PATH_MERCHANT_KEY = 'payment/clearpay/merchant_key';
-    const XML_PATH_PAYMENT_FLOW = 'payment/clearpay/payment_flow';
-    const XML_PATH_MIN_LIMIT = 'payment/clearpay/min_order_total';
-    const XML_PATH_MAX_LIMIT = 'payment/clearpay/max_order_total';
-    const XML_PATH_CBT_CURRENCY_LIMITS = 'payment/clearpay/cbt_currency_limits';
-    const XML_PATH_EXCLUDE_CATEGORIES = 'payment/clearpay/exclude_categories';
-    const XML_PATH_ALLOW_SPECIFIC_COUNTRIES = 'payment/clearpay/allowspecific';
-    const XML_PATH_SPECIFIC_COUNTRIES = 'payment/clearpay/specificcountry';
-    const XML_PATH_ALLOWED_MERCHANT_COUNTRIES = 'payment/clearpay/allowed_merchant_countries';
-    const XML_PATH_ALLOWED_MERCHANT_CURRENCIES = 'payment/clearpay/allowed_merchant_currencies';
-    const XML_PATH_PAYPAL_MERCHANT_COUNTRY = 'paypal/general/merchant_country';
-    const XML_PATH_ENABLE_REVERSAL = 'payment/clearpay/enable_reversal';
-    const XML_PATH_MPID = 'payment/clearpay/public_id';
+    public const XML_PATH_PAYMENT_ACTIVE = 'payment/clearpay/active';
+    public const XML_PATH_API_MODE = 'payment/clearpay/api_mode';
+    public const XML_PATH_DEBUG = 'payment/clearpay/debug';
+    public const XML_PATH_ENABLE_CTA_PRODUCT = 'payment/clearpay/enable_cta_product_page';
+    public const XML_PATH_ENABLE_CTA_MINI_CART = 'payment/clearpay/enable_cta_mini_cart';
+    public const XML_PATH_ENABLE_CTA_CART_PAGE = 'payment/clearpay/enable_cta_cart_page';
+    public const XML_PATH_ENABLE_EXPRESS_CHECKOUT_ACTION_PRODUCT = 'payment/clearpay/enable_express_checkout_product_page';// @codingStandardsIgnoreLine
+    public const XML_PATH_ENABLE_EXPRESS_CHECKOUT_ACTION_MINI_CART = 'payment/clearpay/enable_express_checkout_mini_cart';// @codingStandardsIgnoreLine
+    public const XML_PATH_ENABLE_EXPRESS_CHECKOUT_ACTION_CART_PAGE = 'payment/clearpay/enable_express_checkout_cart_page';// @codingStandardsIgnoreLine
+    public const XML_PATH_ADD_LAST_SELECTED_SHIP_RATE = 'payment/clearpay/add_last_selected_ship_rate';
+    public const XML_PATH_MERCHANT_ID = 'payment/clearpay/merchant_id';
+    public const XML_PATH_MERCHANT_KEY = 'payment/clearpay/merchant_key';
+    public const XML_PATH_PAYMENT_FLOW = 'payment/clearpay/payment_flow';
+    public const XML_PATH_MIN_LIMIT = 'payment/clearpay/min_order_total';
+    public const XML_PATH_MAX_LIMIT = 'payment/clearpay/max_order_total';
+    public const XML_PATH_CBT_CURRENCY_LIMITS = 'payment/clearpay/cbt_currency_limits';
+    public const XML_PATH_EXCLUDE_CATEGORIES = 'payment/clearpay/exclude_categories';
+    public const XML_PATH_ALLOW_SPECIFIC_COUNTRIES = 'payment/clearpay/allowspecific';
+    public const XML_PATH_SPECIFIC_COUNTRIES = 'payment/clearpay/specificcountry';
+    public const XML_PATH_ALLOWED_MERCHANT_COUNTRIES = 'payment/clearpay/allowed_merchant_countries';
+    public const XML_PATH_ALLOWED_MERCHANT_CURRENCIES = 'payment/clearpay/allowed_merchant_currencies';
+    public const XML_PATH_ENABLE_REVERSAL = 'payment/clearpay/enable_reversal';
+    public const XML_PATH_MPID = 'payment/clearpay/public_id';
 
     private $scopeConfig;
     private $writer;
@@ -357,13 +357,6 @@ class Config
         ?int   $scopeCode = null
     ): ?string {
         if ($countryCode = $this->scopeConfig->getValue(
-            self::XML_PATH_PAYPAL_MERCHANT_COUNTRY,
-            $scope,
-            $scopeCode
-        )) {
-            return $countryCode;
-        }
-        if ($countryCode = $this->scopeConfig->getValue(
             \Magento\Directory\Helper\Data::XML_PATH_DEFAULT_COUNTRY,
             $scope,
             $scopeCode
@@ -468,4 +461,12 @@ class Config
         );
     }
 
+    public function getAddLastSelectedShipRate(?int $scopeCode = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_ADD_LAST_SELECTED_SHIP_RATE,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeCode
+        );
+    }
 }

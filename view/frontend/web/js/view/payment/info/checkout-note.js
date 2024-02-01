@@ -22,25 +22,30 @@ define([
             isRenderedByWidget: window.checkoutConfig.payment.clearpay.locale === 'en_GB'
         },
         initWidget: function () {
-            window.afterpayWidget = new AfterPay.Widgets.PaymentSchedule({
-                target: '#clearpay-widget-container',
-                locale: window.checkoutConfig.payment.clearpay.locale.replace('_', '-'),
-                amount: this._getWidgetAmount(totals.totals()),
-                onError: (event) => console.log(event.data.error)
-            })
+            let widgetAmount = this._getWidgetAmount(totals.totals());
+
+            window.afterpayWidget = new Square.Marketplace.SquarePlacement();
+            afterpayWidget.mpid = window.checkoutConfig.payment.clearpay.mpid;
+            afterpayWidget.pageType = 'checkout';
+            afterpayWidget.amount = widgetAmount.amount;
+            afterpayWidget.currency = widgetAmount.currency;
+            afterpayWidget.type = 'payment-schedule';
+            afterpayWidget.platform = 'Magento';
+
+            document.getElementById('clearpay-widget-container').appendChild(afterpayWidget);
+
             totals.totals.subscribe((totals) => {
                 if (afterpayWidget) {
-                    afterpayWidget.update({
-                        amount: this._getWidgetAmount(totals),
-                    })
+                    afterpayWidget.setAttribute('data-amount', this._getWidgetAmount(totals).amount);
                 }
             });
+
             if (checkoutData.getSelectedPaymentMethod() == 'clearpay'
                 && checkoutConfig.payment.clearpay.isCBTCurrency === true) {
                 this._hideBaseCurrencyChargeInfo();
             }
             quote.paymentMethod.subscribe(function (value) {
-                if (value && value.method == 'clearpay' && checkoutConfig.payment.clearpay.isCBTCurrency) {
+                if (value && value.method == 'clearpay' && checkoutConfig.payment.clearpay.isCBTCurrency === true) {
                     this._hideBaseCurrencyChargeInfo();
                 } else {
                     this._showBaseCurrencyChargeInfo();

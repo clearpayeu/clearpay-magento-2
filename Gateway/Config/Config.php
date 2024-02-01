@@ -4,7 +4,7 @@ namespace Clearpay\Clearpay\Gateway\Config;
 
 class Config extends \Magento\Payment\Gateway\Config\Config
 {
-    const CODE = 'clearpay';
+    public const CODE = 'clearpay';
 
     public function __construct(
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig

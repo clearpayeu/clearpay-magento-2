@@ -55,10 +55,10 @@ class PlaceOrderProcessor
 
         $payment = $quote->getPayment();
         try {
-            $payment->setAdditionalInformation(CheckoutInterface::CLEARPAY_TOKEN, $clearpayOrderToken);
-            $isCBTCurrencyAvailable = $this->checkCBTCurrencyAvailability->checkByQuote($quote);
-            $payment->setAdditionalInformation(CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY, $isCBTCurrencyAvailable);
-            $payment->setAdditionalInformation(CheckoutInterface::CLEARPAY_CBT_CURRENCY, $quote->getQuoteCurrencyCode());
+          $payment->setAdditionalInformation(CheckoutInterface::CLEARPAY_TOKEN, $clearpayOrderToken);
+          $isCBTCurrencyAvailable = $this->checkCBTCurrencyAvailability->checkByQuote($quote);
+          $payment->setAdditionalInformation(CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY, $isCBTCurrencyAvailable);
+          $payment->setAdditionalInformation(CheckoutInterface::CLEARPAY_CBT_CURRENCY, $quote->getQuoteCurrencyCode());
 
             if (!$quote->getCustomerId()) {
                 $quote->setCustomerEmail($quote->getBillingAddress()->getEmail())

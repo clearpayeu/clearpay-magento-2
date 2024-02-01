@@ -56,8 +56,8 @@ class ClearpayEUAdaptDiscountFields implements \Magento\Framework\Setup\Patch\Da
         foreach ($paymentsInfo as $payment) {
             /** @var array $additionalInfo */
             $additionalInfo = $this->json->unserialize($payment['additional_information']);
-            $additionalInfo[AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT] = $additionalInfo[AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT] ?? 0;
-            $additionalInfo[AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT] = $additionalInfo[AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT] ?? 0;
+            $additionalInfo[AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT] = $additionalInfo[AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT] ?? 0;// @codingStandardsIgnoreLine
+            $additionalInfo[AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT] = $additionalInfo[AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT] ?? 0;// @codingStandardsIgnoreLine
             $ordersAdditionalInfo[$payment['order_id']] = $additionalInfo;
         }
         return $ordersAdditionalInfo;
@@ -73,8 +73,10 @@ class ClearpayEUAdaptDiscountFields implements \Magento\Framework\Setup\Patch\Da
             )->joinInner(
                 ['sop' => $this->salesSetup->getTable('sales_order_payment')],
                 'si.order_id = sop.parent_id AND sop.method = "' . Config::CODE . '"'
-                . ' AND (sop.additional_information NOT LIKE "%' . AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT . '%"'
-                . 'OR sop.additional_information NOT LIKE "%' . AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT . '%")',
+                . ' AND (sop.additional_information NOT LIKE "%'
+                . AdditionalInformationInterface::CLEARPAY_CAPTURED_DISCOUNT . '%"'
+                . 'OR sop.additional_information NOT LIKE "%'
+                . AdditionalInformationInterface::CLEARPAY_ROLLOVER_DISCOUNT . '%")',
                 ['sop.additional_information']
             );
         return $connection->fetchAll($select);

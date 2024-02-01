@@ -4,6 +4,7 @@ namespace Clearpay\Clearpay\Gateway\Validator;
 
 class StockItemsValidator implements \Clearpay\Clearpay\Model\Spi\StockItemsValidatorInterface
 {
+
     private $isSingleSourceMode;
     private $sourceValidatorService;
     private $sourceDeductionRequestFromShipmentFactory;

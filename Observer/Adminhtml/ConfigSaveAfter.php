@@ -14,8 +14,7 @@ class ConfigSaveAfter implements \Magento\Framework\Event\ObserverInterface
     ];
     const CONFIGS_PATHS_TO_TRACK = [
         \Magento\Directory\Model\Currency::XML_PATH_CURRENCY_BASE,
-        \Magento\Directory\Helper\Data::XML_PATH_DEFAULT_COUNTRY,
-        \Clearpay\Clearpay\Model\Config::XML_PATH_PAYPAL_MERCHANT_COUNTRY
+        \Magento\Directory\Helper\Data::XML_PATH_DEFAULT_COUNTRY
     ];
 
     public function __construct(

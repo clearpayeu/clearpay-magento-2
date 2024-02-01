@@ -21,7 +21,7 @@ class Token extends AbstractDb
         $connection = $this->getConnection();
         $select = $connection->select()
             ->from($this->getMainTable())
-            ->where(\Afterpay\Afterpay\Api\Data\TokenInterface::TOKEN_FIELD . ' = ?', $token);
+            ->where(TokenInterface::TOKEN_FIELD . ' = ?', $token);
 
         $result = $connection->fetchOne($select);
 
