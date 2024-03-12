@@ -47,7 +47,7 @@ class PaymentErrorProcessor
                 $this->orderRepository->save($order);
 
                 return (int)$order->getEntityId();
-            } catch (NoSuchEntityException $e) {
+            } catch (NoSuchEntityException $exception) {
                 throw $e;
             }
         }
@@ -55,7 +55,7 @@ class PaymentErrorProcessor
             throw $e;
         }
 
-        $this->cancelOrderProcessor->execute($payment, (int)$quote->getId());
+        $this->cancelOrderProcessor->execute($payment, (int)$quote->getId(), $e);
 
         if ($e instanceof LocalizedException) {
             throw $e;
