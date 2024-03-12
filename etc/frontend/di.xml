@@ -14,6 +14,7 @@
     <type name="Clearpay\Clearpay\Controller\Payment\Capture">
         <arguments>
             <argument name="validateCheckoutDataCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\ValidateCheckoutDataCommand</argument>
+            <argument name="logger" xsi:type="object">Clearpay\Clearpay\Logger</argument>
         </arguments>
     </type>
     <type name="Magento\Sales\Block\Order\Totals">

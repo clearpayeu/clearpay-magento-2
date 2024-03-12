@@ -2,9 +2,25 @@
 
 namespace Clearpay\Clearpay\Model\StockItemsValidator;
 
+use Clearpay\Clearpay\Gateway\Validator\StockItemsValidatorFactory;
+use Clearpay\Clearpay\Model\SourceValidatorServiceFactory;
+use Clearpay\Clearpay\Model\Spi\StockItemsValidatorInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Module\Manager;
+use Magento\Framework\ObjectManager\NoninterceptableInterface;
+use Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface;
+use Magento\InventoryCatalogApi\Model\IsSingleSourceModeInterface;
+use Magento\InventoryConfigurationApi\Api\GetStockItemConfigurationInterface;
+use Magento\InventoryConfigurationApi\Exception\SkuIsNotAssignedToStockException;
+use Magento\InventorySalesApi\Api\GetStockBySalesChannelInterface;
+use Magento\InventoryShipping\Model\GetItemsToDeductFromShipment;
+use Magento\InventoryShipping\Model\SourceDeductionRequestFromShipmentFactory as SourceDeductionRequestFactory;
+use Magento\InventorySourceDeductionApi\Model\GetSourceItemBySourceCodeAndSku;
+use Magento\Sales\Model\Order\Shipment;
 
-class StockItemsValidatorProxy implements \Clearpay\Clearpay\Model\Spi\StockItemsValidatorInterface, \Magento\Framework\ObjectManager\NoninterceptableInterface// @codingStandardsIgnoreLine
+class StockItemsValidatorProxy implements StockItemsValidatorInterface, NoninterceptableInterface
 {
     private $subject = null;
     private $stockItemValidatorFactory;
@@ -12,9 +28,9 @@ class StockItemsValidatorProxy implements \Clearpay\Clearpay\Model\Spi\StockItem
     private $moduleManager;
 
     public function __construct(
-        \Clearpay\Clearpay\Gateway\Validator\StockItemsValidatorFactory $stockItemsValidatorFactory,
-        \Clearpay\Clearpay\Model\SourceValidatorServiceFactory $sourceValidatorServiceFactory,
-        \Magento\Framework\Module\Manager $moduleManager
+        StockItemsValidatorFactory    $stockItemsValidatorFactory,
+        SourceValidatorServiceFactory $sourceValidatorServiceFactory,
+        Manager                       $moduleManager
     ) {
         $this->stockItemValidatorFactory = $stockItemsValidatorFactory;
         $this->sourceValidatorServiceFactory = $sourceValidatorServiceFactory;
@@ -23,11 +39,11 @@ class StockItemsValidatorProxy implements \Clearpay\Clearpay\Model\Spi\StockItem
 
     /**
      * Check msi functionality existing if no then skip validation
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\InventoryConfigurationApi\Exception\SkuIsNotAssignedToStockException
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     * @throws SkuIsNotAssignedToStockException
      */
-    public function validate(\Magento\Sales\Model\Order\Shipment $shipment): void
+    public function validate(Shipment $shipment): void
     {
         if (!$this->moduleManager->isEnabled('Magento_InventoryCatalogApi') ||
             !$this->moduleManager->isEnabled('Magento_InventoryShipping') ||
@@ -35,29 +51,30 @@ class StockItemsValidatorProxy implements \Clearpay\Clearpay\Model\Spi\StockItem
             !$this->moduleManager->isEnabled('Magento_InventoryConfigurationApi') ||
             !$this->moduleManager->isEnabled('Magento_InventorySalesApi')
         ) {
-            return ;
+            return;
         }
         $stockItemsValidator = $this->getStockItemValidator();
         $stockItemsValidator->validate($shipment);
     }
 
-    private function getStockItemValidator(): \Clearpay\Clearpay\Model\Spi\StockItemsValidatorInterface
+    private function getStockItemValidator(): StockItemsValidatorInterface
     {
         if ($this->subject == null) {
             $objectManager = ObjectManager::getInstance();
             $sourceValidatorService = $this->sourceValidatorServiceFactory->create([
-               'getSourceItemBySourceCodeAndSku' => $objectManager->create('\\Magento\\InventorySourceDeductionApi\\Model\\GetSourceItemBySourceCodeAndSku'), // @codingStandardsIgnoreLine
-               'getStockItemConfiguration' => $objectManager->create('\\Magento\\InventoryConfigurationApi\\Api\\GetStockItemConfigurationInterface'), // @codingStandardsIgnoreLine
-               'getStockBySalesChannel' => $objectManager->create('\\Magento\\InventorySalesApi\\Api\\GetStockBySalesChannelInterface'),
+                'getSourceItemBySourceCodeAndSku' => $objectManager->create(GetSourceItemBySourceCodeAndSku::class),
+                'getStockItemConfiguration'       => $objectManager->create(GetStockItemConfigurationInterface::class),
+                'getStockBySalesChannel'          => $objectManager->create(GetStockBySalesChannelInterface::class),
             ]);
             $this->subject = $this->stockItemValidatorFactory->create([
-                'isSingleSourceMode' => $objectManager->create('\\Magento\\InventoryCatalogApi\\Model\\IsSingleSourceModeInterface'),  // @codingStandardsIgnoreLine
-                'defaultSourceProvider' => $objectManager->create('\\Magento\\InventoryCatalogApi\\Api\\DefaultSourceProviderInterface'),  // @codingStandardsIgnoreLine
-                'getItemsToDeductFromShipment' => $objectManager->create('\\Magento\\InventoryShipping\\Model\\GetItemsToDeductFromShipment'),  // @codingStandardsIgnoreLine
-                'sourceDeductionRequestFromShipmentFactory' => $objectManager->create('\\Magento\\InventoryShipping\\Model\\SourceDeductionRequestFromShipmentFactory'),  // @codingStandardsIgnoreLine
-                'sourceValidatorService' => $sourceValidatorService,
+                'isSingleSourceMode'                        => $objectManager->create(IsSingleSourceModeInterface::class),
+                'defaultSourceProvider'                     => $objectManager->create(DefaultSourceProviderInterface::class),
+                'getItemsToDeductFromShipment'              => $objectManager->create(GetItemsToDeductFromShipment::class),
+                'sourceDeductionRequestFromShipmentFactory' => $objectManager->create(SourceDeductionRequestFactory::class),
+                'sourceValidatorService'                    => $sourceValidatorService,
             ]);
         }
+
         return $this->subject;
     }
 }

@@ -2,6 +2,10 @@
 
 namespace Clearpay\Clearpay\Model\Payment\Capture;
 
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Payment\Gateway\Command\CommandException;
+use Magento\Quote\Model\Quote\Payment;
+
 class CancelOrderProcessor
 {
     private $paymentDataObjectFactory;
@@ -27,7 +31,16 @@ class CancelOrderProcessor
         $this->quotePaidStorage = $quotePaidStorage;
     }
 
-    public function execute(\Magento\Quote\Model\Quote\Payment $payment, int $quoteId): void
+    /**
+     * @param Payment         $payment
+     * @param int             $quoteId
+     * @param \Throwable|null $e
+     *
+     * @throws CommandException
+     * @throws LocalizedException
+     * @throws \Throwable
+     */
+    public function execute(\Magento\Quote\Model\Quote\Payment $payment, int $quoteId, \Throwable $e = null): void
     {
         if (!$this->config->getIsReversalEnabled()) {
             return;
@@ -41,13 +54,17 @@ class CancelOrderProcessor
             throw new \Magento\Framework\Exception\LocalizedException(
                 __(
                     'There was a problem placing your order. Your Clearpay order %1 is refunded.',
-                    $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ORDER_ID)// @codingStandardsIgnoreLine
+                    $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_ORDER_ID)
                 )
             );
         }
 
         $clearpayPayment = $this->quotePaidStorage->getClearpayPaymentIfQuoteIsPaid($quoteId);
         if (!$clearpayPayment) {
+            if ($e instanceof LocalizedException) {
+                throw $e;
+            }
+
             throw new \Magento\Framework\Exception\LocalizedException(
                 __(
                     'Clearpay payment is declined. Please select an alternative payment method.'

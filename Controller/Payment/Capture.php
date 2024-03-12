@@ -11,6 +11,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class Capture implements HttpGetActionInterface
 {
@@ -23,6 +24,7 @@ class Capture implements HttpGetActionInterface
     private $placeOrderProcessor;
     private $validateCheckoutDataCommand;
     private $storeManager;
+    private $logger;
 
     public function __construct(
         RequestInterface      $request,
@@ -31,7 +33,8 @@ class Capture implements HttpGetActionInterface
         ManagerInterface      $messageManager,
         PlaceOrderProcessor   $placeOrderProcessor,
         CommandInterface      $validateCheckoutDataCommand,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        LoggerInterface     $logger
     ) {
         $this->request = $request;
         $this->session = $session;
@@ -40,10 +43,12 @@ class Capture implements HttpGetActionInterface
         $this->placeOrderProcessor = $placeOrderProcessor;
         $this->validateCheckoutDataCommand = $validateCheckoutDataCommand;
         $this->storeManager = $storeManager;
+        $this->logger = $logger;
     }
 
     public function execute()
     {
+        $clearpayOrderToken = $this->request->getParam('orderToken');
         if ($this->request->getParam('status') == self::CHECKOUT_STATUS_CANCELLED) {
             $this->messageManager->addErrorMessage(
                 (string)__('You have cancelled your Clearpay payment. Please select an alternative payment method.')
@@ -57,6 +62,10 @@ class Capture implements HttpGetActionInterface
             $this->messageManager->addErrorMessage(
                 (string)__('Clearpay payment is declined. Please select an alternative payment method.')
             );
+            $this->logger->info(
+                'Clearpay payment('. $clearpayOrderToken .') response status is "' . $this->request->getParam('status')
+                . '".' . 'Customer has been redirected to the cart page.'
+            );
 
             return $this->redirectFactory->create()->setPath('checkout/cart', [
                 '_scope' => $this->storeManager->getStore()
@@ -65,7 +74,6 @@ class Capture implements HttpGetActionInterface
 
         try {
             $quote = $this->session->getQuote();
-            $clearpayOrderToken = $this->request->getParam('orderToken');
             $this->placeOrderProcessor->execute($quote, $this->validateCheckoutDataCommand, $clearpayOrderToken);
         } catch (\Throwable $e) {
             $errorMessage = $e instanceof LocalizedException

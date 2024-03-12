@@ -36,6 +36,12 @@ define([
         getMPID: function () {
             return window.checkoutConfig.payment.clearpay.mpid;
         },
+        getAmount: function() {
+            let amount = window .checkoutConfig.payment.clearpay.isCBTCurrency
+                ? quote.totals().grand_total : quote.totals().base_grand_total;
+
+            return amount;
+        },
         continueToClearpay: function (data, event) {
             const self = this;
 
