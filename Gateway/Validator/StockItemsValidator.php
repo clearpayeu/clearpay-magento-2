@@ -4,12 +4,11 @@ namespace Clearpay\Clearpay\Gateway\Validator;
 
 class StockItemsValidator implements \Clearpay\Clearpay\Model\Spi\StockItemsValidatorInterface
 {
-
-    private $isSingleSourceMode;
-    private $sourceValidatorService;
-    private $sourceDeductionRequestFromShipmentFactory;
-    private $getItemsToDeductFromShipment;
-    private $defaultSourceProvider;
+    private  $isSingleSourceMode;
+    private  $sourceValidatorService;
+    private  $shipmentFactory;
+    private  $getItemsToDeductFromShipment;
+    private  $defaultSourceProvider;
 
     /**
      * We avoid strict types in constructor for create instances dynamically look at
@@ -17,20 +16,20 @@ class StockItemsValidator implements \Clearpay\Clearpay\Model\Spi\StockItemsVali
      * @param \Magento\InventoryCatalogApi\Model\IsSingleSourceModeInterface $isSingleSourceMode
      * @param \Magento\InventoryCatalogApi\Api\DefaultSourceProviderInterface $defaultSourceProvider
      * @param \Magento\InventoryShipping\Model\GetItemsToDeductFromShipment $getItemsToDeductFromShipment
-     * @param \Magento\InventoryShipping\Model\SourceDeductionRequestFromShipmentFactory $sourceDeductionRequestFromShipmentFactory
+     * @param \Magento\InventoryShipping\Model\SourceDeductionRequestFromShipmentFactory $shipmentFactory
      * @param \Clearpay\Clearpay\Model\Spi\SourceValidatorServiceInterface $sourceValidatorService
      */
     public function __construct(
         $isSingleSourceMode,
         $defaultSourceProvider,
         $getItemsToDeductFromShipment,
-        $sourceDeductionRequestFromShipmentFactory,
+        $shipmentFactory,
         $sourceValidatorService
     ) {
         $this->isSingleSourceMode = $isSingleSourceMode;
         $this->defaultSourceProvider = $defaultSourceProvider;
         $this->getItemsToDeductFromShipment = $getItemsToDeductFromShipment;
-        $this->sourceDeductionRequestFromShipmentFactory = $sourceDeductionRequestFromShipmentFactory;
+        $this->shipmentFactory = $shipmentFactory;
         $this->sourceValidatorService = $sourceValidatorService;
     }
 
@@ -53,7 +52,7 @@ class StockItemsValidator implements \Clearpay\Clearpay\Model\Spi\StockItemsVali
         $shipmentItems = $this->getItemsToDeductFromShipment->execute($shipment);
 
         if (!empty($shipmentItems)) {
-            $sourceDeductionRequest = $this->sourceDeductionRequestFromShipmentFactory->execute(
+            $sourceDeductionRequest = $this->shipmentFactory->execute(
                 $shipment,
                 $sourceCode,
                 $shipmentItems
