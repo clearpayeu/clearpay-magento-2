@@ -44,12 +44,19 @@ class GetMerchantConfigurationCommandWrapper implements \Magento\Payment\Gateway
         try {
             if (!$websiteHasOwnConfig) {
                 $this->eraseMerchantConfiguration($websiteId, $websiteHasOwnConfig);
+
                 return null;
             }
-            $this->checkCountry($scope, $websiteId);
-            $this->checkCurrency($scope, $websiteId);
-            $this->debugLogger->setForceDebug($this->clearpayConfig->getIsDebug($websiteId));
-            return $this->merchantConfigurationCommand->execute($commandSubject);
+
+            if ($this->clearpayConfig->getIsPaymentActive($websiteId) === true) {
+                $this->checkCountry($scope, $websiteId);
+                $this->checkCurrency($scope, $websiteId);
+                $this->debugLogger->setForceDebug($this->clearpayConfig->getIsDebug($websiteId));
+
+                return $this->merchantConfigurationCommand->execute($commandSubject);
+            }
+
+            return null;
         } catch (\Magento\Payment\Gateway\Command\CommandException $e) {
             $this->eraseMerchantConfiguration($websiteId, $websiteHasOwnConfig);
             $this->logger->notice($e->getMessage());
