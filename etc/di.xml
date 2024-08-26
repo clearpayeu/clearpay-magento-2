@@ -6,7 +6,6 @@
     <preference for="Clearpay\Clearpay\Api\Data\CheckoutInterface" type="Clearpay\Clearpay\Model\Checkout"/>
     <preference for="Clearpay\Clearpay\Model\Order\OrderItemInterface" type="Clearpay\Clearpay\Model\Order\OrderItem"/>
     <preference for="Clearpay\Clearpay\Model\CBT\CheckCBTCurrencyAvailabilityInterface" type="Clearpay\Clearpay\Model\Checks\IsCBTAvailable"/>
-    <preference for="Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface" type="Clearpay\Clearpay\Model\Quote\ExtendedShippingInformation"/>
     <preference for="Clearpay\Clearpay\Api\Data\TokenInterface" type="Clearpay\Clearpay\Model\Token"/>
 
     <virtualType name="Clearpay\Clearpay\Model\Method\MethodFacade" type="Magento\Payment\Model\Method\Adapter">
@@ -169,6 +168,7 @@
                 <item name="specific_countries" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\SpecificCountriesConfigurationHandler</item>
                 <item name="cbt_available_currencies" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\CBTAvailableCurrenciesConfigurationHandler</item>
                 <item name="mpid" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\MpidConfigurationHandler</item>
+                <item name="enable_creditmemo_grandtotal_only" xsi:type="string">Clearpay\Clearpay\Gateway\Response\MerchantConfiguration\CreditMemoOnGrandTotalConfigurationHandler</item>
             </argument>
         </arguments>
     </virtualType>

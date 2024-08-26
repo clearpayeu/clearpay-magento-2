@@ -26,7 +26,7 @@ class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
         return parent::updateJsLayout($jsLayoutJson, $remove, $containerNodeName, $config);
     }
 
-    private function getCountryCode(): ?string
+    public function getCountryCode(): ?string
     {
         $currencyCode = $this->storeManager->getStore()->getCurrentCurrencyCode();
         return static::COUNTRY_CURRENCY_MAP[$currencyCode] ?? null;

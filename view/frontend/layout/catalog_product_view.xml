@@ -10,6 +10,11 @@
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\PDPLib</argument>
                 </arguments>
             </block>
+            <block name="clearpay.cta.pdp.headless" class="Clearpay\Clearpay\Block\Cta\ProductHeadless" template="Clearpay_Clearpay::cta/pdp/headless.phtml" before="-" ifconfig="payment/clearpay/enable_product_page_headless">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\Headless</argument>
+                </arguments>
+            </block>
             <block name="clearpay.express.checkout.pdp.lib" template="Clearpay_Clearpay::express-checkout/lib.phtml" before="-" >
                 <arguments>
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\PDPLib</argument>
@@ -17,7 +22,12 @@
             </block>
         </referenceBlock>
         <referenceContainer name="product.info.main">
-            <block name="clearpay.product.express.checkout" template="Clearpay_Clearpay::express-checkout/button.phtml" after="product.info.price" ifconfig="payment/clearpay/enable_express_checkout_product_page">
+            <block name="clearpay.product.express.checkout.headless" class="Clearpay\Clearpay\Block\ExpressCheckout\ProductHeadless" template="Clearpay_Clearpay::express-checkout/headless.phtml" after="product.info.price" ifconfig="payment/clearpay/enable_product_page_headless">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless</argument>
+                </arguments>
+            </block>
+            <block name="clearpay.product.express.checkout" class="Clearpay\Clearpay\Block\ExpressCheckout\Product" template="Clearpay_Clearpay::express-checkout/button.phtml" after="product.info.price" ifconfig="payment/clearpay/enable_express_checkout_product_page">
                 <arguments>
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\ExpressCheckoutPdp</argument>
                     <argument name="jsLayout" xsi:type="array">
@@ -44,7 +54,7 @@
                     </argument>
                 </arguments>
             </block>
-            <block name="clearpay.product.cta" template="Clearpay_Clearpay::cta/container.phtml" before="clearpay.product.express.checkout" after="product.info.price" ifconfig="payment/clearpay/enable_cta_product_page">
+            <block name="clearpay.product.cta" class="Clearpay\Clearpay\Block\Cta\Product" template="Clearpay_Clearpay::cta/container.phtml" before="clearpay.product.express.checkout" after="product.info.price" ifconfig="payment/clearpay/enable_cta_product_page">
                 <arguments>
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\Cta</argument>
                     <argument name="jsLayout" xsi:type="array">

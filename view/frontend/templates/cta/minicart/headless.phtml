@@ -1,0 +1,15 @@
+<?php
+/** @var Clearpay\Clearpay\Block\Cta\MiniCartHeadless $block */
+/** @var Clearpay\Clearpay\ViewModel\Container\Cta\Headless $viewModel */
+$viewModel = $block->getViewModel();
+$jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/cta/minicart/headless.js');
+?>
+<script>
+    if (typeof clearpayCurrency === 'undefined') {
+        var clearpayCurrency = "<?= /* @noEscape */ $viewModel->getCurrency() ?>";
+    }
+    if (typeof clearpayLocale === 'undefined') {
+        var clearpayLocale = "<?= /* @noEscape */ $viewModel->getLocale() ?>";
+    }
+</script>
+<script src="<?= /** @noEscape */ $jsUrl ?>" async></script>

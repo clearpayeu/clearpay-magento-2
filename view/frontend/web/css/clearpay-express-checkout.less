@@ -13,9 +13,57 @@
 }
 .clearpay-express-checkout-minicart-wraper {
     margin: 0 10px 15px;
+    position: relative;
+    z-index: 9;
     .clearpay-express-button, button.clearpay-express-button:hover {
         width: 100%;
         cursor: pointer;
         text-align: center;
     }
+}
+
+.headless-clearpay-ec .clearpay-express-button,
+.headless-clearpay-ec button.clearpay-express-button:hover,
+.headless-clearpay-ec .clearpay-express-button-minicart, 
+.headless-clearpay-ec button.clearpay-express-button-minicart:hover {
+    background-image: none;
+    background: #000;
+    border: 1px solid #000;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    float: none;
+    width: 267px;
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+.headless-clearpay-ec .clearpay-express-button-minicart, 
+.headless-clearpay-ec button.clearpay-express-button-minicart:hover {
+    margin: 0 10px;
+    width: 100%;
+    max-width: 328px;
+    padding: 2px 15px;
+}
+
+.headless-clearpay-ec .clearpay-express-button-cart, 
+.headless-clearpay-ec button.clearpay-express-button-cart:hover {
+    background: #000;
+    border: none;
+}
+
+.headless-clearpay-ec.hidden {
+    display: none;
+}
+
+.checkout-onepage-success .success.message {
+    display: none;
+}
+
+.checkout-onepage-success .success.message.show-message {
+    display: block;
+}
+
+.hyva_checkout-index-index #payment-method-option-clearpay {
+    display: none;
 }

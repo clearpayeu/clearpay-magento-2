@@ -1,0 +1,21 @@
+<?php
+/** @var Clearpay\Clearpay\Block\Cta\CartHeadless $block */
+/** @var Clearpay\Clearpay\ViewModel\Container\Cta\Headless $viewModel */
+$viewModel = $block->getViewModel();
+$jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/cta/cart/headless.js');
+?>
+<script>
+    if (typeof clearpayCartId === 'undefined') {
+        var clearpayCartId = "<?= /* @noEscape */ $viewModel->getCartId() ?>";
+    }
+    if (typeof clearpayStoreId === 'undefined') {
+        var clearpayStoreId = "<?= /* @noEscape */ $viewModel->getStoreId() ?>";
+    }
+    if (typeof clearpayCurrency === 'undefined') {
+        var clearpayCurrency = "<?= /* @noEscape */ $viewModel->getCurrency() ?>";
+    }
+    if (typeof clearpayLocale === 'undefined') {
+        var clearpayLocale = "<?= /* @noEscape */ $viewModel->getLocale() ?>";
+    }
+</script>
+<script src="<?= /** @noEscape */ $jsUrl ?>" async></script>

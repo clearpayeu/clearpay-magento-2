@@ -30,6 +30,23 @@ type Query {
     clearpayConfig: clearpayConfigOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfig") @doc(description:"return Clearpay config")
 }
 
+
+type Mutation {
+    getClearpayConfigPdp(input: getClearpayConfigPdpInput): clearpayConfigPdpOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigPdp") @doc(description:"return Clearpay PDP config")
+    getClearpayConfigCart(input: getClearpayConfigCartInput): clearpayConfigCartOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigCart") @doc(description:"return Clearpay Cart config")
+    getClearpayConfigMiniCart(input: getClearpayConfigCartInput): clearpayConfigMiniCartOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigMiniCart") @doc(description:"return Clearpay Mini Cart config")
+}
+
+input getClearpayConfigPdpInput {
+    store_id: String!
+    product_sku: String!
+}
+
+input getClearpayConfigCartInput {
+    store_id: String!
+    cart_id: String!
+}
+
 type clearpayConfigOutput {
     max_amount: String
     min_amount: String
@@ -40,4 +57,56 @@ type clearpayConfigOutput {
     is_enabled_cta_checkout: Boolean
     api_mode: String
     mpid: String
+}
+
+type clearpayConfigPdpOutput {
+    max_amount: String
+    min_amount: String
+    allowed_currencies: [String]
+    is_enabled: Boolean
+    api_mode: String
+    mpid: String
+    is_enabled_cta_pdp_headless: Boolean
+    is_enabled_ec_pdp_headless: Boolean
+    product_type: String
+    show_lover_limit: Boolean
+    is_product_allowed: Boolean
+    is_cbt_enabled: Boolean
+    placement_after_selector: String
+    placement_after_selector_bundle: String
+    price_selector: String
+    price_selector_bundle: String
+}
+
+type clearpayConfigCartOutput {
+    allowed_currencies: [String]
+    is_enabled: Boolean
+    mpid: String
+    is_enabled_cta_cart_page_headless: Boolean
+    is_enabled_ec_cart_page_headless: Boolean
+    show_lover_limit: Boolean
+    is_product_allowed: Boolean
+    is_cbt_enabled: Boolean
+    placement_after_selector: String
+    price_selector: String
+    max_amount: String
+    min_amount: String
+    is_virtual: Boolean
+}
+
+type clearpayConfigMiniCartOutput {
+    allowed_currencies: [String]
+    is_enabled: Boolean
+    mpid: String
+    is_enabled_cta_minicart_headless: Boolean
+    is_enabled_ec_minicart_headless: Boolean
+    show_lover_limit: Boolean
+    is_product_allowed: Boolean
+    is_cbt_enabled: Boolean
+    placement_wrapper: String
+    placement_after_selector: String
+    price_selector: String
+    max_amount: String
+    min_amount: String
+    is_virtual: Boolean
 }

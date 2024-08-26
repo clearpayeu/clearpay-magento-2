@@ -34,6 +34,19 @@ class Config
     public const XML_PATH_ALLOWED_MERCHANT_CURRENCIES = 'payment/clearpay/allowed_merchant_currencies';
     public const XML_PATH_ENABLE_REVERSAL = 'payment/clearpay/enable_reversal';
     public const XML_PATH_MPID = 'payment/clearpay/public_id';
+    public const XML_PATH_ENABLE_CREDIT_MEMO_GRANDTOTAL_ONLY = 'payment/clearpay/enable_creditmemo_grandtotal_only';
+    public const XML_PATH_ENABLE_PRODUCT_HEADLESS = 'payment/clearpay/enable_product_page_headless';
+    public const XML_PATH_PDP_PLACEMENT_AFTER_SELECTOR = 'payment/clearpay/pdp_placement_after_selector';
+    public const XML_PATH_PDP_PLACEMENT_PRICE_SELECTOR = 'payment/clearpay/pdp_placement_price_selector';
+    public const XML_PATH_PDP_PLACEMENT_AFTER_SELECTOR_BUNDLE = 'payment/clearpay/pdp_placement_after_selector_bundle';
+    public const XML_PATH_PDP_PLACEMENT_PRICE_SELECTOR_BUNDLE = 'payment/clearpay/pdp_placement_price_selector_bundle';
+    public const XML_PATH_ENABLE_MINI_CART_HEADLESS = 'payment/clearpay/enable_mini_cart_headless';
+    public const XML_PATH_MINI_CART_PLACEMENT_CONTAINER_SELECTOR = 'payment/clearpay/mini_cart_placement_container_selector';
+    public const XML_PATH_MINI_CART_PLACEMENT_AFTER_SELECTOR = 'payment/clearpay/mini_cart_placement_after_selector';
+    public const XML_PATH_MINI_CART_PLACEMENT_PRICE_SELECTOR = 'payment/clearpay/mini_cart_placement_price_selector';
+    public const XML_PATH_ENABLE_CART_PAGE_HEADLESS = 'payment/clearpay/enable_cart_page_headless';
+    public const XML_PATH_CART_PAGE_PLACEMENT_AFTER_SELECTOR = 'payment/clearpay/cart_page_placement_after_selector';
+    public const XML_PATH_CART_PAGE_PLACEMENT_PRICE_SELECTOR = 'payment/clearpay/cart_page_placement_price_selector';
 
 
     private ScopeConfigInterface $scopeConfig;
@@ -42,11 +55,10 @@ class Config
     private SerializerInterface $serializer;
 
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
-        WriterInterface      $writer,
-        ResourceConnection   $resourceConnection,
-        SerializerInterface  $serializer
-
+        ScopeConfigInterface               $scopeConfig,
+        WriterInterface                    $writer,
+        ResourceConnection                 $resourceConnection,
+        SerializerInterface                $serializer
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->writer = $writer;
@@ -472,4 +484,147 @@ class Config
             $scopeCode
         );
     }
+
+    public function getIsCreditMemoGrandTotalOnlyEnabled(?int $websiteId = null, bool $fromApi = false): bool
+    {
+        if ($fromApi) {
+            $flagValue = false; // TODO: replace it with a flag pull
+            $this->setIsCreditMemoGrandTotalOnlyEnabled((int)$flagValue, $websiteId);
+
+            return $flagValue;
+        }
+
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_ENABLE_CREDIT_MEMO_GRANDTOTAL_ONLY,
+            ScopeInterface::SCOPE_WEBSITE,
+            $websiteId
+        );
+    }
+
+    public function setIsCreditMemoGrandTotalOnlyEnabled(int $value, int $scopeId = 0): self
+    {
+        if ($scopeId) {
+            $this->writer->save(
+                self::XML_PATH_ENABLE_CREDIT_MEMO_GRANDTOTAL_ONLY,
+                $value,
+                ScopeInterface::SCOPE_WEBSITES,
+                $scopeId
+            );
+            return $this;
+        }
+        $this->writer->save(
+            self::XML_PATH_ENABLE_CREDIT_MEMO_GRANDTOTAL_ONLY,
+            $value
+        );
+        return $this;
+    }
+
+    public function getIsEnableProductPageHeadless(?int $scopeId = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_ENABLE_PRODUCT_HEADLESS,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getPdpPlacementAfterSelector(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_PDP_PLACEMENT_AFTER_SELECTOR,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getPdpPlacementPriceSelector(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_PDP_PLACEMENT_PRICE_SELECTOR,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getPdpPlacementAfterSelectorBundle(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_PDP_PLACEMENT_AFTER_SELECTOR_BUNDLE,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getPdpPlacementPriceSelectorBundle(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_PDP_PLACEMENT_PRICE_SELECTOR_BUNDLE,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getIsEnableMiniCartHeadless(?int $scopeId = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_ENABLE_MINI_CART_HEADLESS,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getMiniCartPlacementContainerSelector(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_MINI_CART_PLACEMENT_CONTAINER_SELECTOR,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getMiniCartPlacementAfterSelector(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_MINI_CART_PLACEMENT_AFTER_SELECTOR,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getMiniCartPlacementPriceSelector(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_MINI_CART_PLACEMENT_PRICE_SELECTOR,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getIsEnableCartPageHeadless(?int $scopeId = null): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_ENABLE_CART_PAGE_HEADLESS,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getCartPagePlacementAfterSelector(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_CART_PAGE_PLACEMENT_AFTER_SELECTOR,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
+    public function getCartPagePlacementPriceSelector(?int $scopeId = null): string
+    {
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_CART_PAGE_PLACEMENT_PRICE_SELECTOR,
+            ScopeInterface::SCOPE_WEBSITE,
+            $scopeId
+        );
+    }
+
 }

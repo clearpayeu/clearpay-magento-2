@@ -1,0 +1,28 @@
+<?php
+/** @var Magento\Framework\View\Element\Template $block */
+/** @var Magento\Framework\Escaper $escaper */
+/** @var Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless $viewModel */
+
+$viewModel = $block->getViewModel();
+$jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/express-checkout/minicart/headless.js');
+$externalJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/express-checkout/minicart/express-checkout-minicart-widget.js');
+?>
+
+<script>
+    if (typeof clearpayLocaleCode === 'undefined') {
+        var clearpayLocaleCode = "<?= /* @noEscape */ $viewModel->getCountryCode() ?>";
+    }
+</script>
+
+<script src="<?= $escaper->escapeUrl($jsUrl) ?>" async></script>
+<script src="<?= $escaper->escapeUrl($externalJsUrl) ?>" async></script>
+
+<section id="headless-clearpay-minicart-ec" class="headless-clearpay-ec hidden headless-clearpay-minicart-ec">
+        <div class="clearpay-express-checkout-product-wrapper">
+            <button class="clearpay-express-button clearpay-express-button-minicart">
+                <img src="https://static.afterpay.com/button/checkout-with-clearpay/white-on-black.svg"
+                     alt="<?= /* @noEscape */ __('Checkout with Clearpay') ?>" style="width: 100%;"/>
+            </button>
+            <div class="hiidden" id="clearpay-button-minicart" data-afterpay-entry-point="mini-cart"></div>
+        </div>
+</section>

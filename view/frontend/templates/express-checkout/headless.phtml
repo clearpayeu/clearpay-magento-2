@@ -1,0 +1,31 @@
+<?php
+/** @var Magento\Framework\View\Element\Template $block */
+/** @var Magento\Framework\Escaper $escaper */
+/** @var Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless $viewModel */
+$viewModel = $block->getViewModel();
+$jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/express-checkout/product/headless.js');
+$externalJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/express-checkout/product/express-checkout-widget.js');
+?>
+<script>
+    if (typeof clearpayLocaleCode === 'undefined') {
+        var clearpayLocaleCode = "<?= /* @noEscape */ (string)$viewModel->getCountryCode() ?>";
+    }
+    if (typeof clearpayProductSku === 'undefined') {
+        var clearpayProductSku = "<?= /* @noEscape */ $viewModel->getProductSku() ?>";
+    }
+    if (typeof clearpayStoreId === 'undefined') {
+        var clearpayStoreId = "<?= /* @noEscape */ $viewModel->getStoreId() ?>";
+    }
+</script>
+<script src="<?= $escaper->escapeUrl($jsUrl) ?>" async></script>
+<script src="<?= $escaper->escapeUrl($externalJsUrl) ?>" async></script>
+
+<section id="headless-сlearpay-pdp-ec" class="headless-clearpay-ec hidden headless-clearpay-pdp-ec">
+        <div class="clearpay-express-checkout-pdp-wraper">
+            <button class="clearpay-express-button clearpay-express-button-pdp">
+                <img src="https://static.afterpay.com/button/checkout-with-clearpay/white-on-black.svg"
+                     alt="<?= /* @noEscape */ __('Checkout with Clearpay') ?>" style="width: 267px;"/>
+            </button>
+            <div class="hiidden" id="clearpay-button-pdp" data-afterpay-entry-point="product-page"></div>
+        </div>
+</section>

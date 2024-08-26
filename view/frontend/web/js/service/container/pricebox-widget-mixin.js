@@ -10,10 +10,19 @@ define([
         },
         updatePrice: function (newPrices) {
             const res = this._super(newPrices);
-            if (this._checkIsFinalPriceDefined() && this.element.closest('.product-info-main').length > 0) {
+
+            if (this._checkIsFinalPriceDefined() &&
+                this.element.closest('.product-info-main').length > 0 ||
+                this.element.closest('.bundle-options-container').length > 0)
+            {
                 containerModel.setCurrentProductId(this.element.data('productId'));
                 containerModel.setPrice(this.cache.displayPrices.finalPrice.amount);
+
+                if(this.element.closest('.bundle-options-container').length > 0 && $("#clearpay-cta-pdp").length) {
+                    $("#clearpay-cta-pdp").attr("data-amount", this.cache.displayPrices.finalPrice.amount);
+                }
             }
+
             return res;
         }
     };

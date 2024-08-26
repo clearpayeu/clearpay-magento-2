@@ -10,14 +10,37 @@
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\CartLib</argument>
                 </arguments>
             </block>
+            <block name="clearpay.cta.cart.page.headless" class="Clearpay\Clearpay\Block\Cta\CartHeadless" template="Clearpay_Clearpay::cta/cart/headless.phtml" before="-" ifconfig="payment/clearpay/enable_cart_page_headless">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\Headless</argument>
+                </arguments>
+            </block>
             <block name="clearpay.express.checkout.cart.lib" template="Clearpay_Clearpay::express-checkout/lib.phtml" before="-" >
                 <arguments>
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\CartLib</argument>
                 </arguments>
             </block>
+            <block name="clearpay.cart.express.checkout.headless"
+                   class="Clearpay\Clearpay\Block\ExpressCheckout\CartHeadless"
+                   template="Clearpay_Clearpay::express-checkout/cart-headless.phtml"
+                   after="-"
+                   ifconfig="payment/clearpay/enable_cart_page_headless">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless</argument>
+                </arguments>
+            </block>
+            <block name="clearpay.minicart.express.checkout.headless"
+                   class="Clearpay\Clearpay\Block\ExpressCheckout\MiniCartHeadless"
+                   template="Clearpay_Clearpay::express-checkout/minicart-headless.phtml"
+                   after="-"
+                   ifconfig="payment/clearpay/enable_mini_cart_headless">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless</argument>
+                </arguments>
+            </block>
         </referenceBlock>
         <referenceContainer name="checkout.cart.totals.container">
-            <block name="clearpay.cart.cta" template="Clearpay_Clearpay::cta/container.phtml" after="-" ifconfig="payment/clearpay/enable_cta_cart_page">
+            <block name="clearpay.cart.cta" class="Clearpay\Clearpay\Block\Cta\Cart" template="Clearpay_Clearpay::cta/container.phtml" after="-" ifconfig="payment/clearpay/enable_cta_cart_page">
                 <arguments>
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\Cta</argument>
                     <argument name="jsLayout" xsi:type="array">
@@ -43,7 +66,7 @@
                     </argument>
                 </arguments>
             </block>
-            <block name="clearpay.cart.express.checkout" template="Clearpay_Clearpay::express-checkout/button.phtml" after="-" ifconfig="payment/clearpay/enable_express_checkout_cart_page">
+            <block name="clearpay.cart.express.checkout" class="Clearpay\Clearpay\Block\ExpressCheckout\Cart" template="Clearpay_Clearpay::express-checkout/button.phtml" after="-" ifconfig="payment/clearpay/enable_express_checkout_cart_page">
                 <arguments>
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\ExpressCheckout</argument>
                     <argument name="jsLayout" xsi:type="array">

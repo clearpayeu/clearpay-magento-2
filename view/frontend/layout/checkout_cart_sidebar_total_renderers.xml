@@ -16,6 +16,22 @@
                 </arguments>
             </block>
         </referenceBlock>
+        <referenceBlock name="head.additional">
+            <block name="clearpay.cta.mini.cart.headless" class="Clearpay\Clearpay\Block\Cta\MiniCartHeadless" template="Clearpay_Clearpay::cta/minicart/headless.phtml" before="-" ifconfig="payment/clearpay/enable_mini_cart_headless">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\Cta\Headless</argument>
+                </arguments>
+            </block>
+            <block name="clearpay.minicart.express.checkout.headless"
+                   class="Clearpay\Clearpay\Block\ExpressCheckout\MiniCartHeadless"
+                   template="Clearpay_Clearpay::express-checkout/minicart-headless.phtml"
+                   after="-"
+                   ifconfig="payment/clearpay/enable_mini_cart_headless">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
         <referenceBlock name="minicart">
             <arguments>
                 <argument name="jsLayout" xsi:type="array">

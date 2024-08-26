@@ -21,13 +21,27 @@ class CreditMemo
     {
         $amountToRefund = $amountToVoid = 0;
 
+        if ($this->config->getIsCreditMemoGrandTotalOnlyEnabled((int)$payment->getOrder()->getStore()->getWebsiteId(), true)) {// @codingStandardsIgnoreLine
+            $this->processWithGrandTotal($payment, $amountToVoid, $amountToRefund);
+        } else {
+            $this->processWithSeparateCalculations($payment, $amountToVoid, $amountToRefund);
+        }
+
+        return [$amountToRefund, $amountToVoid];
+    }
+
+    private function processWithSeparateCalculations(
+        \Magento\Sales\Model\Order\Payment $payment,
+        float                              &$amountToVoid,
+        float                              &$amountToRefund
+    ): void {
+
         $creditmemo = $payment->getCreditmemo();
         foreach ($creditmemo->getAllItems() as $creditmemoItem) {
             $orderItem = $creditmemoItem->getOrderItem();
 
             if (!$creditmemoItem->getBaseRowTotalInclTax()) {
                 continue;
-
             }
 
             if ($orderItem->getIsVirtual()) {
@@ -50,12 +64,10 @@ class CreditMemo
         }
 
         $this->processShipmentAmount($payment, $creditmemo, $amountToRefund, $amountToVoid);
-
         $this->processCapturedDiscountForRefundAmount($payment, $amountToRefund);
         $this->processRolloverDiscountForVoidAmount($payment, $amountToVoid);
         $this->processAdjustmentAmount($payment, $amountToVoid, $amountToRefund);
 
-        return [$amountToRefund, $amountToVoid];
     }
 
     private function processAdjustmentAmount(
@@ -225,4 +237,44 @@ class CreditMemo
         }
         return 0;
     }
+
+    private function processWithGrandTotal(
+        \Magento\Sales\Model\Order\Payment $payment,
+        float                              &$amountToVoid,
+        float                              &$amountToRefund
+    ): void
+    {
+        $isCBTCurrency = $payment->getAdditionalInformation(\Clearpay\Clearpay\Api\Data\CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY);// @codingStandardsIgnoreLine
+        $paymentState = $payment->getAdditionalInformation(\Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_PAYMENT_STATE); // @codingStandardsIgnoreLine
+        $creditmemo = $payment->getCreditmemo();
+        $amount = $isCBTCurrency ? $creditmemo->getGrandTotal() : $creditmemo->getBaseGrandTotal();
+
+        switch ($paymentState) {
+            case \Clearpay\Clearpay\Model\PaymentStateInterface::AUTH_APPROVED:
+                $amountToVoid += $amount;
+                break;
+            case \Clearpay\Clearpay\Model\PaymentStateInterface::PARTIALLY_CAPTURED:
+                $openToCapture = $payment->getAdditionalInformation(
+                    \Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface::CLEARPAY_OPEN_TO_CAPTURE_AMOUNT
+                );
+                $orderAmount = $isCBTCurrency ? $payment->getOrder()->getGrandTotal() : $payment->getOrder()->getBaseGrandTotal();
+
+                if ($amount == $orderAmount) {
+                    if ($openToCapture && $amount > $openToCapture) {
+                        $amountToVoid += $openToCapture;
+                        $amountToRefund += $amount - $openToCapture;
+                    } else {
+                        $amountToRefund += $amount;
+                    }
+                } else {
+                    $this->processWithSeparateCalculations($payment, $amountToVoid, $amountToRefund);
+                }
+                break;
+            case \Clearpay\Clearpay\Model\PaymentStateInterface::CAPTURED:
+            default:
+                $amountToRefund += $amount;
+                break;
+        }
+    }
 }
+

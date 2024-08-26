@@ -1,0 +1,13 @@
+<?php
+/** @var Clearpay\Clearpay\Block\Cta\ProductHeadless $block */
+/** @var Clearpay\Clearpay\ViewModel\Container\Cta\Headless $viewModel */
+$viewModel = $block->getViewModel();
+$jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/cta/pdp/headless.js');
+?>
+<script>
+    var clearpayProductSku = "<?= /* @noEscape */ $viewModel->getProductSku() ?>";
+    var clearpayStoreId = "<?= /* @noEscape */ $viewModel->getStoreId() ?>";
+    var clearpayCurrency = "<?= /* @noEscape */ $viewModel->getCurrency() ?>";
+    var clearpayLocale = "<?= /* @noEscape */ $viewModel->getLocale() ?>";
+</script>
+<script src="<?= /** @noEscape */ $jsUrl ?>" async></script>
