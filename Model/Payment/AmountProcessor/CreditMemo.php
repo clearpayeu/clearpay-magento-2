@@ -7,14 +7,16 @@ class CreditMemo
     private \Clearpay\Clearpay\Model\Order\OrderItemProvider $orderItemProvider;
 
     private \Magento\Weee\Block\Item\Price\Renderer $priceRenderer;
+    private \Clearpay\Clearpay\Model\Config $config;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\OrderItemProvider $orderItemProvider,
-        \Magento\Weee\Block\Item\Price\Renderer          $priceRenderer
-    )
-    {
+        \Magento\Weee\Block\Item\Price\Renderer          $priceRenderer,
+        \Clearpay\Clearpay\Model\Config                  $config
+    ) {
         $this->orderItemProvider = $orderItemProvider;
         $this->priceRenderer = $priceRenderer;
+        $this->config = $config;
     }
 
     public function process(\Magento\Sales\Model\Order\Payment $payment): array
@@ -277,4 +279,3 @@ class CreditMemo
         }
     }
 }
-
