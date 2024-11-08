@@ -4,22 +4,6 @@ namespace Clearpay\Clearpay\Gateway\Request;
 
 class ExpressCheckoutDataBuilder extends \Clearpay\Clearpay\Gateway\Request\Checkout\CheckoutDataBuilder
 {
-    /**
-     * @var \Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface
-     */
-    private $extendedShippingInformation;
-
-    public function __construct(
-        \Magento\Framework\UrlInterface $url,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
-        \Clearpay\Clearpay\Model\CBT\CheckCBTCurrencyAvailabilityInterface $checkCBTCurrencyAvailability,
-        \Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface $extendedShippingInformation
-    ) {
-        parent::__construct($url, $productRepository, $searchCriteriaBuilder, $checkCBTCurrencyAvailability);
-        $this->extendedShippingInformation = $extendedShippingInformation;
-    }
-
     public function build(array $buildSubject): array
     {
         $quote = $buildSubject['quote'];
@@ -28,10 +12,11 @@ class ExpressCheckoutDataBuilder extends \Clearpay\Clearpay\Gateway\Request\Chec
         $amount = $isCBTCurrencyAvailable ? $quote->getGrandTotal() : $quote->getBaseGrandTotal();
         $currencyCode = $isCBTCurrencyAvailable ? $currentCurrencyCode : $quote->getBaseCurrencyCode();
         $popupOriginUrl = $buildSubject['popup_origin_url'];
-        $lastSelectedShippingRate = $this->extendedShippingInformation->getParam(
-            $quote,
-            \Clearpay\Clearpay\Api\Data\Quote\ExtendedShippingInformationInterface::LAST_SELECTED_SHIPPING_RATE
-        );
+
+        $lastSelectedShippingRate = null;
+        if ($quote->getShippingAddress() && $quote->getShippingAddress()->getShippingMethod()) {
+            $lastSelectedShippingRate = $quote->getShippingAddress()->getShippingMethod();
+        }
 
         $data = [
             'mode' => 'express',

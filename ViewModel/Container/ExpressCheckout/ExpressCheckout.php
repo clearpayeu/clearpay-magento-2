@@ -11,7 +11,18 @@ class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
         'CAD' => 'CA',
         'GBP' => 'GB'
     ];
+    protected $localeResolver;
 
+    public function __construct(
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \Clearpay\Clearpay\Model\Config $config,
+        \Clearpay\Clearpay\Model\ResourceModel\NotAllowedProductsProvider $notAllowedProductsProvider,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\Locale\Resolver $localeResolver
+    ) {
+        parent::__construct($serializer, $config, $notAllowedProductsProvider, $storeManager);
+        $this->localeResolver = $localeResolver;
+    }
     public function updateJsLayout(
         string $jsLayoutJson,
         bool $remove = false,
@@ -22,6 +33,8 @@ class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
             $config['minOrderTotal'] = $this->config->getMinOrderTotal();
             $config['maxOrderTotal'] = $this->config->getMaxOrderTotal();
             $config['countryCode'] = $this->getCountryCode();
+            $config['buttonImageUrl'] = 'https://static.afterpay.com/'.str_replace("_","-",$this->localeResolver->getLocale()).'/integration/button/checkout-with-clearpay/white-on-black.svg';
+
         }
         return parent::updateJsLayout($jsLayoutJson, $remove, $containerNodeName, $config);
     }
