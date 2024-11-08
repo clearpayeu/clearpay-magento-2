@@ -4,6 +4,7 @@ namespace Clearpay\Clearpay\Model\GraphQl\Resolver;
 
 use Clearpay\Clearpay\Model\Config;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\Framework\GraphQl\Query\Resolver\Value;
@@ -14,14 +15,17 @@ use Magento\Store\Model\StoreManagerInterface;
 class ClearpayConfigPdp extends ClearpayConfig implements ResolverInterface
 {
     private ProductRepositoryInterface $productRepository;
+    private StockRegistryInterface $stockRegistry;
 
     public function __construct(
         Config                     $config,
         StoreManagerInterface      $storeManager,
         ProductRepositoryInterface $productRepository,
+        StockRegistryInterface     $stockRegistry
     ) {
         parent::__construct($config, $storeManager);
         $this->productRepository = $productRepository;
+        $this->stockRegistry = $stockRegistry;
     }
 
     /**
@@ -75,6 +79,10 @@ class ClearpayConfigPdp extends ClearpayConfig implements ResolverInterface
                 }
             }
         }
+
+        // Add stock status
+        $stockItem = $this->stockRegistry->getStockItemBySku($productSku);
+        $result['is_in_stock'] = (bool)$stockItem->getIsInStock();
 
         return $result;
     }

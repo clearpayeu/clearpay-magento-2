@@ -18,6 +18,7 @@
                         min_amount
                         price_selector
                         price_selector_bundle
+                        is_in_stock
                     }
                 }`;
 
@@ -44,7 +45,7 @@
 
                     const clearpayConfig = data.data.getClearpayConfigPdp;
 
-                    if(clearpayConfig) {
+                    if (clearpayConfig && clearpayConfig?.is_in_stock && clearpayConfig?.is_product_allowed && clearpayConfig?.product_type != "grouped") {
                         const event = new CustomEvent('showHeadlessEC', { detail: { clearpayConfig} });
                         document.dispatchEvent(event);
                     }

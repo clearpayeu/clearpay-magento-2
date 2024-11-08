@@ -12,7 +12,7 @@ $jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/cta/cart/h
         var clearpayStoreId = "<?= /* @noEscape */ $viewModel->getStoreId() ?>";
     }
     if (typeof clearpayCurrency === 'undefined') {
-        var clearpayCurrency = "<?= /* @noEscape */ $viewModel->getCurrency() ?>";
+        window.clearpayCurrency = "<?= /* @noEscape */ $viewModel->getCurrency() ?>";
     }
     if (typeof clearpayLocale === 'undefined') {
         var clearpayLocale = "<?= /* @noEscape */ $viewModel->getLocale() ?>";

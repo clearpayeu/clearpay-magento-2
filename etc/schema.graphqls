@@ -1,5 +1,9 @@
 type Mutation {
     createClearpayCheckout(input: createClearpayCheckoutInput): createClearpayCheckoutOutput @resolver(class: "\\Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\CreateClearpayCheckout") @doc(description:"Creates an Clearpay Checkout.")
+    getClearpayConfigPdp(input: getClearpayConfigPdpInput): clearpayConfigPdpOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigPdp") @doc(description:"return Clearpay PDP config")
+    getClearpayConfigCart(input: getClearpayConfigCartInput): clearpayConfigCartOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigCart") @doc(description:"return Clearpay Cart config")
+    getClearpayConfigMiniCart(input: getClearpayConfigCartInput): clearpayConfigMiniCartOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigMiniCart") @doc(description:"return Clearpay Mini Cart config")
+
 }
 
 input createClearpayCheckoutInput {
@@ -28,13 +32,6 @@ input ClearpayInput {
 
 type Query {
     clearpayConfig: clearpayConfigOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfig") @doc(description:"return Clearpay config")
-}
-
-
-type Mutation {
-    getClearpayConfigPdp(input: getClearpayConfigPdpInput): clearpayConfigPdpOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigPdp") @doc(description:"return Clearpay PDP config")
-    getClearpayConfigCart(input: getClearpayConfigCartInput): clearpayConfigCartOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigCart") @doc(description:"return Clearpay Cart config")
-    getClearpayConfigMiniCart(input: getClearpayConfigCartInput): clearpayConfigMiniCartOutput @resolver(class: "Clearpay\\Clearpay\\Model\\GraphQl\\Resolver\\ClearpayConfigMiniCart") @doc(description:"return Clearpay Mini Cart config")
 }
 
 input getClearpayConfigPdpInput {
@@ -76,6 +73,7 @@ type clearpayConfigPdpOutput {
     placement_after_selector_bundle: String
     price_selector: String
     price_selector_bundle: String
+    is_in_stock: Boolean
 }
 
 type clearpayConfigCartOutput {

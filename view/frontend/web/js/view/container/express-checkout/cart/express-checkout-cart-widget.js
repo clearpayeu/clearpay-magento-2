@@ -13,12 +13,14 @@ window.addEventListener("load", () => {
             ecButtonPlace: document.querySelector(".cart-container .cart-totals"),
             wrapElement: document.querySelector("#headless-clearpay-cart-ec"),
             isVirtual: false,
+            configData: '',
 
             init() {
                 let self = this;
                 document.addEventListener('showHeadlessCart', (event) => {
                     setTimeout(() => {
                         self.extractSectionData(event.detail.clearpayConfig);
+                        self.configData = event.detail.clearpayConfig;
                     }, 1000);
                 });
 
@@ -27,6 +29,18 @@ window.addEventListener("load", () => {
                         setTimeout(function() {
                             document.dispatchEvent(window.reloadCartPage);
                         }, 1000);
+                    }
+
+                    let element = e.target;
+
+                    while (element) {
+                        if (element.id === 'discount-coupon-form') {
+                            setTimeout(function() {
+                                self.extractSectionData(self.configData);
+                            }, 2000);
+                            break;
+                        }
+                        element = element.parentElement;
                     }
                 });
             },
@@ -44,10 +58,6 @@ window.addEventListener("load", () => {
                 }
 
                 if (this.ecButtonPlace) {
-                    if (document.querySelector('#clearpay-cta-cart')) {
-                        this.ecButtonPlace = document.querySelector('#clearpay-cta-cart');
-                    }
-
                     let clearpaySection = document.querySelector('.headless-clearpay-cart-ec');
                     if(!clearpaySection) {
                         clearpaySection = self.wrapElement;
@@ -101,10 +111,10 @@ window.addEventListener("load", () => {
             },
 
             getCurrentSubtotal () {
-                let currentCartData = JSON.parse(localStorage.getItem("mage-cache-storage"))?.cart;
+                let currentCartData = window?.checkoutConfig?.totalsData?.base_grand_total;
 
-                if(currentCartData && currentCartData?.subtotalAmount) {
-                    return +currentCartData?.subtotalAmount;
+                if(currentCartData) {
+                    return +currentCartData;
                 }
 
                 return 0;

@@ -26,7 +26,7 @@ $externalJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/ex
 <section id="headless-clearpay-cart-ec" class="headless-clearpay-ec hidden headless-clearpay-cart-ec">
         <div class="clearpay-express-checkout-product-wrapper">
             <button class="clearpay-express-button clearpay-express-button-cart">
-                <img src="https://static.afterpay.com/button/checkout-with-clearpay/white-on-black.svg"
+                <img src="https://static.afterpay.com/<?= /* @noEscape */ str_replace('_','-',$viewModel->getStoreLocale()) ?>/integration/button/checkout-with-clearpay/white-on-black.svg"
                      alt="<?= /* @noEscape */ __('Checkout with Clearpay') ?>" style="width: 267px;"/>
             </button>
             <div class="hiidden" id="clearpay-button-cart" data-afterpay-entry-point="cart"></div>
