@@ -67,7 +67,7 @@ window.addEventListener("load", () => {
             setCurrentData (data) {
                 this.enableForMinicart = (data.is_enabled && data.is_enabled_ec_minicart_headless) ?? this.enableForPDP;
                 this.isProductAllowed = data.is_product_allowed ?? this.isProductAllowed;
-                this.clearpayCartSubtotal = this.checkCurrentSubtotal();
+                this.clearpayCartSubtotal = this.checkCurrentSubtotal(data.price_selector);
                 this.minPrice = data.min_amount ? +data.min_amount : this.minPrice;
                 this.maxPrice = data.max_amount ? +data.max_amount : this.maxPrice;
                 this.isVirtual = data.is_virtual ? data.is_virtual : this.isVirtual;
@@ -95,14 +95,14 @@ window.addEventListener("load", () => {
                 });
             },
 
-            checkCurrentSubtotal () {
+            checkCurrentSubtotal (selector) {
                 let currentCartData = JSON.parse(localStorage.getItem("mage-cache-storage")).cart;
 
                 if(currentCartData && currentCartData?.subtotalAmount) {
                     return +currentCartData?.subtotalAmount;
                 }
 
-                return 0;
+                return this.getPriceWithoutCurrency(selector)
             },
 
             trackPriceChanges(element) {
@@ -134,6 +134,18 @@ window.addEventListener("load", () => {
                     };
 
                 observer.observe(targetNode, config);
+            },
+
+            getPriceWithoutCurrency(selector) {
+                const element = document.querySelector(selector);
+
+                if (element) {
+                    let priceText = element.innerText.trim(),
+                        price = priceText.replace(/[^\d.]/g, '');
+                    return parseFloat(price);
+                } else {
+                    return 0;
+                }
             },
 
             validateShowButton(priceIsValid = false) {

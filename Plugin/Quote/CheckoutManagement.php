@@ -23,7 +23,7 @@ class CheckoutManagement
         $this->checkoutSession = $checkoutSession;
     }
 
-    public function beforePlaceOrder(CartManagementInterface $subject, $cartId, PaymentInterface $paymentMethod = null)
+    public function beforePlaceOrder(CartManagementInterface $subject, $cartId, ?PaymentInterface $paymentMethod = null)
     {
         $quote = $this->quoteRepository->getActive($cartId);
         $payment = $quote->getPayment();

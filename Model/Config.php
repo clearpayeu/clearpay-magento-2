@@ -2,6 +2,7 @@
 
 namespace Clearpay\Clearpay\Model;
 
+use Clearpay\Clearpay\Model\FeatureFlag\Service\GetCreditMemoOnGrandTotalEnabled;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\ResourceConnection;
@@ -10,7 +11,6 @@ use Magento\Framework\Serialize\SerializerInterface;
 
 class Config
 {
-
     public const XML_PATH_PAYMENT_ACTIVE = 'payment/clearpay/active';
     public const XML_PATH_API_MODE = 'payment/clearpay/api_mode';
     public const XML_PATH_DEBUG = 'payment/clearpay/debug';
@@ -28,7 +28,6 @@ class Config
     public const XML_PATH_MAX_LIMIT = 'payment/clearpay/max_order_total';
     public const XML_PATH_CBT_CURRENCY_LIMITS = 'payment/clearpay/cbt_currency_limits';
     public const XML_PATH_EXCLUDE_CATEGORIES = 'payment/clearpay/exclude_categories';
-    public const XML_PATH_ALLOW_SPECIFIC_COUNTRIES = 'payment/clearpay/allowspecific';
     public const XML_PATH_SPECIFIC_COUNTRIES = 'payment/clearpay/specificcountry';
     public const XML_PATH_ALLOWED_MERCHANT_COUNTRIES = 'payment/clearpay/allowed_merchant_countries';
     public const XML_PATH_ALLOWED_MERCHANT_CURRENCIES = 'payment/clearpay/allowed_merchant_currencies';
@@ -53,17 +52,20 @@ class Config
     private WriterInterface $writer;
     private ResourceConnection $resourceConnection;
     private SerializerInterface $serializer;
+    private GetCreditMemoOnGrandTotalEnabled $getCreditMemoOnGrandTotalEnabledService;
 
     public function __construct(
-        ScopeConfigInterface               $scopeConfig,
-        WriterInterface                    $writer,
-        ResourceConnection                 $resourceConnection,
-        SerializerInterface                $serializer
+        ScopeConfigInterface             $scopeConfig,
+        WriterInterface                  $writer,
+        ResourceConnection               $resourceConnection,
+        SerializerInterface              $serializer,
+        GetCreditMemoOnGrandTotalEnabled $getCreditMemoOnGrandTotalEnabledService
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->writer = $writer;
         $this->resourceConnection = $resourceConnection;
         $this->serializer = $serializer;
+        $this->getCreditMemoOnGrandTotalEnabledService = $getCreditMemoOnGrandTotalEnabledService;
     }
 
     public function getIsPaymentActive(?int $scopeCode = null): bool
@@ -488,7 +490,10 @@ class Config
     public function getIsCreditMemoGrandTotalOnlyEnabled(?int $websiteId = null, bool $fromApi = false): bool
     {
         if ($fromApi) {
-            $flagValue = false; // TODO: replace it with a flag pull
+            $flagValue = $this->getCreditMemoOnGrandTotalEnabledService->execute(
+                $this->getPublicId($websiteId),
+                $this->getMerchantCountry(ScopeInterface::SCOPE_WEBSITES, $websiteId)
+            );
             $this->setIsCreditMemoGrandTotalOnlyEnabled((int)$flagValue, $websiteId);
 
             return $flagValue;

@@ -181,17 +181,20 @@
             squarePlacementSelector.outerHTML = "";
         }
 
+        updateClearpayAmount(getPriceAmount());
+    }
+
+    function getPriceAmount() {
         const cacheStorageData = localStorage.getItem('mage-cache-storage');
         const cacheStorage = JSON.parse(cacheStorageData);
 
-        if (!cacheStorage.cart && !cacheStorage.cart.subtotalAmount) {
-            return;
+        let subtotalAmount = 0.0;
+        if (cacheStorage.cart && cacheStorage.cart.subtotalAmount !== null) {
+            subtotalAmount = cacheStorage.cart.subtotalAmount;
+        } else {
+            subtotalAmount = getPriceWithoutCurrency(configData.priceWrapper);
         }
-
-        const subtotalAmount = cacheStorage.cart.subtotalAmount;
-        let priceAmount = parseFloat(subtotalAmount);
-
-        updateClearpayAmount(priceAmount);
+        return parseFloat(subtotalAmount);
     }
 
     function getPriceWithoutCurrency(selector) {

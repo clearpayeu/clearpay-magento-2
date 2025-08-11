@@ -33,6 +33,8 @@ class Cta extends \Clearpay\Clearpay\ViewModel\Container\Container
             $config['dataCbtEnabled'] = count($this->config->getSpecificCountries()) > 1;
             $config['dataMPID'] = $this->config->getPublicId();
             $config['dataPlatform'] = 'Magento';
+            $config['dataAmountSelector'] = $this->config->getPdpPlacementPriceSelector();
+            $config['dataAmountSelectorBundle'] = $this->config->getPdpPlacementPriceSelectorBundle();
         }
         return parent::updateJsLayout($jsLayoutJson, $remove, $containerNodeName, $config);
     }

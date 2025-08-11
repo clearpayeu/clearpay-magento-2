@@ -2,21 +2,26 @@
 
 namespace Clearpay\Clearpay\Model\Payment\AmountProcessor;
 
+use Magento\Store\Model\ScopeInterface;
+
 class CreditMemo
 {
+    private const XML_PATH_AUTO_REFUND = 'customer/magento_customerbalance/refund_automatically';
     private \Clearpay\Clearpay\Model\Order\OrderItemProvider $orderItemProvider;
-
     private \Magento\Weee\Block\Item\Price\Renderer $priceRenderer;
     private \Clearpay\Clearpay\Model\Config $config;
+    private \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\OrderItemProvider $orderItemProvider,
-        \Magento\Weee\Block\Item\Price\Renderer          $priceRenderer,
-        \Clearpay\Clearpay\Model\Config                  $config
+        \Magento\Weee\Block\Item\Price\Renderer $priceRenderer,
+        \Clearpay\Clearpay\Model\Config $config,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->orderItemProvider = $orderItemProvider;
         $this->priceRenderer = $priceRenderer;
         $this->config = $config;
+        $this->scopeConfig = $scopeConfig;
     }
 
     public function process(\Magento\Sales\Model\Order\Payment $payment): array
@@ -28,6 +33,8 @@ class CreditMemo
         } else {
             $this->processWithSeparateCalculations($payment, $amountToVoid, $amountToRefund);
         }
+
+        $this->processStoreCredit($payment);
 
         return [$amountToRefund, $amountToVoid];
     }
@@ -276,6 +283,21 @@ class CreditMemo
             default:
                 $amountToRefund += $amount;
                 break;
+        }
+    }
+
+    private function processStoreCredit(
+        \Magento\Sales\Model\Order\Payment $payment
+    ): void {
+        if ($this->scopeConfig->isSetFlag(self::XML_PATH_AUTO_REFUND, ScopeInterface::SCOPE_STORE)) {
+            $creditmemo = $payment->getCreditmemo();
+            if ($creditmemo) {
+                $creditmemo->setCustomerBalanceRefundFlag(true)
+                    ->setCustomerBalTotalRefunded($creditmemo->getCustomerBalanceAmount())
+                    ->setBsCustomerBalTotalRefunded($creditmemo->getBaseCustomerBalanceAmount())
+                    ->setCustomerBalanceRefunded($creditmemo->getCustomerBalanceAmount())
+                    ->setBaseCustomerBalanceRefunded($creditmemo->getBaseCustomerBalanceAmount());
+            }
         }
     }
 }

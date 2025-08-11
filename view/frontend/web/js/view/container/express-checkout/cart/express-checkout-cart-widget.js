@@ -58,6 +58,9 @@ window.addEventListener("load", () => {
                 }
 
                 if (this.ecButtonPlace) {
+                    if (document.querySelector('#clearpay-cta-cart')) {
+                        this.ecButtonPlace = document.querySelector('#clearpay-cta-cart');
+                    }
                     let clearpaySection = document.querySelector('.headless-clearpay-cart-ec');
                     if(!clearpaySection) {
                         clearpaySection = self.wrapElement;

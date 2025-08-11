@@ -16,4 +16,7 @@
         <observer name="clearpay_auth_capture_after_creditmemo"
                   instance="Clearpay\Clearpay\Observer\AuthCaptureAfterCreditMemo"/>
     </event>
+    <event name="sales_order_save_before">
+        <observer name="clearpay_auth_capture_before_complete_order" instance="Clearpay\Clearpay\Observer\AuthCaptureBeforeCompleteOrder"/>
+    </event>
 </config>

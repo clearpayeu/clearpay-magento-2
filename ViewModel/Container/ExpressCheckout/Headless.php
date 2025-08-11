@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Clearpay\Clearpay\ViewModel\Container\ExpressCheckout;
 
 use Clearpay\Clearpay\Model\Config;
+use Clearpay\Clearpay\Model\Config\Source\ApiMode;
 use Clearpay\Clearpay\Model\ResourceModel\NotAllowedProductsProvider;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Registry;
@@ -46,8 +47,11 @@ class Headless extends ExpressCheckout
         return (string)$this->checkoutSession->getQuoteId();
     }
 
-    public function getStoreLocale(): string
+    public function getImageurl(): string
     {
-        return $this->localeResolver->getLocale();
+        $urlPrefix = $this->config->getApiMode() === ApiMode::SANDBOX ? 'static.sandbox' : 'static';
+        $localePart = str_replace('_', '-', $this->localeResolver->getLocale());
+
+        return "https://$urlPrefix.afterpay.com/$localePart/integration/button/checkout-with-clearpay/white-on-black.svg";
     }
 }
