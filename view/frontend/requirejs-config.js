@@ -3,6 +3,7 @@ var config = {
         '*': {
             "clearpayBaseContainer": "Clearpay_Clearpay/js/view/container/container",
             "clearpayCta": "Clearpay_Clearpay/js/view/container/cta/cta",
+            "clearpayCtaPdp": "Clearpay_Clearpay/js/view/container/cta/pdp/cta",
             "clearpayExpressCheckoutButton": "Clearpay_Clearpay/js/view/container/express-checkout/button",
             "clearpayExpressCheckoutButtonPdp": "Clearpay_Clearpay/js/view/container/express-checkout/product/button"
         }

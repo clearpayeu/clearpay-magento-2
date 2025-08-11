@@ -49,8 +49,8 @@
                     <argument name="jsLayout" xsi:type="array">
                         <item name="components" xsi:type="array">
                             <item name="clearpay.cta" xsi:type="array">
-                                <item name="component" xsi:type="string">clearpayCta</item>
-                                <item name="template" xsi:type="string">Clearpay_Clearpay/cta/cta</item>
+                                <item name="component" xsi:type="string">clearpayCtaPdp</item>
+                                <item name="template" xsi:type="string">Clearpay_Clearpay/cta/pdp/cta</item>
                                 <item name="config" xsi:type="array">
                                     <item name="id" xsi:type="string">clearpay-cta-pdp</item>
                                     <item name="pageType" xsi:type="string">product</item>

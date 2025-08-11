@@ -399,4 +399,9 @@
     <type name="Magento\Quote\Api\CartManagementInterface">
         <plugin name="clearpay_check_is_redirect" type="Clearpay\Clearpay\Plugin\Quote\CheckoutManagement"/>
     </type>
+    <type name="Clearpay\Clearpay\Observer\AuthCaptureBeforeCompleteOrder">
+        <arguments>
+            <argument name="authCaptureCommand" xsi:type="object">Clearpay\Clearpay\Gateway\Command\AuthCaptureCommand</argument>
+        </arguments>
+    </type>
 </config>
