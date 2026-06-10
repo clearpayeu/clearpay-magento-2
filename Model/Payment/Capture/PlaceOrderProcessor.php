@@ -10,6 +10,7 @@ use Clearpay\Clearpay\Model\Payment\AdditionalInformationInterface;
 use Clearpay\Clearpay\Model\Payment\PaymentErrorProcessor;
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Api\Data\GroupInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactoryInterface;
 use Magento\Quote\Api\CartManagementInterface;
@@ -72,8 +73,12 @@ class PlaceOrderProcessor
 
             $checkoutDataCommand->execute(['payment' => $this->paymentDataObjectFactory->create($payment)]);
             $this->checkoutSession->setClearpayRedirect(true);
+
             $orderId = (int)$this->cartManagement->placeOrder($quote->getId());
         } catch (\Throwable $e) {
+            if ($e instanceof LocalizedException && !$this->checkoutSession->getClearpayRedirect()) {
+                throw $e;
+            }
             $orderId = $this->paymentErrorProcessor->execute($quote, $e, $payment);
         }
 

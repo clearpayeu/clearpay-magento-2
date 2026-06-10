@@ -84,6 +84,8 @@ class ClearpayConfigPdp extends ClearpayConfig implements ResolverInterface
         $stockItem = $this->stockRegistry->getStockItemBySku($productSku);
         $result['is_in_stock'] = (bool)$stockItem->getIsInStock();
 
+        $result['placement_id'] = $this->config->getPlacementIdPdp($websiteId); // Dynamic Message ID
+
         return $result;
     }
 }

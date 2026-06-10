@@ -4,8 +4,22 @@
 /** @var Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless $viewModel */
 
 $viewModel = $block->getViewModel();
+$utilityJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/service/utils/wait-for-selector.js');
 $jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/express-checkout/cart/headless.js');
 $externalJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/express-checkout/cart/express-checkout-cart-widget.js');
+
+$loadingHtml = '';
+// Check if Hyva theme is active
+$isHyva = $viewModel->isHyva();
+if ($isHyva) {
+    $loadingHtml = $block->getChildHtml('loading');
+    if (!$loadingHtml) {
+        $loadingHtml = $block->getLayout()
+            ->createBlock(\Magento\Framework\View\Element\Template::class)
+            ->setTemplate('Clearpay_Clearpay::hyva/ui/loading.phtml')
+            ->toHtml();
+    }
+}
 ?>
 
 <script>
@@ -20,13 +34,37 @@ $externalJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/ex
     }
 </script>
 
+<script src="<?= $escaper->escapeUrl($utilityJsUrl) ?>"></script>
 <script src="<?= $escaper->escapeUrl($jsUrl) ?>" async></script>
 <script src="<?= $escaper->escapeUrl($externalJsUrl) ?>" async></script>
+<?php if ($isHyva): ?>
+<script>
+    'use strict';
 
-<section id="headless-clearpay-cart-ec" class="headless-clearpay-ec hidden headless-clearpay-cart-ec">
-        <div class="clearpay-express-checkout-product-wrapper">
+    function initHyvaCartLoaderComponent() {
+        return {
+            isLoading: false,
+            startLoaderCart() {
+                this.isLoading = true;
+            },
+            stopLoaderCart() {
+                this.isLoading = false;
+            }
+        }
+    }
+</script>
+<?php endif; ?>
+
+<section <?= $isHyva ? 'x-data="initHyvaCartLoaderComponent()" @start-loader-cart.window="startLoaderCart()" @processStop.window="stopLoaderCart()"' : '' ?>
+         id="headless-clearpay-cart-ec" class="headless-clearpay-ec hidden headless-clearpay-cart-ec">
+    <?php if ($isHyva): ?>
+    <div x-show="isLoading">
+        <?= /* @noEscape */ $loadingHtml ?>
+    </div>
+    <?php endif; ?>
+    <div class="clearpay-express-checkout-product-wrapper">
             <button class="clearpay-express-button clearpay-express-button-cart">
-                <img src="<?= $viewModel->getImageurl() ?>"
+                <img src="<?= $escaper->escapeUrl($viewModel->getImageurl()) ?>"
                      alt="<?= /* @noEscape */ __('Checkout with Clearpay') ?>" style="width: 267px;"/>
             </button>
             <div class="hidden" id="clearpay-button-cart" data-afterpay-entry-point="cart"></div>

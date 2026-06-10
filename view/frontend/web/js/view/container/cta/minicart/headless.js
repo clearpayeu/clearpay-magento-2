@@ -22,6 +22,7 @@
                  placement_wrapper
                  placement_after_selector
                  price_selector
+                 placement_id
              }
          }`;
 
@@ -53,12 +54,12 @@
                             squarePlacementId = 'clearpay-cta-mini-cart',
                             minicartBodyWidgetContainer = clearpayConfig.placement_wrapper,
                             widgetContainer = clearpayConfig.placement_after_selector,
-                            priceWrapper = clearpayConfig.price_selector;
+                            priceWrapper = clearpayConfig.price_selector,
+                            placementId = clearpayConfig.placement_id;
 
                         return {
                             dataShowLowerLimit: dataShowLowerLimit,
                             dataCurrency: clearpayCurrency,
-                            dataLocale: clearpayLocale,
                             dataIsEligible: dataIsEligible,
                             dataMPID: dataMPID,
                             dataCbtEnabledString: dataCbtEnabledString,
@@ -67,7 +68,8 @@
                             minicartBodyWidgetContainer: minicartBodyWidgetContainer,
                             widgetContainer: widgetContainer,
                             squarePlacementId: squarePlacementId,
-                            priceWrapper: priceWrapper
+                            priceWrapper: priceWrapper,
+                            placementId: placementId
                         };
                     } else {
                         return null;
@@ -120,7 +122,7 @@
     }
 
     function waitForStorageData() {
-        let interval = setInterval(function () {
+        let interval = setInterval(() => {
             let result = observeLocalStorageEmptyCartChanges();
             if (result) {
                 clearInterval(interval);
@@ -213,16 +215,38 @@
         let wrapperHtml = document.querySelector(configData.widgetContainer),
             dataCurrency = configData?.dataCurrency ? configData.dataCurrency : window.clearpayCurrency;
 
+        if (!wrapperHtml && configData.widgetContainer) {
+            if (typeof window.waitForSelector === 'function') {
+                window.waitForSelector(configData.widgetContainer)
+                    .then((element) => {
+                        updateHtml(element, amount, dataCurrency);
+                    });
+            } else {
+                // Fallback to setInterval if utility not loaded
+                let interval = setInterval(() => {
+                    wrapperHtml = document.querySelector(configData.widgetContainer);
+                    if (wrapperHtml) {
+                        clearInterval(interval);
+                        updateHtml(wrapperHtml, amount, dataCurrency);
+                    }
+                }, 1000);
+            }
+        } else {
+            updateHtml(wrapperHtml, amount, dataCurrency);
+        }
+    }
+
+    function updateHtml(wrapperHtml, amount, dataCurrency) {
         const blockHtml = '<square-placement id="' + configData.squarePlacementId + '"' +
             'data-show-lower-limit="' + configData.dataShowLowerLimit + '"' +
             'data-currency="' + dataCurrency + '"' +
-            'data-locale="' + configData.dataLocale + '"' +
             'data-is-eligible="' + configData.dataIsEligible + '"' +
             'data-amount="' + amount + '"' +
             'data-mpid="' + configData.dataMPID + '"' +
             'data-cbt-enabled="' + configData.dataCbtEnabledString + '"' +
             'data-platform="' + configData.dataPlatform + '"' +
-            'data-page-type="' + configData.dataPageType + '"></square-placement>';
+            'data-page-type="' + configData.dataPageType + '"' +
+            'data-placement-id="' + configData.placementId + '"></square-placement>';
 
         if (wrapperHtml) {
             wrapperHtml.insertAdjacentHTML('afterend', blockHtml);

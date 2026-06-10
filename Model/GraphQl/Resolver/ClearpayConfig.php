@@ -63,8 +63,8 @@ class ClearpayConfig implements ResolverInterface
             'is_enabled_cta_pdp'      => $isEnabledCtaProductPage,
             'is_enabled_cta_minicart' => $isEnabledCtaMinicart,
             'is_enabled_cta_checkout' => $isEnabledCtaCheckout,
-            'api_mode' => $apiMode,
-            'mpid' => $publicId,
+            'api_mode'                => $apiMode,
+            'mpid'                    => $publicId,
         ];
     }
 }

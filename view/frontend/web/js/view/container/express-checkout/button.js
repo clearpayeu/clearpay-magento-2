@@ -109,7 +109,7 @@ define([
             const floatMaxOrderTotal = parseFloat(this.maxOrderTotal);
             const floatMinOrderTotal = parseFloat(this.minOrderTotal);
 
-            return (this.countryCode && window.AfterPay !== undefined && this.isProductAllowed() &&
+            return (this.countryCode && window.Square !== undefined && this.isProductAllowed() &&
                 !(this.currentPrice() > floatMaxOrderTotal || this.currentPrice() < floatMinOrderTotal) &&
                 !this._getIsVirtual()) && this._super();
         },
@@ -120,7 +120,7 @@ define([
                 }, 10000000);
 
                 var notNeedUpdateCount = 0;
-                var needUpdateCheck = setInterval(function () {
+                var needUpdateCheck = setInterval(() => {
                     if (notNeedUpdateCount === 40) { // ~10s
                         clearInterval(needUpdateCheck);
                     }

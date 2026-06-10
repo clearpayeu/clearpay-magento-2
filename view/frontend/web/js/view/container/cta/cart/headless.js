@@ -13,6 +13,7 @@
                         is_cbt_enabled
                         placement_after_selector
                         price_selector
+                        placement_id
                     }
                 }`;
 
@@ -45,12 +46,12 @@
                             dataCbtEnabledString = Boolean(clearpayConfig.is_cbt_enabled).toString(),
                             squarePlacementId = 'clearpay-cta-cart',
                             widgetContainer = clearpayConfig.placement_after_selector,
-                            priceWrapper = clearpayConfig.price_selector;
+                            priceWrapper = clearpayConfig.price_selector,
+                            placementId = clearpayConfig.placement_id;
 
                         return {
                             dataShowLowerLimit: dataShowLowerLimit,
                             dataCurrency: clearpayCurrency,
-                            dataLocale: clearpayLocale,
                             dataIsEligible: dataIsEligible,
                             dataMPID: dataMPID,
                             dataCbtEnabledString: dataCbtEnabledString,
@@ -58,7 +59,8 @@
                             dataPageType: dataPageType,
                             widgetContainer: widgetContainer,
                             squarePlacementId: squarePlacementId,
-                            priceWrapper: priceWrapper
+                            priceWrapper: priceWrapper,
+                            placementId: placementId
                         };
                     } else {
                         return null;
@@ -75,11 +77,32 @@
 
     function processClearpay() {
         if (configData && configData.priceWrapper) {
-            if (document.querySelector(configData.priceWrapper)) {
+            const priceElement = document.querySelector(configData.priceWrapper);
+            if (priceElement) {
                 updateWidgetInstance();
                 lastKnownPrice = getPriceWithoutCurrency(configData.priceWrapper);
                 setInterval(checkCartUpdated, 1000);
+                setInterval(checkPlacementExists, 1000);
+            } else {
+                if (typeof window.waitForSelector === 'function') {
+                    window.waitForSelector(configData.priceWrapper)
+                        .then(() => {
+                            updateWidgetInstance();
+                            lastKnownPrice = getPriceWithoutCurrency(configData.priceWrapper);
+                            setInterval(checkCartUpdated, 1000);
+                            setInterval(checkPlacementExists, 1000);
+                        });
+                }
             }
+        }
+    }
+
+    function checkPlacementExists() {
+        if (!configData || !configData.squarePlacementId) {
+            return;
+        }
+        if (!document.getElementById(configData.squarePlacementId)) {
+            updateWidgetInstance();
         }
     }
 
@@ -127,16 +150,37 @@
         let wrapperHtml = document.querySelector(configData.widgetContainer),
             dataCurrency = configData?.dataCurrency ? configData.dataCurrency : window.clearpayCurrency;
 
+        if (!wrapperHtml && configData.widgetContainer) {
+            if (typeof window.waitForSelector === 'function') {
+                window.waitForSelector(configData.widgetContainer)
+                    .then((element) => {
+                        updateHtml(element, amount, dataCurrency);
+                    });
+            } else {
+                let interval = setInterval(() => {
+                    wrapperHtml = document.querySelector(configData.widgetContainer);
+                    if (wrapperHtml) {
+                        clearInterval(interval);
+                        updateHtml(wrapperHtml, amount, dataCurrency);
+                    }
+                }, 1000);
+            }
+        } else {
+            updateHtml(wrapperHtml, amount, dataCurrency);
+        }
+    }
+
+    function updateHtml(wrapperHtml, amount, dataCurrency) {
         const blockHtml = '<square-placement id="' + configData.squarePlacementId + '"' +
             'data-show-lower-limit="' + configData.dataShowLowerLimit + '"' +
             'data-currency="' + dataCurrency + '"' +
-            'data-locale="' + configData.dataLocale + '"' +
             'data-is-eligible="' + configData.dataIsEligible + '"' +
             'data-amount="' + amount + '"' +
             'data-mpid="' + configData.dataMPID + '"' +
             'data-cbt-enabled="' + configData.dataCbtEnabledString + '"' +
             'data-platform="' + configData.dataPlatform + '"' +
-            'data-page-type="' + configData.dataPageType + '"></square-placement>';
+            'data-page-type="' + configData.dataPageType + '"' +
+            'data-placement-id="' + configData.placementId + '"></square-placement>';
 
         if (wrapperHtml) {
             wrapperHtml.insertAdjacentHTML('afterend', blockHtml);

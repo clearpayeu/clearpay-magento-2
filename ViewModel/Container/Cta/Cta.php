@@ -23,7 +23,8 @@ class Cta extends \Clearpay\Clearpay\ViewModel\Container\Container
         string $jsLayoutJson,
         bool $remove = false,
         string $containerNodeName = 'clearpay.cta',
-        array $config = []
+        array $config = [],
+        string $pageType = ''
     ): string {
         if (!$remove && $this->isContainerEnable()) {
             $store = $this->storeManager->getStore();
@@ -35,6 +36,12 @@ class Cta extends \Clearpay\Clearpay\ViewModel\Container\Container
             $config['dataPlatform'] = 'Magento';
             $config['dataAmountSelector'] = $this->config->getPdpPlacementPriceSelector();
             $config['dataAmountSelectorBundle'] = $this->config->getPdpPlacementPriceSelectorBundle();
+            if ($pageType === 'clearpay.product.cta') {
+                $config['dataPlacementId'] = $this->config->getPlacementIdPdp();
+            }
+            if ($pageType === 'clearpay.cart.cta') {
+                $config['dataPlacementId'] = $this->config->getPlacementIdCart();
+            }
         }
         return parent::updateJsLayout($jsLayoutJson, $remove, $containerNodeName, $config);
     }

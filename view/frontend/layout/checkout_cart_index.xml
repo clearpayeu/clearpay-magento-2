@@ -28,6 +28,7 @@
                 <arguments>
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless</argument>
                 </arguments>
+                <block name="loading" template="Clearpay_Clearpay::hyva/ui/loading.phtml"/>
             </block>
             <block name="clearpay.minicart.express.checkout.headless"
                    class="Clearpay\Clearpay\Block\ExpressCheckout\MiniCartHeadless"
@@ -37,6 +38,7 @@
                 <arguments>
                     <argument name="view_model" xsi:type="object">Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless</argument>
                 </arguments>
+                <block name="loading" template="Clearpay_Clearpay::hyva/ui/loading.phtml"/>
             </block>
         </referenceBlock>
         <referenceContainer name="checkout.cart.totals.container">

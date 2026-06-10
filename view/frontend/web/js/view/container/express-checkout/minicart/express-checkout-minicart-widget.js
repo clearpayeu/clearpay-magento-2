@@ -3,7 +3,6 @@ window.addEventListener("load", () => {
         return {
             countryCode: window?.clearpayLocaleCode ? window.clearpayLocaleCode : "US",
             enableForMinicart: false,
-            isLoading: true,
             trigger: "clearpay-button-minicart",
             minPrice: 0,
             maxPrice: 1000,
@@ -24,47 +23,66 @@ window.addEventListener("load", () => {
             },
 
             extractSectionData(data, observer = false) {
-                this.isLoading = false;
-
                 this.ecButtonPlace = data?.placement_after_selector
                     ? document.querySelector(data.placement_after_selector)
                     : this.ecButtonPlace;
 
-                if(!observer) {
+                if (!observer) {
                     this.trackPriceChanges(document.querySelector(data.placement_wrapper));
                 }
-        
+
                 if (data) {
                     this.setCurrentData(data);
                 }
 
-                if (this.ecButtonPlace) {
-                    if (document.querySelector('#clearpay-cta-mini-cart')) {
-                        this.ecButtonPlace = document.querySelector('#clearpay-cta-mini-cart');
+                if (!this.ecButtonPlace && data?.placement_after_selector) {
+                    if (typeof window.waitForSelector === 'function') {
+                        window.waitForSelector(data.placement_after_selector)
+                            .then((element) => {
+                                this.ecButtonPlace = element;
+                                this.updateHtml();
+                            });
+                    } else {
+                        let interval = setInterval(() => {
+                            let wrapperHtml = document.querySelector(data?.placement_after_selector);
+                            if (wrapperHtml) {
+                                this.ecButtonPlace = wrapperHtml;
+                                clearInterval(interval);
+                                this.updateHtml();
+                            }
+                        }, 1000);
                     }
-
-                    this.ecButtonPlace.insertAdjacentElement('afterend', this.clearpayButton);
-
-                    if(!this.initClearpayAction) {
-                        this.initClearpay();
-                    }
-
-                    // Add click event listener to the button
-                    if (this.clearpayButton) {
-                        this.clearpayButton.addEventListener('click', (event) => this.ecValidationAddToCart(event));
-                    }
-
-                    if(document.querySelector(".product-info-main #product-addtocart-button")){
-                        document.querySelector(".product-info-main #product-addtocart-button").addEventListener('click', (event) => 
-                            this.trackPriceChanges(document.querySelector(this.configData.placement_after_selector))
-                        );
-                    }
-
-                    this.validateShowButton(this.checkPriceLimit(this.clearpayCartSubtotal));
+                } else {
+                    this.updateHtml();
                 }
             },
 
-            setCurrentData (data) {
+            updateHtml() {
+                if (document.querySelector('#clearpay-cta-mini-cart')) {
+                    this.ecButtonPlace = document.querySelector('#clearpay-cta-mini-cart');
+                }
+
+                this.ecButtonPlace.insertAdjacentElement('afterend', this.clearpayButton);
+
+                if (!this.initClearpayAction) {
+                    this.initClearpay();
+                }
+
+                // Add click event listener to the button
+                if (this.clearpayButton) {
+                    this.clearpayButton.addEventListener('click', (event) => this.ecValidationAddToCart(event));
+                }
+
+                if (document.querySelector(".product-info-main #product-addtocart-button")) {
+                    document.querySelector(".product-info-main #product-addtocart-button").addEventListener('click', (event) =>
+                        this.trackPriceChanges(document.querySelector(this.configData.placement_after_selector))
+                    );
+                }
+
+                this.validateShowButton(this.checkPriceLimit(this.clearpayCartSubtotal));
+            },
+
+            setCurrentData(data) {
                 this.enableForMinicart = (data.is_enabled && data.is_enabled_ec_minicart_headless) ?? this.enableForPDP;
                 this.isProductAllowed = data.is_product_allowed ?? this.isProductAllowed;
                 this.clearpayCartSubtotal = this.checkCurrentSubtotal(data.price_selector);
@@ -75,7 +93,7 @@ window.addEventListener("load", () => {
                 window.miniCartHasVirtual = this.isVirtual;
             },
 
-            reloadMinicart () {
+            reloadMinicart() {
                 const url = '/customer/section/load/';
                 fetch(url, {
                     method: 'POST',
@@ -84,21 +102,21 @@ window.addEventListener("load", () => {
                     },
                     body: {sections: "cart"}
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .catch(error => {
-                    console.error('Failed to refresh cart section:', error);
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .catch(error => {
+                        console.error('Failed to refresh cart section:', error);
+                    });
             },
 
-            checkCurrentSubtotal (selector) {
+            checkCurrentSubtotal(selector) {
                 let currentCartData = JSON.parse(localStorage.getItem("mage-cache-storage")).cart;
 
-                if(currentCartData && currentCartData?.subtotalAmount) {
+                if (currentCartData && currentCartData?.subtotalAmount) {
                     return +currentCartData?.subtotalAmount;
                 }
 
@@ -106,7 +124,7 @@ window.addEventListener("load", () => {
             },
 
             trackPriceChanges(element) {
-                if(!element) return;
+                if (!element) return;
 
                 if (document.querySelector(this.configData.placement_after_selector)) {
                     this.extractSectionData(this.configData, true);
@@ -114,23 +132,23 @@ window.addEventListener("load", () => {
                 }
 
                 const targetNode = element,
-                callback = (mutationsList, observer) => {
-                    for (const mutation of mutationsList) {
-                        mutation.addedNodes.forEach(node => {
-                            if (node?.classList?.value == 'price' && document.querySelector(this.configData.placement_after_selector)) {
-                                document.dispatchEvent(window.reloadMinicart);
-                                // observer.disconnect();
-                                return;
-                            }
-                        });
-                    }
-                };
+                    callback = (mutationsList, observer) => {
+                        for (const mutation of mutationsList) {
+                            mutation.addedNodes.forEach(node => {
+                                if (node?.classList?.value == 'price' && document.querySelector(this.configData.placement_after_selector)) {
+                                    document.dispatchEvent(window.reloadMinicart);
+                                    // observer.disconnect();
+                                    return;
+                                }
+                            });
+                        }
+                    };
 
                 const observer = new MutationObserver(callback),
-                    config = { 
-                        characterData: true, 
-                        childList: true, 
-                        subtree: true 
+                    config = {
+                        characterData: true,
+                        childList: true,
+                        subtree: true
                     };
 
                 observer.observe(targetNode, config);
@@ -187,6 +205,8 @@ window.addEventListener("load", () => {
 
             onComplete(event) {
                 if (event.data.status === 'CANCELLED') {
+                    window.dispatchEvent(new CustomEvent('start-loader-minicart'));
+                    document.body.dispatchEvent(new CustomEvent('processStart'));
                     localStorage?.removeItem('mage-cache-storage');
                     window.location.reload();
                 }
@@ -202,29 +222,29 @@ window.addEventListener("load", () => {
 
             placeOrder(event) {
                 const data = this.objectToUrlEncoded(event.data);
-
-                this.isLoading = true;
-
+                window.dispatchEvent(new CustomEvent('start-loader-minicart'));
+                document.body.dispatchEvent(new CustomEvent('processStart'));
                 this.fetchData("clearpay/express/placeOrder", data)
                     .then(response => {
-                        if(response?.error) {
+                        if (response?.error) {
                             let messages = [
-                                {
-                                    text: response?.error,
-                                    type: 'error'
-                                }
-                            ],
-                            messagesJson = JSON.stringify(messages);
+                                    {
+                                        text: response?.error,
+                                        type: 'error'
+                                    }
+                                ],
+                                messagesJson = JSON.stringify(messages);
 
                             cookieStore.set('mage-messages', messagesJson);
+                            window.dispatchEvent(new CustomEvent('stop-loader-minicart'));
+                            document.body.dispatchEvent(new CustomEvent('processStop'));
                             window.location.href = response.redirectUrl;
-                        }else{
+                        } else {
                             if (response?.redirectUrl) {
                                 localStorage?.removeItem('mage-cache-storage');
                                 localStorage?.removeItem('messages');
                                 window.mageMessages = [];
                                 window.location.href = response.redirectUrl;
-                                this.isLoading = false;
                             }
                         }
                     });
@@ -244,8 +264,6 @@ window.addEventListener("load", () => {
 
             fetchData(url = "", data = "") {
                 const postUrl = `${BASE_URL}${url}`;
-
-                this.isLoading = true;
 
                 return window.fetch(postUrl, {
                     headers: {
@@ -270,30 +288,30 @@ window.addEventListener("load", () => {
                     });
             },
 
-            checkProductInCart () {
+            checkProductInCart() {
                 let cartItems = JSON.parse(localStorage.getItem("mage-cache-storage"))?.cart?.items,
                     hasVirtual = false,
                     hasSimple = false;
 
-                if(cartItems?.length > 0) {
+                if (cartItems?.length > 0) {
                     cartItems.forEach((item, index) => {
-                        if(item.product_type == "virtual" || item.product_type == "downloadable") {
+                        if (item.product_type == "virtual" || item.product_type == "downloadable") {
                             hasVirtual = true;
-                        }else {
-                            hasSimple = true; 
+                        } else {
+                            hasSimple = true;
                         }
                     });
                 }
 
-                if(hasVirtual && hasSimple) {
+                if (hasVirtual && hasSimple) {
                     this.shippingOptionRequired = true;
                 }
 
-                if(hasVirtual && hasSimple == false) {
+                if (hasVirtual && hasSimple == false) {
                     this.shippingOptionRequired = false;
                 }
 
-                if(hasVirtual == false && hasSimple) {
+                if (hasVirtual == false && hasSimple) {
                     this.shippingOptionRequired = true;
                 }
             },
@@ -312,7 +330,7 @@ window.addEventListener("load", () => {
                     onShippingAddressChange: (shippingAddress, actions) => this.getShippingOptions(shippingAddress, actions)
                 });
                 this.initClearpayAction = true;
-            }
+            },
         };
     };
 

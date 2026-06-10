@@ -3,9 +3,24 @@
 /** @var Magento\Framework\Escaper $escaper */
 /** @var Clearpay\Clearpay\ViewModel\Container\ExpressCheckout\Headless $viewModel */
 $viewModel = $block->getViewModel();
+$utilityJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/service/utils/wait-for-selector.js');
 $jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/express-checkout/product/headless.js');
 $externalJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/express-checkout/product/express-checkout-widget.js');
+
+$loadingHtml = '';
+// Check if Hyva theme is active
+$isHyva = $viewModel->isHyva();
+if ($isHyva) {
+    $loadingHtml = $block->getChildHtml('loading');
+    if (!$loadingHtml) {
+        $loadingHtml = $block->getLayout()
+            ->createBlock(\Magento\Framework\View\Element\Template::class)
+            ->setTemplate('Clearpay_Clearpay::hyva/ui/loading.phtml')
+            ->toHtml();
+    }
+}
 ?>
+<?php if (!$viewModel->isRestrictedProductInCart()) : ?>
 <script>
     if (typeof clearpayLocaleCode === 'undefined') {
         var clearpayLocaleCode = "<?= /* @noEscape */ (string)$viewModel->getCountryCode() ?>";
@@ -17,11 +32,34 @@ $externalJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/ex
         var clearpayStoreId = "<?= /* @noEscape */ $viewModel->getStoreId() ?>";
     }
 </script>
+<script src="<?= $escaper->escapeUrl($utilityJsUrl) ?>"></script>
 <script src="<?= $escaper->escapeUrl($jsUrl) ?>" async></script>
 <script src="<?= $escaper->escapeUrl($externalJsUrl) ?>" async></script>
+<?php if ($isHyva): ?>
+<script>
+    'use strict';
 
-<section id="headless-сlearpay-pdp-ec" class="headless-clearpay-ec hidden headless-clearpay-pdp-ec">
-        <div class="clearpay-express-checkout-pdp-wraper">
+    function initHyvaLoaderComponent() {
+        return {
+            isLoading: false,
+            startLoader() {
+                this.isLoading = true;
+            },
+            stopLoader() {
+                this.isLoading = false;
+            }
+        }
+    }
+</script>
+<?php endif; ?>
+
+<section <?= $isHyva ? 'x-data="initHyvaLoaderComponent()" @start-loader.window="startLoader()" @processStop.window="stopLoader()"' : '' ?> id="headless-сlearpay-pdp-ec" class="headless-clearpay-ec hidden headless-clearpay-pdp-ec">
+    <?php if ($isHyva): ?>
+    <div x-show="isLoading">
+        <?= /* @noEscape */ $loadingHtml ?>
+    </div>
+    <?php endif; ?>
+    <div class="clearpay-express-checkout-pdp-wraper">
             <button class="clearpay-express-button clearpay-express-button-pdp">
                 <img src="<?= $escaper->escapeUrl($viewModel->getImageurl()) ?>"
                      alt="<?= /* @noEscape */ __('Checkout with Clearpay') ?>" style="width: 267px;"/>
@@ -29,3 +67,5 @@ $externalJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/ex
             <div class="hidden" id="clearpay-button-pdp" data-afterpay-entry-point="product-page"></div>
         </div>
 </section>
+<?php endif; ?>
+

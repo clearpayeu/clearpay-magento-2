@@ -74,6 +74,7 @@ type clearpayConfigPdpOutput {
     price_selector: String
     price_selector_bundle: String
     is_in_stock: Boolean
+    placement_id: String
 }
 
 type clearpayConfigCartOutput {
@@ -90,6 +91,7 @@ type clearpayConfigCartOutput {
     max_amount: String
     min_amount: String
     is_virtual: Boolean
+    placement_id: String
 }
 
 type clearpayConfigMiniCartOutput {
@@ -107,4 +109,5 @@ type clearpayConfigMiniCartOutput {
     max_amount: String
     min_amount: String
     is_virtual: Boolean
+    placement_id: String
 }

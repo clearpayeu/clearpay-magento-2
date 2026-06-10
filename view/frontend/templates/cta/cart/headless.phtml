@@ -2,6 +2,7 @@
 /** @var Clearpay\Clearpay\Block\Cta\CartHeadless $block */
 /** @var Clearpay\Clearpay\ViewModel\Container\Cta\Headless $viewModel */
 $viewModel = $block->getViewModel();
+$utilityJsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/service/utils/wait-for-selector.js');
 $jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/cta/cart/headless.js');
 ?>
 <script>
@@ -14,8 +15,6 @@ $jsUrl = $block->getViewFileUrl('Clearpay_Clearpay::js/view/container/cta/cart/h
     if (typeof clearpayCurrency === 'undefined') {
         window.clearpayCurrency = "<?= /* @noEscape */ $viewModel->getCurrency() ?>";
     }
-    if (typeof clearpayLocale === 'undefined') {
-        var clearpayLocale = "<?= /* @noEscape */ $viewModel->getLocale() ?>";
-    }
 </script>
+<script src="<?= /** @noEscape */ $utilityJsUrl ?>"></script>
 <script src="<?= /** @noEscape */ $jsUrl ?>" async></script>

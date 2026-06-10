@@ -1,0 +1,42 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+
+?>
+<script>
+    window.clearpayTermsTranslations = {
+        DEFAULT: '<?= $escaper->escapeJs(__('You will be redirected to the Clearpay website when you proceed to checkout.')) ?>'
+    };
+</script>
+
+<div id="clearpay-hyva-template" class="w-full pl-8 mt-4">
+    <div x-data="clearpayComponent()" x-init="checkInitialPaymentMethod()" x-show="isVisible"
+         class="clearpay-custom-content">
+        <template x-if="mpid && currency && orderTotal">
+            <div>
+                <square-placement
+                    :data-mpid="mpid"
+                    :data-amount="orderTotal"
+                    :data-currency="currency"
+                    data-type="payment-schedule"
+                    :data-platform="platform"
+                    :data-page-type="pageType">
+                </square-placement>
+                <div>
+                    <p>
+                        <span x-text="getTermsText()"></span>
+                        <a :href="getTermsLink()" target="_blank">
+                            <?= $escaper->escapeHtml(__('Terms & Conditions')) ?>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </template>
+        <div id="clearpay-hyva-checkout" class="btn btn-primary cursor-pointer">
+            <?= $escaper->escapeHtml(__('Continue to Clearpay')) ?>
+        </div>
+    </div>
+</div>

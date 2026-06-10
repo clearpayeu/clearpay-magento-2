@@ -3,7 +3,6 @@ window.addEventListener("load", () => {
         return {
             countryCode: window?.clearpayLocaleCode ? window.clearpayLocaleCode : "US",
             enableForCart: false,
-            isLoading: true,
             trigger: "clearpay-button-cart",
             minPrice: 0,
             maxPrice: 1000,
@@ -23,6 +22,10 @@ window.addEventListener("load", () => {
                         self.configData = event.detail.clearpayConfig;
                     }, 1000);
                 });
+
+                setInterval(() => {
+                    self.checkPlacementExists();
+                }, 1000);
 
                 document.addEventListener("click", function(e){
                     if(e.target.classList.contains('update')) {
@@ -46,9 +49,6 @@ window.addEventListener("load", () => {
             },
 
             extractSectionData(data) {
-                let self = this;
-                this.isLoading = false;
-
                 this.ecButtonPlace = data?.placement_after_selector
                     ? document.querySelector(data.placement_after_selector)
                     : this.ecButtonPlace;
@@ -57,26 +57,58 @@ window.addEventListener("load", () => {
                     this.setCurrentData(data);
                 }
 
-                if (this.ecButtonPlace) {
-                    if (document.querySelector('#clearpay-cta-cart')) {
-                        this.ecButtonPlace = document.querySelector('#clearpay-cta-cart');
+                if (!this.ecButtonPlace && data?.placement_after_selector) {
+                    if (typeof window.waitForSelector === 'function') {
+                        window.waitForSelector(data.placement_after_selector)
+                            .then((element) => {
+                                this.ecButtonPlace = element;
+                                this.updateHtml();
+                            });
+                    } else {
+                        let interval = setInterval(() => {
+                            let wrapperHtml = document.querySelector(data?.placement_after_selector);
+                            if (wrapperHtml) {
+                                this.ecButtonPlace = wrapperHtml;
+                                clearInterval(interval);
+                                this.updateHtml();
+                            }
+                        }, 1000);
                     }
-                    let clearpaySection = document.querySelector('.headless-clearpay-cart-ec');
-                    if(!clearpaySection) {
-                        clearpaySection = self.wrapElement;
-                    }
+                } else {
+                    this.updateHtml();
+                }
+            },
 
-                    this.ecButtonPlace.insertAdjacentElement('afterend', clearpaySection);
+            updateHtml() {
+                if (document.querySelector('#clearpay-cta-cart')) {
+                    this.ecButtonPlace = document.querySelector('#clearpay-cta-cart');
+                }
 
-                    this.initClearpay();
+                let clearpaySection = document.querySelector('.headless-clearpay-cart-ec');
+                if (!clearpaySection) {
+                    clearpaySection = this.wrapElement;
+                }
+                this.ecButtonPlace.insertAdjacentElement('afterend', clearpaySection);
 
-                    // Add click event listener to the button
-                    const clearpayButton = document.querySelector('.clearpay-express-button-cart');
-                    if (clearpayButton) {
-                        clearpayButton.addEventListener('click', (event) => this.ecValidationAddToCart(event));
-                    }
+                this.initClearpay();
 
-                    this.validateShowButton(this.checkPriceLimit());
+                // Add click event listener to the button
+                const clearpayButton = document.querySelector('.clearpay-express-button-cart');
+                if (clearpayButton) {
+                    clearpayButton.addEventListener('click', (event) => this.ecValidationAddToCart(event));
+                }
+
+                this.validateShowButton(this.checkPriceLimit());
+            },
+
+            checkPlacementExists() {
+                if (!this.configData) {
+                    return;
+                }
+
+                const section = document.querySelector('.headless-clearpay-cart-ec');
+                if (!section || !document.body.contains(section)) {
+                    this.extractSectionData(this.configData);
                 }
             },
 
@@ -149,6 +181,8 @@ window.addEventListener("load", () => {
 
             onComplete(event) {
                 if (event.data.status === 'CANCELLED') {
+                    window.dispatchEvent(new CustomEvent('start-loader-cart'));
+                    document.body.dispatchEvent(new CustomEvent('processStart'));
                     localStorage?.removeItem('mage-cache-storage');
                     window.location.reload();
                 }
@@ -164,9 +198,8 @@ window.addEventListener("load", () => {
 
             placeOrder(event) {
                 const data = this.objectToUrlEncoded(event.data);
-
-                this.isLoading = true;
-
+                window.dispatchEvent(new CustomEvent('start-loader-cart'));
+                document.body.dispatchEvent(new CustomEvent('processStart'));
                 this.fetchData("clearpay/express/placeOrder", data)
                     .then(response => {
                         if(response?.error) {
@@ -179,6 +212,8 @@ window.addEventListener("load", () => {
                             messagesJson = JSON.stringify(messages);
 
                             cookieStore.set('mage-messages', messagesJson);
+                            window.dispatchEvent(new CustomEvent('stop-loader-cart'));
+                            document.body.dispatchEvent(new CustomEvent('processStop'));
                             window.location.href = response.redirectUrl;
                         }else{
                             if (response?.redirectUrl) {
@@ -186,7 +221,6 @@ window.addEventListener("load", () => {
                                 localStorage?.removeItem('messages');
                                 window.mageMessages = [];
                                 window.location.href = response.redirectUrl;
-                                this.isLoading = false;
                             }
                         }
                     });
@@ -206,8 +240,6 @@ window.addEventListener("load", () => {
 
             fetchData(url = "", data = "") {
                 const postUrl = `${BASE_URL}${url}`;
-
-                this.isLoading = true;
 
                 return window.fetch(postUrl, {
                     headers: {

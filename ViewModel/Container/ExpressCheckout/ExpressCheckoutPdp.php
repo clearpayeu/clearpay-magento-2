@@ -14,18 +14,26 @@ class ExpressCheckoutPdp extends ExpressCheckout
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Locale\Resolver $localeResolver,
         \Magento\Catalog\Helper\Data $catalogHelper,
-        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magento\Checkout\Model\Session $checkoutSession
     ) {
-        parent::__construct($serializer, $config, $notAllowedProductsProvider, $storeManager, $localeResolver);
+        parent::__construct(
+            $serializer,
+            $config,
+            $notAllowedProductsProvider,
+            $storeManager,
+            $localeResolver,
+            $checkoutSession
+        );
         $this->catalogHelper = $catalogHelper;
         $this->productCollectionFactory = $productCollectionFactory;
     }
 
     public function updateJsLayout(
         string $jsLayoutJson,
-        bool   $remove = false,
+        bool $remove = false,
         string $containerNodeName = 'clearpay.express.checkout',
-        array  $config = []
+        array $config = []
     ): string {
         if (!$remove && $this->isContainerEnable()) {
             $product = $this->catalogHelper->getProduct();
