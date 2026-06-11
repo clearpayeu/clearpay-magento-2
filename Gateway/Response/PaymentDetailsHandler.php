@@ -10,7 +10,7 @@ class PaymentDetailsHandler implements \Magento\Payment\Gateway\Response\Handler
 
     public function __construct(
         \Clearpay\Clearpay\Model\Order\Payment\Auth\ExpiryDate $authExpiryDate,
-        \Clearpay\Clearpay\Model\Order\CreditMemo\PaymentUpdater\Proxy $paymentUpdater
+        \Clearpay\Clearpay\Model\Order\CreditMemo\PaymentUpdater $paymentUpdater
     ) {
         $this->authExpiryDate = $authExpiryDate;
         $this->paymentUpdater = $paymentUpdater;

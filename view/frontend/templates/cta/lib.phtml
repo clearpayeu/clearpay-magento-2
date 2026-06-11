@@ -5,9 +5,5 @@ $viewModel = $block->getViewModel();
 ?>
 
 <?php if ($viewModel->isContainerEnable() && !$viewModel->getIsLibLoadedAlready()): ?>
-    <script
-        src="<?= $block->escapeUrl($viewModel->getClearpayLib()) ?>"
-        data-min="<?= /* @noEscape */ $viewModel->getMinTotalValue() ?>"
-        data-max="<?= /* @noEscape */ $viewModel->getMaxTotalValue() ?>"
-        async></script>
+    <script src="<?= $block->escapeUrl($viewModel->getClearpayLib()) ?>" async></script>
 <?php endif; ?>

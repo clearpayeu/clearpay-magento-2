@@ -2,6 +2,9 @@
 
 namespace Clearpay\Clearpay\ViewModel\Container\ExpressCheckout;
 
+use Clearpay\Clearpay\Model\Config\Source\ApiMode;
+use Magento\Checkout\Model\Session;
+
 class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
 {
     public const COUNTRY_CURRENCY_MAP = [
@@ -12,16 +15,19 @@ class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
         'GBP' => 'GB'
     ];
     protected $localeResolver;
+    private $checkoutSession;
 
     public function __construct(
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         \Clearpay\Clearpay\Model\Config $config,
         \Clearpay\Clearpay\Model\ResourceModel\NotAllowedProductsProvider $notAllowedProductsProvider,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Locale\Resolver $localeResolver
+        \Magento\Framework\Locale\Resolver $localeResolver,
+        Session $checkoutSession
     ) {
         parent::__construct($serializer, $config, $notAllowedProductsProvider, $storeManager);
         $this->localeResolver = $localeResolver;
+        $this->checkoutSession = $checkoutSession;
     }
     public function updateJsLayout(
         string $jsLayoutJson,
@@ -33,9 +39,9 @@ class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
             $config['minOrderTotal'] = $this->config->getMinOrderTotal();
             $config['maxOrderTotal'] = $this->config->getMaxOrderTotal();
             $config['countryCode'] = $this->getCountryCode();
-            $config['buttonImageUrl'] = 'https://static.afterpay.com/'.str_replace("_","-",$this->localeResolver->getLocale()).'/integration/button/checkout-with-clearpay/white-on-black.svg';
-
+            $config['buttonImageUrl'] = $this->getImageurl();
         }
+
         return parent::updateJsLayout($jsLayoutJson, $remove, $containerNodeName, $config);
     }
 
@@ -43,5 +49,30 @@ class ExpressCheckout extends \Clearpay\Clearpay\ViewModel\Container\Container
     {
         $currencyCode = $this->storeManager->getStore()->getCurrentCurrencyCode();
         return static::COUNTRY_CURRENCY_MAP[$currencyCode] ?? null;
+    }
+
+    public function getImageurl(): string
+    {
+        $urlPrefix = $this->config->getApiMode() === ApiMode::SANDBOX ? 'static.sandbox' : 'static';
+        $localePart = str_replace('_', '-', $this->localeResolver->getLocale());
+
+        return "https://$urlPrefix.afterpay.com/$localePart/integration/button/checkout-with-clearpay/white-on-black.svg";
+    }
+
+    public function isRestrictedProductInCart(): bool
+    {
+        $excludedCategoriesIds = $this->config->getExcludeCategories();
+        if (!empty($excludedCategoriesIds)) {
+            $quoteItems = $this->checkoutSession->getQuote()->getAllVisibleItems();
+            foreach ($quoteItems as $item) {
+                foreach ($item->getProduct()->getCategoryIds() as $categoryId) {
+                    if (in_array($categoryId, $excludedCategoriesIds)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }
