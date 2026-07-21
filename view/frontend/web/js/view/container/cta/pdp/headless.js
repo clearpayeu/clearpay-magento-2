@@ -25,6 +25,7 @@
     function fetchConfigData() {
         const requestOptions = {
             method: 'POST',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -34,6 +35,10 @@
         return fetch(graphqlEndpoint, requestOptions)
             .then(response => response.json())
             .then(data => {
+                if (data?.errors) {
+                    console.error("Error:", data.errors[0].message);
+                    return null;
+                }
                 if (data) {
                     const clearpayConfig = data.data.getClearpayConfigPdp;
 
@@ -42,7 +47,7 @@
                             dataShowLowerLimit = clearpayConfig.show_lover_limit,
                             dataPlatform = 'Magento',
                             dataPageType = 'product',
-                            dataIsEligible = clearpayConfig.is_product_allowed,
+                            dataIsEligible = clearpayConfig.is_product_allowed ? 'true' : 'false',
                             dataCbtEnabledString = Boolean(clearpayConfig.is_cbt_enabled).toString(),
                             dataProductType = clearpayConfig.product_type,
                             squarePlacementId = 'clearpay-cta-pdp',
@@ -142,5 +147,7 @@
         }
     }
 
-    processClearpay();
+    window.addEventListener("load", () => {
+        processClearpay();
+    });
 })(document, window, 'script');

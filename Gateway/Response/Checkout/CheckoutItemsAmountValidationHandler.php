@@ -4,7 +4,6 @@ namespace Clearpay\Clearpay\Gateway\Response\Checkout;
 
 use Clearpay\Clearpay\Api\Data\CheckoutInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\GiftCard\Model\Catalog\Product\Type\Giftcard;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Quote\Model\Quote;
@@ -55,7 +54,7 @@ class CheckoutItemsAmountValidationHandler implements HandlerInterface
 
         $responseItemsSkus = array_column($responseItems, 'sku');
         foreach ($quoteItems as $item) {
-            if ($item->getProduct()->getTypeId() === Giftcard::TYPE_GIFTCARD) {
+            if ($item->getProduct()->getTypeId() === 'giftcard') {
                 $itemFound = false;
                 $amount = $isCBTCurrency ? $item->getPriceInclTax() : $item->getBasePriceInclTax();
                 foreach ($responseItems as $responseItemIndex => $responseItem) {

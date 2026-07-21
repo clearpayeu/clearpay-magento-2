@@ -17,6 +17,7 @@
                 <value id="iq-sbox-connect" type="host">https://iq.afterpay-beta.com</value>
                 <value id="iq-prod-connect" type="host">https://iq.afterpay.com</value>
                 <value id="clearpay-cdn-connect" type="host">*.clearpay.co.uk</value>
+                <value id="zoid-jsdelivr-connect" type="host">cdn.jsdelivr.net</value>
             </values>
         </policy>
         <policy id="frame-src">

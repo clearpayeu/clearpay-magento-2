@@ -30,4 +30,8 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Checkout\Model\Cart">
+        <plugin name="clearpay_track_pdp_express_attempt"
+                type="Clearpay\Clearpay\Plugin\Checkout\Cart"/>
+    </type>
 </config>

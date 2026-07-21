@@ -7,6 +7,8 @@
     <body>
         <referenceBlock name="clearpay.express.checkout.mini.cart.lib" remove="true"/>
         <referenceBlock name="clearpay.cta.mini.cart.lib" remove="true"/>
+        <referenceBlock name="clearpay.cta.mini.cart.headless" remove="true"/>
+        <referenceBlock name="clearpay.minicart.express.checkout.headless" remove="true"/>
         <referenceBlock name="head.components">
             <block name="clearpay.widget.checkout.cart.lib" template="Clearpay_Clearpay::express-checkout/lib.phtml" before="-" >
                 <arguments>

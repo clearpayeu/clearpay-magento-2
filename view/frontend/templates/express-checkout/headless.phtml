@@ -20,7 +20,6 @@ if ($isHyva) {
     }
 }
 ?>
-<?php if (!$viewModel->isRestrictedProductInCart()) : ?>
 <script>
     if (typeof clearpayLocaleCode === 'undefined') {
         var clearpayLocaleCode = "<?= /* @noEscape */ (string)$viewModel->getCountryCode() ?>";
@@ -53,19 +52,18 @@ if ($isHyva) {
 </script>
 <?php endif; ?>
 
-<section <?= $isHyva ? 'x-data="initHyvaLoaderComponent()" @start-loader.window="startLoader()" @processStop.window="stopLoader()"' : '' ?> id="headless-сlearpay-pdp-ec" class="headless-clearpay-ec hidden headless-clearpay-pdp-ec">
+<section <?= $isHyva ? 'x-data="initHyvaLoaderComponent()" @start-loader.window="startLoader()" @stop-loader.window="stopLoader()"' : '' ?> id="headless-сlearpay-pdp-ec" class="headless-clearpay-ec hidden headless-clearpay-pdp-ec">
     <?php if ($isHyva): ?>
     <div x-show="isLoading">
         <?= /* @noEscape */ $loadingHtml ?>
     </div>
     <?php endif; ?>
     <div class="clearpay-express-checkout-pdp-wraper">
-            <button class="clearpay-express-button clearpay-express-button-pdp">
+            <button type="button" class="clearpay-express-button clearpay-express-button-pdp">
                 <img src="<?= $escaper->escapeUrl($viewModel->getImageurl()) ?>"
                      alt="<?= /* @noEscape */ __('Checkout with Clearpay') ?>" style="width: 267px;"/>
             </button>
             <div class="hidden" id="clearpay-button-pdp" data-afterpay-entry-point="product-page"></div>
         </div>
 </section>
-<?php endif; ?>
 

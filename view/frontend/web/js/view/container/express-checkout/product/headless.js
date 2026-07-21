@@ -11,6 +11,8 @@
                         product_type
                         show_lover_limit
                         is_product_allowed
+                        has_restricted_products_in_cart
+                        not_allowed_product_ids
                         placement_after_selector
                         placement_after_selector_bundle
                         is_cbt_enabled
@@ -27,6 +29,7 @@
     function fetchConfigData() {
         const requestOptions = {
             method: 'POST',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -45,9 +48,13 @@
 
                     const clearpayConfig = data.data.getClearpayConfigPdp;
 
-                    if (clearpayConfig && clearpayConfig?.is_in_stock && clearpayConfig?.is_product_allowed && clearpayConfig?.product_type != "grouped") {
-                        const event = new CustomEvent('showHeadlessEC', { detail: { clearpayConfig} });
-                        document.dispatchEvent(event);
+                    if (clearpayConfig
+                        && clearpayConfig?.is_in_stock
+                        && clearpayConfig?.is_product_allowed
+                        && clearpayConfig?.product_type != "grouped") {
+                        document.dispatchEvent(new CustomEvent('showHeadlessEC', {
+                            detail: {clearpayConfig}
+                        }));
                     }
                 } else {
                     return null;
