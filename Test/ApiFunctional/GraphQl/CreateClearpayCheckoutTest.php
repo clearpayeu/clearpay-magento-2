@@ -38,7 +38,21 @@ class CreateClearpayCheckoutTest extends \Magento\TestFramework\TestCase\GraphQl
         $emptyMaskedCartId = '';
         $mutation = $this->createClearpayCheckoutMutation($emptyMaskedCartId);
 
-        self::expectExceptionMessageMatches('/No such entity.*/');
+        self::expectExceptionMessageMatches('/Could not find a cart with ID.*/');
+        $this->graphQlMutation($mutation);
+    }
+
+    /**
+     * A sequential numeric quote id must not be usable in place of a masked cart id.
+     *
+     * @magentoApiDataFixture Magento/Checkout/_files/active_quote.php
+     * @magentoConfigFixture default/payment/clearpay/active 1
+     */
+    public function testNumericQuoteIdIsNotAcceptedAsCartId()
+    {
+        $mutation = $this->createClearpayCheckoutMutation('1');
+
+        self::expectExceptionMessageMatches('/Could not find a cart with ID.*/');
         $this->graphQlMutation($mutation);
     }
 

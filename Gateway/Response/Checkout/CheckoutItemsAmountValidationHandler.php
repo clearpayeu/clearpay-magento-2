@@ -3,8 +3,8 @@
 namespace Clearpay\Clearpay\Gateway\Response\Checkout;
 
 use Clearpay\Clearpay\Api\Data\CheckoutInterface;
+use Clearpay\Clearpay\Gateway\Helper\ItemAmountCalculator;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\GiftCard\Model\Catalog\Product\Type\Giftcard;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Quote\Model\Quote;
@@ -12,11 +12,15 @@ use Psr\Log\LoggerInterface;
 
 class CheckoutItemsAmountValidationHandler implements HandlerInterface
 {
-    private $logger;
+    use \Magento\Payment\Helper\Formatter;
 
-    public function __construct(LoggerInterface $logger)
+    private $logger;
+    private $itemAmountCalculator;
+
+    public function __construct(LoggerInterface $logger, ItemAmountCalculator $itemAmountCalculator)
     {
         $this->logger = $logger;
+        $this->itemAmountCalculator = $itemAmountCalculator;
     }
 
     /**
@@ -34,6 +38,15 @@ class CheckoutItemsAmountValidationHandler implements HandlerInterface
         $quote = $payment->getQuote();
         $isCBTCurrency = $payment->getAdditionalInformation(CheckoutInterface::CLEARPAY_IS_CBT_CURRENCY);
         $grandTotal = $isCBTCurrency ? $quote->getGrandTotal() : $quote->getBaseGrandTotal();
+        $currency = $isCBTCurrency ? $quote->getQuoteCurrencyCode() : $quote->getBaseCurrencyCode();
+        $responseCurrency = $response['amount']['currency'] ?? null;
+
+        if (!is_string($currency) || $currency === '' || $responseCurrency !== $currency) {
+            $invalidCurrencyExceptionMessage = __('There was a issue with the processing of your payment. Invalid currency.');
+            $this->logger->warning($invalidCurrencyExceptionMessage);
+            $this->logger->warning('Invalid Currency Cart ID: ' . $quote->getId());
+            throw new LocalizedException($invalidCurrencyExceptionMessage);
+        }
 
         if (round(1 * $grandTotal, 2) != round(1 * $response['amount']['amount'], 2)) {
             $invalidAmountExceptionMessage = __('There was a issue with the processing of your payment. Invalid amount.');
@@ -55,7 +68,7 @@ class CheckoutItemsAmountValidationHandler implements HandlerInterface
 
         $responseItemsSkus = array_column($responseItems, 'sku');
         foreach ($quoteItems as $item) {
-            if ($item->getProduct()->getTypeId() === Giftcard::TYPE_GIFTCARD) {
+            if ($item->getProduct()->getTypeId() === 'giftcard') {
                 $itemFound = false;
                 $amount = $isCBTCurrency ? $item->getPriceInclTax() : $item->getBasePriceInclTax();
                 foreach ($responseItems as $responseItemIndex => $responseItem) {
@@ -78,11 +91,12 @@ class CheckoutItemsAmountValidationHandler implements HandlerInterface
                     throw new LocalizedException($invalidCartItemsExceptionMessage);
                 }
                 if ($item->getQty() != $responseItems[$itemIndex]['quantity']) {
-                    $qty = $item->getQty();
+                    $qty = (float)$item->getQty();
                     $isIntQty = floor($qty) == $qty;
                     if (!$isIntQty && $responseItems[$itemIndex]['quantity'] == 1) {
-                        $amount = $isCBTCurrency ? $item->getPriceInclTax() : $item->getBasePriceInclTax();
-                        if ($amount * $qty == $responseItems[$itemIndex]['price']['amount']) {
+                        $itemAmount = $this->itemAmountCalculator->calculate($item, (bool)$isCBTCurrency);
+                        $expectedAmount = $this->formatPrice($itemAmount['amount']);
+                        if ($expectedAmount === $this->formatPrice($responseItems[$itemIndex]['price']['amount'])) {
                             continue;
                         }
                     }

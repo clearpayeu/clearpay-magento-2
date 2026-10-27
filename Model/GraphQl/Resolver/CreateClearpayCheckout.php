@@ -18,15 +18,18 @@ class CreateClearpayCheckout implements \Magento\Framework\GraphQl\Query\Resolve
     private $config;
     private $clearpayCheckoutManagement;
     private $redirectPathFactory;
+    private $getCartForUser;
 
     public function __construct(
         \Clearpay\Clearpay\Model\Config $config,
         \Clearpay\Clearpay\Api\CheckoutManagementInterface $clearpayCheckoutManagement,
-        \Clearpay\Clearpay\Api\Data\RedirectPathInterfaceFactory $redirectPathFactory
+        \Clearpay\Clearpay\Api\Data\RedirectPathInterfaceFactory $redirectPathFactory,
+        \Magento\QuoteGraphQl\Model\Cart\GetCartForUser $getCartForUser
     ) {
         $this->config = $config;
         $this->clearpayCheckoutManagement = $clearpayCheckoutManagement;
         $this->redirectPathFactory = $redirectPathFactory;
+        $this->getCartForUser = $getCartForUser;
     }
 
     /**
@@ -48,6 +51,11 @@ class CreateClearpayCheckout implements \Magento\Framework\GraphQl\Query\Resolve
 
         $maskedCartId = $args['input']['cart_id'];
         $clearpayRedirectPath = $args['input']['redirect_path'];
+
+        // Authorise the caller for this cart before any checkout state is written. This also
+        // rejects a numeric quote id, which is not a valid masked cart id.
+        /** @phpstan-ignore-next-line */
+        $this->getCartForUser->execute((string)$maskedCartId, $context->getUserId(), (int)$storeId);
 
         $redirectUrls = $this->redirectPathFactory->create()
             ->setConfirmPath($clearpayRedirectPath['confirm_path'])
